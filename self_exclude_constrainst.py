@@ -1,7 +1,14 @@
+"""SelfExcludeConstraint module.
+This module defines the SelfExcludeConstraint class, which is a specific type of constraint for Sudoku puzzles.
+The SelfExcludeConstraint class inherits from the BaseConstraint class and implements methods to check if the constraint is satisfied on a given grid and to auto-complete the grid based on the constraint.
+"""
+
 from base_constraint import BaseConstraint
 
 
-class SelfExclude(BaseConstraint):
+class SelfExcludeConstraint(BaseConstraint):
+    """Constraint that excludes certain cells from being filled."""
+
     def __init__(self, excluded_cells: list[(int, int)]):
         super().__init__()
         self.excluded = set(excluded_cells)

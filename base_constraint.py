@@ -1,3 +1,12 @@
+"""BaseConstraint module.
+This module defines the BaseConstraint class, which serves as a base for all Sudoku constraints.
+It provides methods to check if the constraint is satisfied on a given grid and to auto-complete the grid based on the constraint.
+The BaseConstraint class is not intended to be instantiated directly. Instead, it should be subclassed to create specific constraints.
+Raises:
+    NotImplementedError: Method not implemented.
+    NotImplementedError: Method not implemented.
+"""
+
 from grid import Grid
 
 

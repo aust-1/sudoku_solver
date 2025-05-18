@@ -1,3 +1,8 @@
+"""Grid module for Sudoku game.
+This module defines the Grid class, which represents the Sudoku grid.
+"""
+
+
 class Grid:
     """A class representing a Sudoku grid."""
 

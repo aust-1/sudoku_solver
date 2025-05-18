@@ -1,3 +1,7 @@
+"""Board module for Sudoku game.
+This module defines the Board class, which represents the Sudoku board.
+"""
+
 from grid import Grid
 from base_constraint import BaseConstraint
 
