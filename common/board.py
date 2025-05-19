@@ -2,20 +2,22 @@
 This module defines the Board class, which represents the Sudoku board.
 """
 
-from grid import Grid
-from base_constraint import BaseConstraint
+from common import Grid
+from common import BaseConstraint, SelfExcludeConstraint
 
 
 class Board:
     """A class representing the Sudoku board."""
 
-    def __init__(self):
-        self.grid: Grid = Grid(9)
-        self.constraints: list[BaseConstraint] = []
+    def __init__(self, size: int = 9):
+        self._grid: Grid = Grid(size)
+        self._constraints: list[BaseConstraint] = []
+        self._constraints.append(SelfExcludeConstraint([(0, i) for i in range(size)]))
+        self._constraints.append(SelfExcludeConstraint([(i, 0) for i in range(size)]))
 
     def __str__(self):
         """Return a string representation of the board."""
-        return str(self.grid)
+        return str(self._grid)
 
     def is_full(self) -> bool:
         """Check if the board is full.
@@ -23,20 +25,20 @@ class Board:
         Returns:
             bool: True if the board is full, False otherwise.
         """
-        return self.grid.is_full()
+        return self._grid.is_full()
 
-    def add_piece(self, row: int, col: int, piece: str) -> bool:
+    def add_piece(self, row: int, col: int, piece: int) -> bool:
         """Add a piece to the board.
 
         Args:
             row (int): The row index (0-8).
             col (int): The column index (0-8).
-            piece (str): The piece to add.
+            piece (int): The piece to add.
 
         Returns:
             bool: True if the piece was added successfully with constraints satisfied, False otherwise.
         """
-        self.grid.add_piece(row, col, piece)
+        self._grid.add_piece(row, col, piece)
         return self.check_constraints()
 
     def delete_piece(self, row: int, col: int) -> bool:
@@ -49,7 +51,7 @@ class Board:
         Returns:
             bool: True if the piece was deleted successfully, False otherwise.
         """
-        return self.grid.delete_piece(row, col)
+        return self._grid.delete_piece(row, col)
 
     def check_constraints(self) -> bool:
         """Check if all constraints are satisfied.
@@ -57,8 +59,8 @@ class Board:
         Returns:
             bool: True if all constraints are satisfied, False otherwise.
         """
-        for constraint in self.constraints:
-            if not constraint.check(self.grid):
+        for constraint in self._constraints:
+            if not constraint.check(self._grid):
                 return False
         return True
 
@@ -68,7 +70,7 @@ class Board:
         Args:
             constraint (BaseConstraint): The constraint to add.
         """
-        self.constraints.append(constraint)
+        self._constraints.append(constraint)
 
     def remove_constraint(self, constraint: BaseConstraint):
         """Remove a constraint from the board.
@@ -76,4 +78,4 @@ class Board:
         Args:
             constraint (BaseConstraint): The constraint to remove.
         """
-        self.constraints.remove(constraint)
+        self._constraints.remove(constraint)

@@ -7,7 +7,7 @@ Raises:
     NotImplementedError: Method not implemented.
 """
 
-from grid import Grid
+from common import Grid
 
 
 class BaseConstraint:
