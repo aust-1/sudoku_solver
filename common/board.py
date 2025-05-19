@@ -39,6 +39,8 @@ class Board:
             bool: True if the piece was added successfully with constraints satisfied, False otherwise.
         """
         self._grid.add_piece(row, col, piece)
+        for constraint in self._constraints:
+            constraint.auto_complete(self._grid)
         return self.check_constraints()
 
     def delete_piece(self, row: int, col: int) -> bool:

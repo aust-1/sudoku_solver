@@ -43,7 +43,7 @@ class Grid:
         Returns:
             int: The piece at the specified position, or None if empty.
         """
-        return self._grid[row][col].get_value()
+        return self._grid[row][col]
 
     def get_size(self) -> int:
         """Get the size of the grid.

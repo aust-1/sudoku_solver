@@ -39,8 +39,17 @@ class Piece:
         if value in self._possible_values:
             self._value = value
             self._possible_values.clear()
+            self._possible_values.add(value)
             return True
         return False
+
+    def get_possible_values(self) -> set:
+        """Get the possible values of the piece.
+
+        Returns:
+            set: The possible values of the piece.
+        """
+        return self._possible_values
 
     def remove_possible_value(self, value: int) -> bool:
         """Remove a possible value from the piece.
