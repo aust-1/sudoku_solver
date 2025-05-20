@@ -13,7 +13,7 @@ class Piece:
             size (int): The size of the piece (1-9).
         """
         self._value = None
-        self._possible_values = set(range(1, size + 1))
+        self._possible_values = [True for _ in range(size)]
 
     def __str__(self) -> str:
         """Return a string representation of the piece."""
@@ -36,18 +36,21 @@ class Piece:
         Returns:
             bool: True if the value was set successfully, False otherwise.
         """
-        if value in self._possible_values:
+        if (
+            1 <= value <= len(self._possible_values)
+            and self._possible_values[value - 1]
+        ):
             self._value = value
-            self._possible_values.clear()
-            self._possible_values.add(value)
+            self._possible_values = [False for _ in range(len(self._possible_values))]
+            self._possible_values[value - 1] = True
             return True
         return False
 
-    def get_possible_values(self) -> set:
+    def get_possible_values(self) -> list[bool]:
         """Get the possible values of the piece.
 
         Returns:
-            set: The possible values of the piece.
+            list[bool]: The possible values of the piece.
         """
         return self._possible_values
 
@@ -60,7 +63,7 @@ class Piece:
         Returns:
             bool: True if the value was removed successfully, False otherwise.
         """
-        if value in self._possible_values:
-            self._possible_values.remove(value)
+        if 1 <= value <= len(self._possible_values):
+            self._possible_values[value - 1] = False
             return True
         return False

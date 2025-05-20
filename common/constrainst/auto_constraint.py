@@ -25,10 +25,9 @@ class AutoConstraint(BaseConstraint):
         """
         for i in range(grid.get_size()):
             for j in range(grid.get_size()):
-                if (
-                    grid.get_piece(i, j).get_value()
-                    not in grid.get_piece(i, j).get_possible_values()
-                ):
+                if not grid.get_piece(i, j).get_possible_values()[
+                    grid.get_piece(i, j).get_value() - 1
+                ]:
                     return False
         return True
 
@@ -38,17 +37,15 @@ class AutoConstraint(BaseConstraint):
         Args:
             grid (Grid): The Sudoku grid.
         Returns:
-            bool: True if any changes were made, False otherwise.
+            bool: True if the auto-completion was successful, False otherwise.
         """
-        changed = False
         for i in range(grid.get_size()):
             for j in range(grid.get_size()):
                 if (
-                    len(grid.get_piece(i, j).get_possible_values()) == 1
+                    grid.get_piece(i, j).get_possible_values().count(True) == 1
                     and grid.get_piece(i, j).get_value() is None
                 ):
                     grid.get_piece(i, j).set_value(
-                        list(grid.get_piece(i, j).get_possible_values())[0]
+                        grid.get_piece(i, j).get_possible_values().index(True) + 1
                     )
-                    changed |= True
-        return changed
+        return True
