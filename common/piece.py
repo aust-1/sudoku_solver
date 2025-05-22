@@ -19,7 +19,7 @@ class Piece:
         """Return a string representation of the piece."""
         return str(self._value) if self._value is not None else "."
 
-    def get_value(self) -> int:
+    def get_value(self) -> int | None:
         """Get the value of the piece.
 
         Returns:

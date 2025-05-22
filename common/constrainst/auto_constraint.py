@@ -15,6 +15,7 @@ class AutoConstraint(BaseConstraint):
         Args:
             pieces (list[Piece]): The list of pieces to apply constraints to.
         """
+        super().__init__()
 
     def check(self, grid: Grid) -> bool:
         """Check if the auto constraint can be applied to the pieces.
