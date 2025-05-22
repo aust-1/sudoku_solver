@@ -9,11 +9,11 @@ from common import BaseConstraint, Grid, CloneConstraint
 class PalindromeConstraint(BaseConstraint):
     """A class representing a palindrome constraint for Sudoku pieces."""
 
-    def __init__(self, palindrome_pieces: list[(int, int)]):
+    def __init__(self, palindrome_pieces: list[tuple[int, int]]):
         """Initialize the palindrome constraint with a list of coordinates.
 
         Args:
-            palindrome_pieces (list[(int, int)]): The list of coordinates to apply constraints to.
+            palindrome_pieces (list[tuple[int, int]]): The list of coordinates to apply constraints to.
         """
         super().__init__()
         self.palindrome = palindrome_pieces
@@ -50,3 +50,20 @@ class PalindromeConstraint(BaseConstraint):
             if not constraint.auto_complete(grid):
                 return False
         return True
+
+    def reachable_pieces(
+        self, grid: Grid, position: tuple[int, int]
+    ) -> set[tuple[int, int]]:
+        """Get the reachable pieces based on the constraint.
+
+        Args:
+            grid (Grid): The Sudoku grid.
+            position (tuple[int, int]): The position of the piece.
+
+        Returns:
+            set[tuple[int, int]]: A set of reachable pieces.
+        """
+        reachable_pieces = set()
+        for constraint in self.clone_constraints:
+            reachable_pieces.update(constraint.reachable_pieces(grid, position))
+        return reachable_pieces

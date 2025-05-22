@@ -27,16 +27,13 @@ class KingConstraint(BaseConstraint):
             for j in range(size):
                 value = grid.get_piece(i, j).get_value()
                 if value is not None:
-                    for x in range(-1, 2):
-                        for y in range(-1, 2):
-                            if (
-                                0 <= i + x < size
-                                and 0 <= j + y < size
-                                and (x != 0 or y != 0)
-                                and grid.get_piece(i + x, j + y).get_value() is not None
-                                and grid.get_piece(i + x, j + y).get_value() != value
-                            ):
-                                return False
+                    neighbor_pieces = self.reachable_pieces(grid, (i, j))
+                    for pos in neighbor_pieces:
+                        if (
+                            grid.get_piece(pos).get_value() is not None
+                            and grid.get_piece(pos).get_value() != value
+                        ):
+                            return False
         return True
 
     def auto_complete(self, grid: Grid) -> bool:
@@ -53,14 +50,31 @@ class KingConstraint(BaseConstraint):
             for j in range(size):
                 value = grid.get_piece(i, j).get_value()
                 if value is not None:
-                    for x in range(-1, 2):
-                        for y in range(-1, 2):
-                            if (
-                                0 <= i + x < size
-                                and 0 <= j + y < size
-                                and (x != 0 or y != 0)
-                            ):
-                                grid.get_piece(i + x, j + y).remove_possible_value(
-                                    value
-                                )
+                    neighbor_pieces = self.reachable_pieces(grid, (i, j))
+                    for pos in neighbor_pieces:
+                        grid.get_piece(pos).remove_possible_value(value)
         return True
+
+    def reachable_pieces(
+        self, grid: Grid, position: tuple[int, int]
+    ) -> set[tuple[int, int]]:
+        """Get the reachable pieces based on the constraint.
+
+        Args:
+            grid (Grid): The Sudoku grid.
+            position (tuple[int, int]): The position of the piece.
+
+        Returns:
+            set[tuple[int, int]]: A set of reachable pieces.
+        """
+        reachable = set()
+        size = grid.get_size()
+        for x in range(-1, 2):
+            for y in range(-1, 2):
+                if (
+                    0 <= position[0] + x < size
+                    and 0 <= position[1] + y < size
+                    and (x != 0 or y != 0)
+                ):
+                    reachable.add((position[0] + x, position[1] + y))
+        return reachable

@@ -37,3 +37,17 @@ class BaseConstraint:
             bool: True if the auto-completion was successful, False otherwise.
         """
         raise NotImplementedError("Subclasses should implement this method.")
+
+    def reachable_pieces(
+        self, grid: Grid, position: tuple[int, int]
+    ) -> set[tuple[int, int]]:
+        """Get the reachable pieces based on the constraint.
+
+        Args:
+            grid (Grid): The Sudoku grid.
+            position (tuple[int, int]): The position of the piece.
+
+        Returns:
+            set[tuple[int, int]]: A set of reachable pieces.
+        """
+        return set()

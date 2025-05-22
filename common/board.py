@@ -10,7 +10,13 @@ class Board:
     """A class representing the Sudoku board."""
 
     def __init__(self, size: int = 9):
-        self._grid: Grid = Grid(size)
+        """Initialize the Sudoku board.
+
+        Args:
+            size (int, optional): The size of the board (number of rows/columns). Defaults to 9.
+        """
+        self._size = size
+        self._grid: Grid = Grid(self._size)
         self._constraints: list[BaseConstraint] = []
         self._constraints.append(SelfExcludeConstraint([(0, i) for i in range(size)]))
         self._constraints.append(SelfExcludeConstraint([(i, 0) for i in range(size)]))
@@ -81,3 +87,16 @@ class Board:
             constraint (BaseConstraint): The constraint to remove.
         """
         self._constraints.remove(constraint)
+
+    def get_reachable_pieces(self, position: tuple[int, int]) -> set[tuple[int, int]]:
+        """Get the reachable pieces on the board.
+
+        Returns:
+            list[tuple[int, int]]: A list of tuples representing the reachable pieces.
+        """
+        reachable_pieces: set[tuple[int, int]] = set()
+        for constraint in self._constraints:
+            reachable_pieces.update(
+                constraint.get_reachable_pieces(self._grid, position)
+            )
+        return reachable_pieces

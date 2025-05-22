@@ -9,11 +9,11 @@ from common import BaseConstraint, Grid
 class CloneConstraint(BaseConstraint):
     """A class representing a clone constraint for Sudoku pieces."""
 
-    def __init__(self, clone_pieces: set[(int, int)]):
+    def __init__(self, clone_pieces: set[tuple[int, int]]):
         """Initialize the clone constraint with a list of coordinates.
 
         Args:
-            clone_pieces (list[(int, int)]): The list of coordinates to apply constraints to.
+            clone_pieces (list[tuple[int, int]]): The list of coordinates to apply constraints to.
         """
         super().__init__()
         self.clone = clone_pieces
@@ -49,3 +49,17 @@ class CloneConstraint(BaseConstraint):
         for coords in self.clone:
             grid.get_piece(coords).set_possible_values(values)
         return True
+
+    def reachable_pieces(
+        self, grid: Grid, position: tuple[int, int]
+    ) -> set[tuple[int, int]]:
+        """Get the reachable pieces based on the constraint.
+
+        Args:
+            grid (Grid): The Sudoku grid.
+            position (tuple[int, int]): The position of the piece.
+
+        Returns:
+            set[tuple[int, int]]: A set of reachable pieces.
+        """
+        # TODO: reachabilité des reachabilité des clones sans la contrainte clone car stack overflow

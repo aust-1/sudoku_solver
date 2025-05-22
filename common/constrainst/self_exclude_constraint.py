@@ -9,11 +9,11 @@ from common import BaseConstraint, Grid
 class SelfExcludeConstraint(BaseConstraint):
     """Constraint that excludes certain cells from being filled."""
 
-    def __init__(self, excluded_pieces: list[(int, int)]):
+    def __init__(self, excluded_pieces: list[tuple[int, int]]):
         """Initialize the self-exclude constraint.
 
         Args:
-            excluded_cells (list[(int, int)]): The list of excluded cells.
+            excluded_cells (list[tuple[int, int]]): The list of excluded cells.
         """
         super().__init__()
         self.excluded = set(excluded_pieces)
@@ -52,3 +52,21 @@ class SelfExcludeConstraint(BaseConstraint):
                             grid.get_piece(row, col).get_value()
                         )
         return True
+
+    def reachable_pieces(
+        self, grid: Grid, position: tuple[int, int]
+    ) -> set[tuple[int, int]]:
+        """Get the reachable pieces based on the constraint.
+
+        Args:
+            grid (Grid): The Sudoku grid.
+            position (tuple[int, int]): The position of the piece.
+
+        Returns:
+            set[tuple[int, int]]: A set of reachable pieces.
+        """
+        reachable = set()
+        for row, col in self.excluded:
+            if (row, col) != position:
+                reachable.add((row, col))
+        return reachable
