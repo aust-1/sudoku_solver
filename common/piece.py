@@ -54,6 +54,20 @@ class Piece:
         """
         return self._possible_values
 
+    def set_possible_values(self, possible_values: list[bool]) -> bool:
+        """Set the possible values of the piece.
+
+        Args:
+            possible_values (list[bool]): The possible values to set.
+
+        Returns:
+            bool: True if the possible values were set successfully, False otherwise.
+        """
+        if len(possible_values) == len(self._possible_values):
+            self._possible_values = possible_values
+            return True
+        return False
+
     def remove_possible_value(self, value: int) -> bool:
         """Remove a possible value from the piece.
 

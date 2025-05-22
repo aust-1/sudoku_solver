@@ -3,15 +3,20 @@ This module defines the SelfExcludeConstraint class, which is a specific type of
 The SelfExcludeConstraint class inherits from the BaseConstraint class and implements methods to check if the constraint is satisfied on a given grid and to auto-complete the grid based on the constraint.
 """
 
-from common import BaseConstraint, Grid, Piece
+from common import BaseConstraint, Grid
 
 
 class SelfExcludeConstraint(BaseConstraint):
     """Constraint that excludes certain cells from being filled."""
 
-    def __init__(self, excluded_cells: list[(int, int)]):
+    def __init__(self, excluded_pieces: list[(int, int)]):
+        """Initialize the self-exclude constraint.
+
+        Args:
+            excluded_cells (list[(int, int)]): The list of excluded cells.
+        """
         super().__init__()
-        self.excluded = set(excluded_cells)
+        self.excluded = set(excluded_pieces)
 
     def check(self, grid: Grid) -> bool:
         """Check if the constraint is satisfied on the given grid.

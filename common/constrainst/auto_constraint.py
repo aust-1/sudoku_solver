@@ -3,7 +3,7 @@ Auto Constraint Module.
 This module defines the AutoConstraint class, which automatically applies constraints to Sudoku pieces.
 """
 
-from common import BaseConstraint, Grid, Piece
+from common import BaseConstraint, Grid
 
 
 class AutoConstraint(BaseConstraint):
