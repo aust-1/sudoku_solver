@@ -17,9 +17,20 @@ class SudokuPrinter:
             str: A multi-line string representation of the board.
         """
         lines = []
-        for r in range(9):
-            row = " ".join(str(board.get_cell(r, c)) for c in range(9))
-            lines.append(row)
+        for i in range(3):
+            for r in range(i * 3, (i + 1) * 3):
+                row = ""
+                for j in range(3):
+                    row += (
+                        " ".join(
+                            str(board.get_cell(r, c)) for c in range(j * 3, (j + 1) * 3)
+                        )
+                        + " | "
+                    )
+                row = row[:-3]
+                lines.append(row)
+            lines.append("-" * 6 + "🞢" + "-" * 7 + "🞢" + "-" * 6)
+        del lines[-1]
         return "\n".join(lines)
 
     @staticmethod
