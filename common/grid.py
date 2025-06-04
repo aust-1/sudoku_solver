@@ -28,7 +28,7 @@ class Grid:
             bool: True if the board is full, False otherwise.
         """
         return all(
-            self.get_piece(row, col) is not None
+            self.get_piece(row, col).get_value() is not None
             for row in range(self._size)
             for col in range(self._size)
         )
@@ -64,11 +64,10 @@ class Grid:
         Returns:
             bool: True if the piece was added successfully with constraints satisfied, False otherwise.
         """
-        if self._grid[row][col] is not None:
+        if self._grid[row][col].get_value() is not None:
             self.delete_piece(row, col)
 
-        self._grid[row][col].set_value(piece)
-        return True
+        return self._grid[row][col].set_value(piece)
 
     def delete_piece(self, row: int, col: int) -> bool:
         """Delete a piece from the grid.
@@ -80,7 +79,7 @@ class Grid:
         Returns:
             bool: True if the piece was deleted successfully, False otherwise.
         """
-        if self._grid[row][col] is None:
+        if self._grid[row][col].get_value() is None:
             return False
 
         self._grid[row][col].set_value(None)

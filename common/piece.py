@@ -27,15 +27,20 @@ class Piece:
         """
         return self._value
 
-    def set_value(self, value: int) -> bool:
+    def set_value(self, value: int | None) -> bool:
         """Set the value of the piece.
 
         Args:
-            value (int): The value to set.
+            value (int | None): The value to set. ``None`` clears the piece.
 
         Returns:
             bool: True if the value was set successfully, False otherwise.
         """
+        if value is None:
+            self._value = None
+            self._possible_values = [True for _ in range(len(self._possible_values))]
+            return True
+
         if (
             1 <= value <= len(self._possible_values)
             and self._possible_values[value - 1]

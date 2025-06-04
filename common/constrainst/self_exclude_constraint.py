@@ -29,10 +29,11 @@ class SelfExcludeConstraint(BaseConstraint):
         """
         values: set[int] = set()
         for row, col in self.excluded:
-            if grid.get_piece(row, col) is not None:
-                if grid.get_piece(row, col) in values:
+            piece_value = grid.get_piece(row, col).get_value()
+            if piece_value is not None:
+                if piece_value in values:
                     return False
-                values.add(grid.get_piece(row, col))
+                values.add(piece_value)
         return True
 
     def auto_complete(self, grid: Grid) -> bool:

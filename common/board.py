@@ -2,8 +2,9 @@
 This module defines the Board class, which represents the Sudoku board.
 """
 
-from common import Grid
-from common import BaseConstraint, SelfExcludeConstraint
+from .grid import Grid
+from .constrainst.base_constraint import BaseConstraint
+from .constrainst.self_exclude_constraint import SelfExcludeConstraint
 
 
 class Board:
@@ -44,7 +45,9 @@ class Board:
         Returns:
             bool: True if the piece was added successfully with constraints satisfied, False otherwise.
         """
-        self._grid.add_piece(row, col, piece)
+        if not self._grid.add_piece(row, col, piece):
+            return False
+
         for constraint in self._constraints:
             constraint.auto_complete(self._grid)
         return self.check_constraints()
@@ -97,6 +100,6 @@ class Board:
         reachable_pieces: set[tuple[int, int]] = set()
         for constraint in self._constraints:
             reachable_pieces.update(
-                constraint.get_reachable_pieces(self._grid, position)
+                constraint.reachable_pieces(self._grid, position)
             )
         return reachable_pieces
