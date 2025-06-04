@@ -15,7 +15,11 @@ class CompositeSolver(Solver):
     """Apply a sequence of logical strategies before backtracking."""
 
     def __init__(self, strategies: List[Solver] | None = None):
-        """Initialise with a list of logical strategies."""
+        """Initialise the composite solver with a list of strategies.
+
+        Args:
+            strategies (List[Solver] | None, optional): The list of strategies to apply. Defaults to None.
+        """
         self.strategies = strategies or [
             EliminationStrategy(),
             SingleCandidateStrategy(),
@@ -23,14 +27,28 @@ class CompositeSolver(Solver):
         ]
 
     def apply(self, board: Board) -> bool:
-        """Apply strategies in order until one makes progress."""
+        """Apply all strategies to the board until one succeeds.
+
+        Args:
+            board (Board): The Sudoku board to solve.
+
+        Returns:
+            bool: `True` if one of the strategies made a change to the board, `False` otherwise.
+        """
         for strat in self.strategies:
             if strat.apply(board):
                 return True
         return False
 
     def solve(self, board: Board) -> bool:
-        """Solve ``board`` using strategies then backtracking."""
+        """Attempt to solve the Sudoku board using a combination of strategies and backtracking.
+
+        Args:
+            board (Board): The Sudoku board to solve.
+
+        Returns:
+            bool: `True` if the board is solved, `False` otherwise.
+        """
         progress = True
         while progress:
             progress = self.apply(board)

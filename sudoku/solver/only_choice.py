@@ -11,7 +11,14 @@ class OnlyChoiceStrategy(Solver):
     """If a digit appears as candidate only once in a region, fill it."""
 
     def apply(self, board: Board) -> bool:
-        """Place digits that occur as candidate only once per region."""
+        """Fill cells with candidates that appear only once in their region.
+
+        Args:
+            board (Board): The Sudoku board to solve.
+
+        Returns:
+            bool: `True` if any cells were filled, `False` otherwise.
+        """
         moved = False
         regions = [
             [board.get_row(i) for i in range(9)],

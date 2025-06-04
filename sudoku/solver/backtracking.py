@@ -10,7 +10,14 @@ class BacktrackingSolver(Solver):
     """Recursive backtracking solver used as a last resort."""
 
     def apply(self, board: Board) -> bool:
-        """Recursively search for a solution via backtracking."""
+        """Attempt to solve the Sudoku board using backtracking.
+
+        Args:
+            board (Board): The Sudoku board to solve.
+
+        Returns:
+            bool: `True` if the board is solved, `False` otherwise.
+        """
         if not board.is_valid():
             return False
         if board.is_solved():

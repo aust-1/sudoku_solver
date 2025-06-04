@@ -10,7 +10,14 @@ class EliminationStrategy(Solver):
     """For each filled cell, remove its value from peers' candidates."""
 
     def apply(self, board: Board) -> bool:
-        """Eliminate candidates using already placed values."""
+        """Eliminate candidates using already placed values.
+
+        Args:
+            board (Board): The Sudoku board to solve.
+
+        Returns:
+            bool: `True` if any candidates were eliminated, `False` otherwise.
+        """
         moved = False
         for r in range(9):
             for c in range(9):
@@ -18,7 +25,9 @@ class EliminationStrategy(Solver):
                 if cell.is_filled():
                     val = cell.value
                     peers = set(
-                        board.get_row(r) + board.get_col(c) + board.get_box(3 * (r // 3) + c // 3)
+                        board.get_row(r)
+                        + board.get_col(c)
+                        + board.get_box(3 * (r // 3) + c // 3)
                     )
                     peers.discard(cell)
                     for peer in peers:
