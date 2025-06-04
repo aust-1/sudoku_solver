@@ -10,9 +10,24 @@ class Solver(ABC):
 
     @abstractmethod
     def apply(self, board: Board) -> bool:
-        """Apply a solving step. Returns True if board changed."""
+        """Apply a solving step.
+
+        Args:
+            board (Board): The Sudoku board to solve.
+
+        Returns:
+            bool: `True` if the board was modified, `False` otherwise.
+        """
 
     def solve(self, board: Board) -> bool:
+        """Attempt to solve the Sudoku board until no more changes can be made.
+
+        Args:
+            board (Board): The Sudoku board to solve.
+
+        Returns:
+            bool: `True` if the board is solved, `False` otherwise.
+        """
         while self.apply(board):
             pass
         return board.is_solved()
