@@ -1,4 +1,5 @@
 from __future__ import annotations
+"""Module containing the :class:`Cell` model."""
 
 from typing import Set
 
@@ -22,5 +23,5 @@ class Cell:
     def eliminate(self, v: int) -> None:
         self.candidates.discard(v)
 
-    def __repr__(self) -> str:  # simple representation
+    def __repr__(self) -> str:
         return str(self.value) if self.value is not None else "."

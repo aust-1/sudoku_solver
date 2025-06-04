@@ -8,13 +8,11 @@ from .solver import Solver
 
 class BacktrackingSolver(Solver):
     def apply(self, board: Board) -> bool:
-        # backtracking is full solve; apply returns bool for recursion
         if not board.is_valid():
             return False
         if board.is_solved():
             return True
 
-        # choose cell with fewest candidates >0
         unfilled = [cell for cell in board.get_all_cells() if not cell.is_filled()]
         unfilled.sort(key=lambda c: len(c.candidates))
         cell = unfilled[0]

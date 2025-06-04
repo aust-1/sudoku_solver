@@ -1,4 +1,6 @@
 from __future__ import annotations
+"""Module containing the :class:`Board` model."""
+
 
 from dataclasses import dataclass
 from typing import Iterable, List
@@ -13,6 +15,9 @@ class Board:
         self.grid: List[List[Cell]] = [
             [Cell(r, c) for c in range(9)] for r in range(9)
         ]
+
+    def get_cell(self, row: int, col: int) -> Cell:
+        return self.grid[row][col]
 
     def get_row(self, r: int) -> List[Cell]:
         return list(self.grid[r])
@@ -40,8 +45,8 @@ class Board:
             return len(values) == len(set(values))
 
         return all(
-            region_valid(self.get_row(r)) and region_valid(self.get_col(r)) and region_valid(self.get_box(r))
-            for r in range(9)
+            region_valid(self.get_row(g)) and region_valid(self.get_col(g)) and region_valid(self.get_box(g))
+            for g in range(9)
         )
 
     def is_solved(self) -> bool:
@@ -53,6 +58,8 @@ class Board:
             if d != '0':
                 r, c = divmod(idx, 9)
                 self.grid[r][c].set_value(int(d))
+
+    #TODO: Load stylé fichier, interface ?
 
     def __str__(self) -> str:
         lines = []
@@ -76,6 +83,3 @@ class Board:
             for c in range(9):
                 self.grid[r][c].value = other.grid[r][c].value
                 self.grid[r][c].candidates = set(other.grid[r][c].candidates)
-
-    def get_cell(self, row: int, col: int) -> Cell:
-        return self.grid[row][col]

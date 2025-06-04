@@ -5,7 +5,6 @@ from sudoku.util import SudokuPrinter
 
 def main():
     board = Board()
-    # Example puzzle (0 for empty cells)
     puzzle = (
         "530070000"
         "600195000"
