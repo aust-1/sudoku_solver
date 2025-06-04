@@ -1,12 +1,9 @@
-"""Example script showcasing the Sudoku solver."""
-
 from sudoku.model import Board
 from sudoku.solver import CompositeSolver
 from sudoku.util import SudokuPrinter
 
 
-def main() -> None:
-    """Load a puzzle, solve it and print the result."""
+def main():
     board = Board()
     puzzle = (
         "530070000"
