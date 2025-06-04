@@ -12,7 +12,10 @@ from .backtracking import BacktrackingSolver
 
 
 class CompositeSolver(Solver):
+    """Apply a sequence of logical strategies before backtracking."""
+
     def __init__(self, strategies: List[Solver] | None = None):
+        """Initialise with a list of logical strategies."""
         self.strategies = strategies or [
             EliminationStrategy(),
             SingleCandidateStrategy(),
@@ -20,12 +23,14 @@ class CompositeSolver(Solver):
         ]
 
     def apply(self, board: Board) -> bool:
+        """Apply strategies in order until one makes progress."""
         for strat in self.strategies:
             if strat.apply(board):
                 return True
         return False
 
     def solve(self, board: Board) -> bool:
+        """Solve ``board`` using strategies then backtracking."""
         progress = True
         while progress:
             progress = self.apply(board)

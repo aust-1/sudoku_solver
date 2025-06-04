@@ -1,3 +1,5 @@
+"""Solving strategies for Sudoku puzzles."""
+
 from .solver import Solver
 from .single_candidate import SingleCandidateStrategy
 from .only_choice import OnlyChoiceStrategy

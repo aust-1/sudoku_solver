@@ -11,6 +11,7 @@ class OnlyChoiceStrategy(Solver):
     """If a digit appears as candidate only once in a region, fill it."""
 
     def apply(self, board: Board) -> bool:
+        """Place digits that occur as candidate only once per region."""
         moved = False
         regions = [
             [board.get_row(i) for i in range(9)],
@@ -20,7 +21,10 @@ class OnlyChoiceStrategy(Solver):
         for region_group in regions:
             for region in region_group:
                 counter = Counter(
-                    cand for cell in region if not cell.is_filled() for cand in cell.candidates
+                    cand
+                    for cell in region
+                    if not cell.is_filled()
+                    for cand in cell.candidates
                 )
                 for cell in region:
                     if not cell.is_filled():

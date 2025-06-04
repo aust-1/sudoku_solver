@@ -7,7 +7,10 @@ from .solver import Solver
 
 
 class BacktrackingSolver(Solver):
+    """Recursive backtracking solver used as a last resort."""
+
     def apply(self, board: Board) -> bool:
+        """Recursively search for a solution via backtracking."""
         if not board.is_valid():
             return False
         if board.is_solved():

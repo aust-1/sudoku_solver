@@ -10,6 +10,7 @@ class SingleCandidateStrategy(Solver):
     """Fill cells that have a single candidate."""
 
     def apply(self, board: Board) -> bool:
+        """Set the value for cells with exactly one candidate."""
         moved = False
         for cell in board.get_all_cells():
             if not cell.is_filled() and len(cell.candidates) == 1:

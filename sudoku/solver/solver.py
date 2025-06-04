@@ -13,6 +13,7 @@ class Solver(ABC):
         """Apply a solving step. Returns True if board changed."""
 
     def solve(self, board: Board) -> bool:
+        """Iteratively apply :meth:`apply` until the board is solved."""
         while self.apply(board):
             pass
         return board.is_solved()
