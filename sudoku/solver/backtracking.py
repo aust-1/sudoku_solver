@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from sudoku.model.board import Board
-from sudoku.model.cell import Cell
+from sudoku.models.board import Board
+from sudoku.models.cell import Cell
 
 from .solver import Solver
 

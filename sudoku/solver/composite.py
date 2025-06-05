@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from typing import List
 
-from sudoku.model.board import Board
+from sudoku.models.board import Board
 
 from .solver import Solver
-from .single_candidate import SingleCandidateStrategy
-from .only_choice import OnlyChoiceStrategy
-from .elimination import EliminationStrategy
+from .strategies.single_candidate import SingleCandidateStrategy
+from .strategies.only_choice import OnlyChoiceStrategy
+from .strategies.elimination import EliminationStrategy
 from .backtracking import BacktrackingSolver
 
 

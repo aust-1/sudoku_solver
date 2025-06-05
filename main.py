@@ -1,8 +1,8 @@
 """Example script showcasing the Sudoku solver."""
 
-from sudoku.model import Board
+from sudoku.models import Board
 from sudoku.solver import CompositeSolver
-from sudoku.util import SudokuPrinter
+from sudoku.utils import SudokuPrinter
 
 
 def main() -> None:

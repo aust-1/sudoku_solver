@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-from sudoku.model.board import Board
+from sudoku.models.board import Board
 
 
 class Solver(ABC):

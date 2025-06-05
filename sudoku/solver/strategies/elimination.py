@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from sudoku.model.board import Board
-from sudoku.model.cell import Cell
+from sudoku.models import Board, Cell
 
-from .solver import Solver
+from ..solver import Solver
 
 
 class EliminationStrategy(Solver):
