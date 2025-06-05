@@ -35,13 +35,19 @@ class Cell:
         self.value = v
         self.candidates.clear()
 
-    def eliminate(self, v: int) -> None:
+    def eliminate(self, v: int) -> bool:
         """Remove a value from the candidate set.
 
         Args:
             v (int): The value to remove.
+
+        Returns:
+            bool: `True` if the value was removed, `False` if it was not a candidate.
         """
-        self.candidates.discard(v)
+        if v not in self.candidates:
+            return False
+        self.candidates.remove(v)
+        return True
 
     def __repr__(self) -> str:
         """Return a string representation of the cell.
