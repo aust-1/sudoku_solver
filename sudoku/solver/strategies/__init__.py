@@ -27,4 +27,29 @@ __all__ = [
     "TripleCandidateStrategy",
     "QuadCandidateStrategy",
 ]
-# TODO: rajouter les autres stratégies
+
+
+# TODO: Locked Set
+# TODO: Magic Triple
+# TODO: Pair Reduction
+# TODO: Violation Prevention
+# TODO: Chain violation Guard
+# TODO: Empty Rectangle
+# TODO: Forcing Chain
+# TODO: Hidden Unique Rectangle
+# TODO: Jollyfish
+# TODO: Sashimi-X-Wing
+# TODO: Simple Coloring
+# TODO: Swordfish
+# TODO: 3D Medusa
+# TODO: Two-String-Kite
+# TODO: Unique Rectangle
+# TODO: W-Wing
+# TODO: WXYZ Wing
+# TODO: X-Cycles
+# TODO: X-Wing
+# TODO: XY-Chain
+# TODO: XY-Wing
+# TODO: XYZ-Wing
+
+# TODO: strat de variances

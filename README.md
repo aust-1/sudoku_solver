@@ -45,3 +45,5 @@ sudoku_solver
    └─ __init__.py
 
 ```
+
+<https://www.sudokuwiki.org/Almost_Locked_Sets>

@@ -57,9 +57,15 @@ def main() -> None:
     solver.solve(board)
 
     SudokuPrinter.print(board)
+    cells = board.get_all_cells()
+    for cell in cells:
+        if cell.value is None:
+            print(f"Cell at ({cell.row}, {cell.col}) is empty.")
+            print("Candidates:", end=" ")
+            print(", ".join(str(c) for c in sorted(cell.candidates)))
 
 
 if __name__ == "__main__":
     main()
 
-# TODO: faire du print pour capter pourquoi ça s'arrête
+# TODO: implémenter Loggerplusplus
