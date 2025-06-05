@@ -68,6 +68,8 @@ class CloneConstraint(BaseConstraint):
         reachable.discard(cell)
         for clone_cell in self.clone:
             reachable.update(clone_cell.reachable_cells)
+        for clone_cell in self.clone:
+            reachable.discard(clone_cell)
 
         reachable.discard(cell)
         return reachable
