@@ -1,7 +1,7 @@
 """Example script showcasing the Sudoku solver."""
 
 from sudoku.models import Board
-from sudoku.solver import CompositeSolver
+from sudoku.solver import CompositeSolver, PalindromeConstraint
 from sudoku.utils import SudokuPrinter
 
 
@@ -9,17 +9,49 @@ def main() -> None:
     """Load a puzzle, solve it and print the result."""
     board = Board()
     puzzle = (
-        "000005029"
-        "000700000"
-        "200001070"
-        "000900000"
-        "010607240"
-        "083250001"
-        "500062030"
-        "000009086"
-        "760008910"
+        "100390000"
+        "000002050"
+        "020001000"
+        "002600000"
+        "000840025"
+        "050030000"
+        "000000009"
+        "500070002"
+        "600020508"
     )
     board.load_from(puzzle)
+    board.add_constraint(
+        PalindromeConstraint(
+            [
+                board.get_cell(8, 3),
+                board.get_cell(8, 2),
+                board.get_cell(7, 1),
+                board.get_cell(6, 0),
+                board.get_cell(5, 0),
+                board.get_cell(4, 0),
+                board.get_cell(3, 0),
+                board.get_cell(2, 0),
+                board.get_cell(1, 1),
+                board.get_cell(0, 2),
+                board.get_cell(0, 3),
+                board.get_cell(0, 4),
+                board.get_cell(0, 5),
+                board.get_cell(1, 6),
+                board.get_cell(2, 7),
+                board.get_cell(3, 8),
+                board.get_cell(4, 8),
+                board.get_cell(5, 8),
+                board.get_cell(6, 7),
+                board.get_cell(7, 6),
+                board.get_cell(7, 5),
+                board.get_cell(6, 4),
+                board.get_cell(5, 3),
+                board.get_cell(4, 3),
+                board.get_cell(3, 4),
+                board.get_cell(4, 5),
+            ]
+        ),
+    )
 
     solver = CompositeSolver()
     solver.solve(board)
@@ -29,3 +61,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+# TODO: faire du print pour capter pourquoi ça s'arrête

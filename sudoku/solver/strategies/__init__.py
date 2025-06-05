@@ -11,3 +11,4 @@ __all__ = [
     "OnlyChoiceStrategy",
     "SingleCandidateStrategy",
 ]
+# TODO: rajouter les autres stratégies

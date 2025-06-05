@@ -50,6 +50,8 @@ class Board:
         self.constraints.append(constraint)
         for cell in self.get_all_cells():
             cell.add_reachables(constraint.reachable_cells(self, cell))
+        for cell in self.get_all_cells():
+            cell.add_reachables(constraint.reachable_cells(self, cell))
 
     def get_cell(self, row: int, col: int) -> Cell:
         """Return the cell at ``row``, ``col``.
@@ -194,6 +196,7 @@ class Board:
 
         from sudoku.solver.constrainst import (
             CloneConstraint,
+            CloneZoneConstraint,
             KingConstraint,
             KnightConstraint,
             PalindromeConstraint,
@@ -204,6 +207,12 @@ class Board:
             if isinstance(constraint, CloneConstraint):
                 cells = {board.get_cell(c.row, c.col) for c in constraint.clone}
                 board.add_constraint(CloneConstraint(cells))
+            elif isinstance(constraint, CloneZoneConstraint):
+                for clone_constraint in constraint.clone_constraints:
+                    cells = {
+                        board.get_cell(c.row, c.col) for c in clone_constraint.clone
+                    }
+                    board.add_constraint(CloneConstraint(cells))
             elif isinstance(constraint, PalindromeConstraint):
                 cells = [board.get_cell(c.row, c.col) for c in constraint.palindrome]
                 board.add_constraint(PalindromeConstraint(cells))

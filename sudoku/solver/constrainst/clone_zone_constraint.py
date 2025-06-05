@@ -5,25 +5,32 @@ from sudoku.models import Board, Cell
 from .base_constraint import BaseConstraint
 from .clone_constraint import CloneConstraint
 
+# QUESTION: pas convaincu
 
-class PalindromeConstraint(BaseConstraint):
-    """A class representing a palindrome constraint for Sudoku cells."""
 
-    def __init__(self, palindrome_cells: list[Cell]):
-        """Initialize the palindrome constraint with a list of cells.
+class CloneZoneConstraint(BaseConstraint):
+    """A class representing a clones constraint for Sudoku cells."""
+
+    def __init__(self, *clone_zones: list[Cell]):
+        """Initialize the clones constraint with a list of cells.
 
         Args:
-            palindrome_cells (list[Cell]): The list of cells to apply constraints to.
+            clone_cells (list[Cell]): The list of cells to apply constraints to.
         """
-        self.palindrome: list[Cell] = palindrome_cells
+        self.zones: list[list[Cell]] = []
+        for zone in clone_zones:
+            if isinstance(zone, list):
+                self.zones.append(zone)
+            else:
+                raise TypeError("Clone zones must be provided as lists of Cells.")
+
         self.clone_constraints: list[CloneConstraint] = []
-        for i in range(len(palindrome_cells) // 2):
-            self.clone_constraints.append(
-                CloneConstraint({palindrome_cells[i], palindrome_cells[-(i + 1)]})
-            )
+        for i in range(len(self.zones[0])):
+            zone = {self.zones[j][i] for j in range(len(self.zones))}
+            self.clone_constraints.append(CloneConstraint(zone))
 
     def check(self, board: Board) -> bool:
-        """Check if the palindrome constraint is satisfied.
+        """Check if the clones constraint is satisfied.
 
         Args:
             board (Board): The Sudoku board to check.

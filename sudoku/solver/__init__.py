@@ -4,6 +4,7 @@ from .backtracking import BacktrackingSolver
 from .composite import CompositeSolver
 from .constrainst import (
     CloneConstraint,
+    CloneZoneConstraint,
     KingConstraint,
     KnightConstraint,
     PalindromeConstraint,
@@ -20,6 +21,7 @@ __all__ = [
     "BacktrackingSolver",
     "CompositeSolver",
     "CloneConstraint",
+    "CloneZoneConstraint",
     "KingConstraint",
     "KnightConstraint",
     "PalindromeConstraint",

@@ -1,6 +1,8 @@
 from __future__ import annotations
-from .base_constraint import BaseConstraint
+
 from sudoku.models import Board, Cell
+
+from .base_constraint import BaseConstraint
 
 
 class CloneConstraint(BaseConstraint):
@@ -59,4 +61,13 @@ class CloneConstraint(BaseConstraint):
         Returns:
             set[Cell]: A set of reachable cells.
         """
-        # TODO: reachabilité des reachabilité des clones sans la contrainte clone car stack overflow
+        if cell not in self.clone:
+            return set()
+
+        reachable = set(self.clone)
+        reachable.discard(cell)
+        for clone_cell in self.clone:
+            reachable.update(clone_cell.reachable_cells)
+
+        reachable.discard(cell)
+        return reachable
