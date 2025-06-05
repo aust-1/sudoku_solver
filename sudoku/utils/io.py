@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Input/output helpers for Sudoku boards."""
-
 
 class SudokuIO:
     """Read or write puzzles from files."""

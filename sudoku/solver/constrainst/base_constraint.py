@@ -1,6 +1,10 @@
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from sudoku.models import Board, Cell
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from sudoku.models import Board, Cell
 
 
 class BaseConstraint(ABC):

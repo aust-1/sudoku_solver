@@ -1,11 +1,13 @@
 """Solving strategies for Sudoku puzzles."""
 
-from .single_candidate import SingleCandidateStrategy
-from .only_choice import OnlyChoiceStrategy
+from .constraint import ConstraintStrategy
 from .elimination import EliminationStrategy
+from .only_choice import OnlyChoiceStrategy
+from .single_candidate import SingleCandidateStrategy
 
 __all__ = [
-    "SingleCandidateStrategy",
-    "OnlyChoiceStrategy",
+    "ConstraintStrategy",
     "EliminationStrategy",
+    "OnlyChoiceStrategy",
+    "SingleCandidateStrategy",
 ]

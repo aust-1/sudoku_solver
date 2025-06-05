@@ -1,6 +1,6 @@
 """Model classes for Sudoku representation."""
 
-from .cell import Cell
 from .board import Board
+from .cell import Cell
 
-__all__ = ["Cell", "Board"]
+__all__ = ["Board", "Cell"]

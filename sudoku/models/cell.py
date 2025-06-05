@@ -17,6 +17,17 @@ class Cell:
         self.col = col
         self.value: int | None = None
         self.candidates: Set[int] = set(range(1, 10))
+        self.reachable_cells: Set[Cell] = set()
+
+    def add_reachables(self, cells: Iterable[Cell]) -> None:
+        """Add reachable cells to this cell's set.
+
+        Args:
+            cells (Iterable[Cell]): The cells to add.
+        """
+        for cell in cells:
+            if cell is not self:
+                self.reachable_cells.add(cell)
 
     def is_filled(self) -> bool:
         """Check if the cell is filled.

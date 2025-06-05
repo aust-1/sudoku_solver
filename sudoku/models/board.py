@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from typing import Iterable, List
+from typing import TYPE_CHECKING, Iterable, List
+
+if TYPE_CHECKING:
+    from sudoku.solver.constrainst.base_constraint import BaseConstraint
 
 from .cell import Cell
 
@@ -11,6 +14,42 @@ class Board:
     def __init__(self) -> None:
         """Create an empty board filled with cells."""
         self.grid: List[List[Cell]] = [[Cell(r, c) for c in range(9)] for r in range(9)]
+        self.constraints: List["BaseConstraint"] = []
+        self._init_reachability()
+
+    def _init_reachability(self) -> None:
+        """Initialise reachable cells for each cell."""
+        for cell in self.get_all_cells():
+            cell.reachable_cells.clear()
+
+        for r in range(9):
+            row = self.get_row(r)
+            for cell in row:
+                cell.add_reachables(row)
+
+        for c in range(9):
+            col = self.get_col(c)
+            for cell in col:
+                cell.add_reachables(col)
+
+        for b in range(9):
+            box = self.get_box(b)
+            for cell in box:
+                cell.add_reachables(box)
+
+        for constraint in self.constraints:
+            for cell in self.get_all_cells():
+                cell.add_reachables(constraint.reachable_cells(self, cell))
+
+    def add_constraint(self, constraint: "BaseConstraint") -> None:
+        """Add a constraint to the board and update reachability.
+
+        Args:
+            constraint (BaseConstraint): The constraint to add.
+        """
+        self.constraints.append(constraint)
+        for cell in self.get_all_cells():
+            cell.add_reachables(constraint.reachable_cells(self, cell))
 
     def get_cell(self, row: int, col: int) -> Cell:
         """Return the cell at ``row``, ``col``.
@@ -95,12 +134,15 @@ class Board:
             values = [c.value for c in cells if c.is_filled()]
             return len(values) == len(set(values))
 
-        return all(
+        basic_valid = all(
             region_valid(self.get_row(g))
             and region_valid(self.get_col(g))
             and region_valid(self.get_box(g))
             for g in range(9)
         )
+        if not basic_valid:
+            return False
+        return all(constraint.check(self) for constraint in self.constraints)
 
     def is_solved(self) -> bool:
         """Check if the board is completely filled.
@@ -149,6 +191,26 @@ class Board:
                 copy_cell = board.grid[r][c]
                 copy_cell.value = cell.value
                 copy_cell.candidates = set(cell.candidates)
+
+        from sudoku.solver.constrainst import (
+            CloneConstraint,
+            KingConstraint,
+            KnightConstraint,
+            PalindromeConstraint,
+        )
+
+        board.constraints = []
+        for constraint in self.constraints:
+            if isinstance(constraint, CloneConstraint):
+                cells = {board.get_cell(c.row, c.col) for c in constraint.clone}
+                board.add_constraint(CloneConstraint(cells))
+            elif isinstance(constraint, PalindromeConstraint):
+                cells = [board.get_cell(c.row, c.col) for c in constraint.palindrome]
+                board.add_constraint(PalindromeConstraint(cells))
+            elif isinstance(constraint, KingConstraint):
+                board.add_constraint(KingConstraint())
+            elif isinstance(constraint, KnightConstraint):
+                board.add_constraint(KnightConstraint())
         return board
 
     def copy_values_from(self, other: Board) -> None:

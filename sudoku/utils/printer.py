@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sudoku.models.board import Board
+from sudoku.models import Board
 
 
 class SudokuPrinter:

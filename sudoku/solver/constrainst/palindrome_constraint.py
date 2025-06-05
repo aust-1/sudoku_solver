@@ -1,7 +1,9 @@
 from __future__ import annotations
-from .base_constraint import BaseConstraint
+
 from sudoku.models import Board, Cell
-from sudoku.solver import CloneConstraint
+
+from .base_constraint import BaseConstraint
+from .clone_constraint import CloneConstraint
 
 
 class PalindromeConstraint(BaseConstraint):
@@ -13,8 +15,8 @@ class PalindromeConstraint(BaseConstraint):
         Args:
             palindrome_cells (list[Cell]): The list of cells to apply constraints to.
         """
-        self.palindrome = palindrome_cells
-        self.clone_constraints = []
+        self.palindrome: list[Cell] = palindrome_cells
+        self.clone_constraints: list[CloneConstraint] = []
         for i in range(len(palindrome_cells) // 2):
             self.clone_constraints.append(
                 CloneConstraint({palindrome_cells[i], palindrome_cells[-(i + 1)]})

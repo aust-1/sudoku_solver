@@ -2,13 +2,16 @@ from __future__ import annotations
 
 from typing import List
 
-from sudoku.models.board import Board
+from sudoku.models import Board
 
-from .solver import Solver
-from .strategies.single_candidate import SingleCandidateStrategy
-from .strategies.only_choice import OnlyChoiceStrategy
-from .strategies.elimination import EliminationStrategy
 from .backtracking import BacktrackingSolver
+from .solver import Solver
+from .strategies import (
+    ConstraintStrategy,
+    EliminationStrategy,
+    OnlyChoiceStrategy,
+    SingleCandidateStrategy,
+)
 
 
 class CompositeSolver(Solver):
@@ -22,6 +25,7 @@ class CompositeSolver(Solver):
         """
         self.strategies = strategies or [
             EliminationStrategy(),
+            ConstraintStrategy(),
             SingleCandidateStrategy(),
             OnlyChoiceStrategy(),
         ]

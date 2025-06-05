@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import Counter
+
 from sudoku.models import Board, Cell
 
 from ..solver import Solver

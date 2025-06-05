@@ -1,6 +1,8 @@
 from __future__ import annotations
-from .base_constraint import BaseConstraint
+
 from sudoku.models import Board, Cell
+
+from .base_constraint import BaseConstraint
 
 
 class KnightConstraint(BaseConstraint):
