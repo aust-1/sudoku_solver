@@ -9,8 +9,14 @@ from .solver import Solver
 from .strategies import (
     ConstraintStrategy,
     EliminationStrategy,
+    PairCandidateStrategy,
+    PairChoiceStrategy,
+    QuadCandidateStrategy,
+    QuadChoiceStrategy,
     SingleChoiceStrategy,
     SingleCandidateStrategy,
+    TripleCandidateStrategy,
+    TripleChoiceStrategy,
 )
 
 
@@ -27,6 +33,12 @@ class CompositeSolver(Solver):
             EliminationStrategy(),
             SingleCandidateStrategy(),
             SingleChoiceStrategy(),
+            PairChoiceStrategy(),
+            PairCandidateStrategy(),
+            TripleChoiceStrategy(),
+            TripleCandidateStrategy(),
+            QuadChoiceStrategy(),
+            QuadCandidateStrategy(),
             ConstraintStrategy(),
         ]
 
