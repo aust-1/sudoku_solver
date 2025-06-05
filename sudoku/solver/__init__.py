@@ -13,7 +13,7 @@ from .solver import Solver
 from .strategies import (
     ConstraintStrategy,
     EliminationStrategy,
-    OnlyChoiceStrategy,
+    SingleChoiceStrategy,
     SingleCandidateStrategy,
 )
 
@@ -28,6 +28,6 @@ __all__ = [
     "Solver",
     "ConstraintStrategy",
     "EliminationStrategy",
-    "OnlyChoiceStrategy",
+    "SingleChoiceStrategy",
     "SingleCandidateStrategy",
 ]

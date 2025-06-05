@@ -7,7 +7,7 @@ from sudoku.models import Board, Cell
 from ..solver import Solver
 
 
-class OnlyChoiceStrategy(Solver):
+class SingleChoiceStrategy(Solver):
     """If a digit appears as candidate only once in a region, fill it."""
 
     def apply(self, board: Board) -> bool:

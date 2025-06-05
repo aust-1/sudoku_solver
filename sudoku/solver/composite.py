@@ -9,7 +9,7 @@ from .solver import Solver
 from .strategies import (
     ConstraintStrategy,
     EliminationStrategy,
-    OnlyChoiceStrategy,
+    SingleChoiceStrategy,
     SingleCandidateStrategy,
 )
 
@@ -25,9 +25,9 @@ class CompositeSolver(Solver):
         """
         self.strategies = strategies or [
             EliminationStrategy(),
-            ConstraintStrategy(),
             SingleCandidateStrategy(),
-            OnlyChoiceStrategy(),
+            SingleChoiceStrategy(),
+            ConstraintStrategy(),
         ]
 
     def apply(self, board: Board) -> bool:
