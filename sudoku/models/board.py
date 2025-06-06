@@ -52,6 +52,8 @@ class Board:
             cell.add_reachables(constraint.reachable_cells(self, cell))
         for cell in self.get_all_cells():
             cell.add_reachables(constraint.reachable_cells(self, cell))
+        for cell in self.get_all_cells():
+            cell.add_reachables(constraint.reachable_cells(self, cell))
 
     def get_cell(self, row: int, col: int) -> Cell:
         """Return the cell at ``row``, ``col``.

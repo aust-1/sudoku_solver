@@ -64,12 +64,10 @@ class CloneConstraint(BaseConstraint):
         if cell not in self.clone:
             return set()
 
-        reachable = set(self.clone)
-        reachable.discard(cell)
+        reachable = set()
         for clone_cell in self.clone:
             reachable.update(clone_cell.reachable_cells)
         for clone_cell in self.clone:
             reachable.discard(clone_cell)
 
-        reachable.discard(cell)
         return reachable

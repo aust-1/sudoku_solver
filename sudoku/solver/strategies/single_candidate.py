@@ -20,6 +20,6 @@ class SingleCandidateStrategy(Solver):
         moved = False
         for cell in board.get_all_cells():
             if not cell.is_filled() and len(cell.candidates) == 1:
-                cell.set_value(next(iter(cell.candidates)))
+                cell.set_value(cell.candidates.pop())
                 moved = True
         return moved

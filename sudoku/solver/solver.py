@@ -2,11 +2,19 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
+from loggerplusplus import Logger
+
 from sudoku.models import Board
 
 
 class Solver(ABC):
     """Base solver interface."""
+
+    def __init__(self):
+        """Initialize the solver."""
+        self.logger = Logger(
+            identifier=self.__class__.__name__, follow_logger_manager_rules=True
+        )
 
     @abstractmethod
     def apply(self, board: Board) -> bool:

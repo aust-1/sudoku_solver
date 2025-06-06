@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Iterable, Set
 
+from loggerplusplus import Logger
+
 
 class Cell:
     """Represents a cell in the Sudoku grid."""
@@ -18,6 +20,9 @@ class Cell:
         self.value: int | None = None
         self.candidates: Set[int] = set(range(1, 10))
         self.reachable_cells: Set[Cell] = set()
+        self.logger = Logger(
+            identifier=f"Cell {row}, {col}", follow_logger_manager_rules=True
+        )
 
     def add_reachables(self, cells: Iterable[Cell]) -> None:
         """Add reachable cells to this cell's set.
@@ -45,6 +50,7 @@ class Cell:
         """
         self.value = v
         self.candidates.clear()
+        self.logger.info(f"Set value {v}")
 
     def eliminate(self, v: int) -> bool:
         """Remove a value from the candidate set.
@@ -58,6 +64,7 @@ class Cell:
         if v not in self.candidates:
             return False
         self.candidates.remove(v)
+        self.logger.info(f"Eliminated candidate {v}")
         return True
 
     def __repr__(self) -> str:

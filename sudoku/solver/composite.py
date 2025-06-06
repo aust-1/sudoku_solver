@@ -13,8 +13,8 @@ from .strategies import (
     PairChoiceStrategy,
     QuadCandidateStrategy,
     QuadChoiceStrategy,
-    SingleChoiceStrategy,
     SingleCandidateStrategy,
+    SingleChoiceStrategy,
     TripleCandidateStrategy,
     TripleChoiceStrategy,
 )
@@ -23,7 +23,11 @@ from .strategies import (
 class CompositeSolver(Solver):
     """Apply a sequence of logical strategies before backtracking."""
 
-    def __init__(self, strategies: List[Solver] | None = None):
+    def __init__(
+        self,
+        strategies: List[Solver] | None = None,
+    ):
+        super().__init__()
         """Initialise the composite solver with a list of strategies.
 
         Args:
@@ -53,7 +57,11 @@ class CompositeSolver(Solver):
         """
         for strat in self.strategies:
             if strat.apply(board):
+                self.logger.info(
+                    f"Strategy {strat.__class__.__name__} made a change to the board."
+                )
                 return True
+        self.logger.info("No strategy made a change to the board.")
         return False
 
     def solve(self, board: Board) -> bool:
