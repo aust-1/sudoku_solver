@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from sudoku.models import Board, Cell
-
-from .base_constraint import BaseConstraint
+from sudoku.solver.constrainst.base_constraint import BaseConstraint
 
 
 class KnightConstraint(BaseConstraint):
@@ -57,7 +56,7 @@ class KnightConstraint(BaseConstraint):
         Returns:
             set[Cell]: A set of reachable cells.
         """
-        reachable = set()
+        reachable: set[Cell] = set()
         knight_moves = [(2, 1), (1, 2)]
         sign = [-1, 1]
         for dx, dy in knight_moves:

@@ -3,8 +3,7 @@ from __future__ import annotations
 from typing import Dict, Iterable, List
 
 from sudoku.models import Board, Cell
-
-from ..solver import Solver
+from sudoku.solver.solver import Solver
 
 
 class _BaseSubsetChoiceStrategy(Solver):
@@ -30,7 +29,7 @@ class _BaseSubsetChoiceStrategy(Solver):
             + [board.get_box(i) for i in range(9)]
         )
 
-    def apply(self, board: Board) -> bool:  # type: ignore[override]
+    def apply(self, board: Board) -> bool:
         """Apply the naked subset choice strategy.
 
         Args:

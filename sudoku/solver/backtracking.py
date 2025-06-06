@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from sudoku.models import Board, Cell
-
-from .solver import Solver
+from sudoku.models import Board
+from sudoku.solver.solver import Solver
 
 
 class BacktrackingSolver(Solver):
@@ -39,7 +38,5 @@ class BacktrackingSolver(Solver):
                     f"Backtracking succeeded with {cand} at ({cell.row}, {cell.col})"
                 )
                 return True
-        self.logger.info(
-            f"Backtracking failed for cell ({cell.row}, {cell.col})"
-        )
+        self.logger.info(f"Backtracking failed for cell ({cell.row}, {cell.col})")
         return False

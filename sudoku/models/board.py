@@ -4,10 +4,17 @@ from typing import TYPE_CHECKING, Iterable, List
 
 from loggerplusplus import Logger
 
+from sudoku.models import Cell
+from sudoku.solver import (
+    CloneConstraint,
+    CloneZoneConstraint,
+    KingConstraint,
+    KnightConstraint,
+    PalindromeConstraint,
+)
+
 if TYPE_CHECKING:
     from sudoku.solver.constrainst.base_constraint import BaseConstraint
-
-from .cell import Cell
 
 
 class Board:
@@ -120,8 +127,7 @@ class Board:
             Iterator[Iterable[Cell]]: An iterator over the rows of the board, each yielding the cells in that row.
         """
         for row in self.grid:
-            for cell in row:
-                yield cell
+            yield from row
 
     def is_valid(self) -> bool:
         """Check if the board is valid according to Sudoku rules.
@@ -181,7 +187,7 @@ class Board:
         Returns:
             str: A string representation of the Sudoku board.
         """
-        lines = []
+        lines: list[str] = []
         for r in range(9):
             row = " ".join(str(self.grid[r][c]) for c in range(9))
             lines.append(row)
@@ -200,14 +206,6 @@ class Board:
                 copy_cell = board.grid[r][c]
                 copy_cell.value = cell.value
                 copy_cell.candidates = set(cell.candidates)
-
-        from sudoku.solver.constrainst import (
-            CloneConstraint,
-            CloneZoneConstraint,
-            KingConstraint,
-            KnightConstraint,
-            PalindromeConstraint,
-        )
 
         board.constraints = []
         for constraint in self.constraints:

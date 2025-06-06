@@ -1,8 +1,8 @@
 """Utility helpers for I/O, printing and custom exceptions."""
 
-from .exceptions import InvalidSudokuException
-from .gui import SudokuGUI
-from .io import SudokuIO
-from .printer import SudokuPrinter
+from sudoku.utils.exceptions import InvalidSudokuException
+from sudoku.utils.gui import SudokuGUI
+from sudoku.utils.io import SudokuIO
+from sudoku.utils.printer import SudokuPrinter
 
 __all__ = ["InvalidSudokuException", "SudokuGUI", "SudokuIO", "SudokuPrinter"]

@@ -4,8 +4,7 @@ from itertools import combinations
 from typing import Dict, Iterable, List, Set
 
 from sudoku.models import Board, Cell
-
-from ..solver import Solver
+from sudoku.solver import Solver
 
 
 class _BaseSubsetCandidateStrategy(Solver):
@@ -36,7 +35,7 @@ class _BaseSubsetCandidateStrategy(Solver):
             + [board.get_box(i) for i in range(9)]
         )
 
-    def apply(self, board: Board) -> bool:  # type: ignore[override]
+    def apply(self, board: Board) -> bool:
         """Apply the hidden subset candidate strategy.
 
         Args:
@@ -47,7 +46,7 @@ class _BaseSubsetCandidateStrategy(Solver):
         """
         self.logger.info(f"{self.__class__.__name__} running")
         moved = False
-        digits = list(range(1, 10))
+        digits: list[int] = list(range(1, 10))
         for region in self.regions(board):
             digit_cells: Dict[int, Set[Cell]] = {d: set() for d in digits}
             for cell in region:
@@ -57,7 +56,9 @@ class _BaseSubsetCandidateStrategy(Solver):
                     digit_cells[d].add(cell)
 
             for combo in combinations(digits, self.size):
-                cells_union = set().union(*(digit_cells[d] for d in combo))
+                cells_union: set[Cell] = set()
+                for d in combo:
+                    cells_union.update(digit_cells[d])
                 if len(cells_union) != self.size:
                     continue
                 if all(

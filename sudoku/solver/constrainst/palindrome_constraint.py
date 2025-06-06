@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 from sudoku.models import Board, Cell
-
-from .base_constraint import BaseConstraint
-from .clone_constraint import CloneConstraint
+from sudoku.solver.constrainst.base_constraint import BaseConstraint
+from sudoku.solver.constrainst.clone_constraint import CloneConstraint
 
 
 class PalindromeConstraint(BaseConstraint):
@@ -60,7 +59,7 @@ class PalindromeConstraint(BaseConstraint):
         Returns:
             set[Cell]: A set of reachable cells.
         """
-        reachable_cells = set()
+        reachable_cells: set[Cell] = set()
         for constraint in self.clone_constraints:
             reachable_cells.update(constraint.reachable_cells(board, cell))
         return reachable_cells

@@ -1,11 +1,11 @@
 """Model classes for Sudoku constraints."""
 
-from .base_constraint import BaseConstraint
-from .clone_constraint import CloneConstraint
-from .clone_zone_constraint import CloneZoneConstraint
-from .king_constraint import KingConstraint
-from .knight_constraint import KnightConstraint
-from .palindrome_constraint import PalindromeConstraint
+from sudoku.solver.constrainst.base_constraint import BaseConstraint
+from sudoku.solver.constrainst.clone_constraint import CloneConstraint
+from sudoku.solver.constrainst.clone_zone_constraint import CloneZoneConstraint
+from sudoku.solver.constrainst.king_constraint import KingConstraint
+from sudoku.solver.constrainst.knight_constraint import KnightConstraint
+from sudoku.solver.constrainst.palindrome_constraint import PalindromeConstraint
 
 __all__ = [
     "BaseConstraint",

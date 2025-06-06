@@ -1,24 +1,24 @@
 """Solving strategies for Sudoku puzzles."""
 
-from .backtracking import BacktrackingSolver
-from .composite import CompositeSolver
-from .constrainst import (
+from sudoku.solver.backtracking import BacktrackingSolver
+from sudoku.solver.composite import CompositeSolver
+from sudoku.solver.constrainst import (
     CloneConstraint,
     CloneZoneConstraint,
     KingConstraint,
     KnightConstraint,
     PalindromeConstraint,
 )
-from .solver import Solver
-from .strategies import (
+from sudoku.solver.solver import Solver
+from sudoku.solver.strategies import (
     ConstraintStrategy,
     EliminationStrategy,
     PairCandidateStrategy,
     PairChoiceStrategy,
     QuadCandidateStrategy,
     QuadChoiceStrategy,
-    SingleChoiceStrategy,
     SingleCandidateStrategy,
+    SingleChoiceStrategy,
     TripleCandidateStrategy,
     TripleChoiceStrategy,
 )

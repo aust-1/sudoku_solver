@@ -58,7 +58,7 @@ def main() -> None:
     try:
         gui = SudokuGUI(board)
         gui.run_stepwise(solver)
-    except Exception as exc:  # GUI might fail in headless environments
+    except Exception as exc:
         print(f"GUI could not be started: {exc}")
 
 

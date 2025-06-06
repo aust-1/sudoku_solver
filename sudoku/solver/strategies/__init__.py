@@ -1,18 +1,18 @@
 """Solving strategies for Sudoku puzzles."""
 
-from .constraint import ConstraintStrategy
-from .elimination import EliminationStrategy
-from .single_choice import SingleChoiceStrategy
-from .single_candidate import SingleCandidateStrategy
-from .subset_choice import (
-    PairChoiceStrategy,
-    QuadChoiceStrategy,
-    TripleChoiceStrategy,
-)
-from .subset_candidate import (
+from sudoku.solver.strategies.constraint import ConstraintStrategy
+from sudoku.solver.strategies.elimination import EliminationStrategy
+from sudoku.solver.strategies.single_candidate import SingleCandidateStrategy
+from sudoku.solver.strategies.single_choice import SingleChoiceStrategy
+from sudoku.solver.strategies.subset_candidate import (
     PairCandidateStrategy,
     QuadCandidateStrategy,
     TripleCandidateStrategy,
+)
+from sudoku.solver.strategies.subset_choice import (
+    PairChoiceStrategy,
+    QuadChoiceStrategy,
+    TripleChoiceStrategy,
 )
 
 __all__ = [

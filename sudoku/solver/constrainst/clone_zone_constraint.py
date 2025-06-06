@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 from sudoku.models import Board, Cell
-
-from .base_constraint import BaseConstraint
-from .clone_constraint import CloneConstraint
+from sudoku.solver.constrainst.base_constraint import BaseConstraint
+from sudoku.solver.constrainst.clone_constraint import CloneConstraint
 
 # QUESTION: pas convaincu
 
@@ -19,10 +18,7 @@ class CloneZoneConstraint(BaseConstraint):
         """
         self.zones: list[list[Cell]] = []
         for zone in clone_zones:
-            if isinstance(zone, list):
-                self.zones.append(zone)
-            else:
-                raise TypeError("Clone zones must be provided as lists of Cells.")
+            self.zones.append(zone)
 
         self.clone_constraints: list[CloneConstraint] = []
         for i in range(len(self.zones[0])):
@@ -67,7 +63,7 @@ class CloneZoneConstraint(BaseConstraint):
         Returns:
             set[Cell]: A set of reachable cells.
         """
-        reachable_cells = set()
+        reachable_cells: set[Cell] = set()
         for constraint in self.clone_constraints:
             reachable_cells.update(constraint.reachable_cells(board, cell))
         return reachable_cells

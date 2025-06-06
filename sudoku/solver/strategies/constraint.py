@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from sudoku.models import Board
-
-from ..solver import Solver
+from sudoku.solver.solver import Solver
 
 
 class ConstraintStrategy(Solver):

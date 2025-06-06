@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from sudoku.models import Board, Cell
-
-from .base_constraint import BaseConstraint
+from sudoku.solver.constrainst.base_constraint import BaseConstraint
 
 
 class KingConstraint(BaseConstraint):
@@ -56,7 +55,7 @@ class KingConstraint(BaseConstraint):
         Returns:
             set[Cell]: A set of reachable cells.
         """
-        reachable = set()
+        reachable: set[Cell] = set()
         for x in range(-1, 2):
             for y in range(-1, 2):
                 if (

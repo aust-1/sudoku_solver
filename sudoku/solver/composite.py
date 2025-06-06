@@ -3,10 +3,9 @@ from __future__ import annotations
 from typing import List
 
 from sudoku.models import Board
-
-from .backtracking import BacktrackingSolver
-from .solver import Solver
-from .strategies import (
+from sudoku.solver.backtracking import BacktrackingSolver
+from sudoku.solver.solver import Solver
+from sudoku.solver.strategies import (
     ConstraintStrategy,
     EliminationStrategy,
     PairCandidateStrategy,
@@ -27,12 +26,12 @@ class CompositeSolver(Solver):
         self,
         strategies: List[Solver] | None = None,
     ):
-        super().__init__()
         """Initialise the composite solver with a list of strategies.
 
         Args:
             strategies (List[Solver] | None, optional): The list of strategies to apply. Defaults to None.
         """
+        super().__init__()
         self.strategies = strategies or [
             EliminationStrategy(),
             SingleCandidateStrategy(),

@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from sudoku.models import Board, Cell
-
-from .base_constraint import BaseConstraint
+from sudoku.solver.constrainst.base_constraint import BaseConstraint
 
 
 class CloneConstraint(BaseConstraint):
@@ -25,7 +24,7 @@ class CloneConstraint(BaseConstraint):
         Returns:
             bool: `True` if the constraint is satisfied, `False` otherwise.
         """
-        values = set()
+        values: set[int] = set()
         for cell in self.clone:
             if cell.value is not None:
                 values.add(cell.value)
@@ -64,7 +63,7 @@ class CloneConstraint(BaseConstraint):
         if cell not in self.clone:
             return set()
 
-        reachable = set()
+        reachable: set[Cell] = set()
         for clone_cell in self.clone:
             reachable.update(clone_cell.reachable_cells)
         for clone_cell in self.clone:

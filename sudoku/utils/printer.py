@@ -16,7 +16,7 @@ class SudokuPrinter:
         Returns:
             str: A multi-line string representation of the board.
         """
-        lines = []
+        lines: list[str] = []
         for i in range(3):
             for r in range(i * 3, (i + 1) * 3):
                 row = ""
