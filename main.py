@@ -2,7 +2,6 @@
 
 from sudoku.models import Board
 from sudoku.solver import CompositeSolver, PalindromeConstraint
-from sudoku.utils import SudokuPrinter
 from sudoku.utils import SudokuGUI
 
 
@@ -55,19 +54,10 @@ def main() -> None:
     )
 
     solver = CompositeSolver()
-    solver.solve(board)
-
-    SudokuPrinter.print(board)
-    cells = board.get_all_cells()
-    for cell in cells:
-        if cell.value is None:
-            print(f"Cell at ({cell.row}, {cell.col}) is empty.")
-            print("Candidates:", end=" ")
-            print(", ".join(str(c) for c in sorted(cell.candidates)))
 
     try:
         gui = SudokuGUI(board)
-        gui.run()
+        gui.run_stepwise(solver)
     except Exception as exc:  # GUI might fail in headless environments
         print(f"GUI could not be started: {exc}")
 
