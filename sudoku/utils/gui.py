@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+from typing import Optional, Set
+
 import pygame
 
-from sudoku.solver import Solver
-
-from sudoku.models import Board
+from sudoku.models import Board, Cell
+from sudoku.solver import PalindromeConstraint, Solver
 
 
 class SudokuGUI:
@@ -28,9 +29,57 @@ class SudokuGUI:
         self.value_font = pygame.font.SysFont(None, int(size / 1.5))
         self.candidate_font = pygame.font.SysFont(None, int(size / 3))
         self.button_font = pygame.font.SysFont(None, int(self.button_height * 0.8))
+        self.highlighted_cells: Set[Cell] = set()
         self.running = True
 
-    def draw_grid(self) -> None:
+    def _get_cell_at_pos(self, pos: tuple[int, int]) -> Optional[Cell]:
+        """Return the cell at the given screen position, if any."""
+        x, y = pos
+        if x >= self.size * 9 or y >= self.size * 9:
+            return None
+        row = y // self.size
+        col = x // self.size
+        return self.board.get_cell(row, col)
+
+    def _draw_highlights(self) -> None:
+        """Highlight currently selected cells."""
+        if not self.highlighted_cells:
+            return
+        highlight = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
+        highlight.fill((255, 255, 0, 80))
+        for cell in self.highlighted_cells:
+            rect = pygame.Rect(
+                cell.col * self.size,
+                cell.row * self.size,
+                self.size,
+                self.size,
+            )
+            self.screen.blit(highlight, rect)
+
+    def _draw_palindrome(self, constraint: "PalindromeConstraint") -> None:
+        """Draw a palindrome constraint as a translucent blue line.
+
+        Args:
+            constraint (PalindromeConstraint): The palindrome constraint to draw.
+        """
+        points = [
+            (
+                cell.col * self.size + self.size / 2,
+                cell.row * self.size + self.size / 2,
+            )
+            for cell in constraint.palindrome
+        ]
+        surf = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
+        pygame.draw.lines(surf, (100, 100, 255, 120), False, points, 5)
+        self.screen.blit(surf, (0, 0))
+
+    def _draw_constraints(self) -> None:
+        """Draw the constraints on the board."""
+        for constraint in self.board.constraints:
+            if isinstance(constraint, PalindromeConstraint):
+                self._draw_palindrome(constraint)
+
+    def _draw_grid(self) -> None:
         """Draw the Sudoku grid."""
         for i in range(10):
             width = 3 if i % 3 == 0 else 1
@@ -49,7 +98,7 @@ class SudokuGUI:
                 width,
             )
 
-    def draw_values(self) -> None:
+    def _draw_values(self) -> None:
         """Draw the values in the Sudoku grid."""
         for r in range(9):
             for c in range(9):
@@ -76,11 +125,13 @@ class SudokuGUI:
                             )
                             self.screen.blit(surf, rect)
 
-    def draw_board(self) -> None:
+    def _draw_board(self) -> None:
         """Draw the entire Sudoku board."""
         self.screen.fill((255, 255, 255))
-        self.draw_grid()
-        self.draw_values()
+        self._draw_grid()
+        self._draw_constraints()
+        self._draw_values()
+        self._draw_highlights()
 
     def _draw_step_button(self, rect: pygame.Rect) -> None:
         """Draw the step button."""
@@ -103,13 +154,21 @@ class SudokuGUI:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
-            self.draw_board()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    cell = self._get_cell_at_pos(event.pos)
+                    if cell:
+                        self.highlighted_cells = {cell} | set(cell.reachable_cells)
+            self._draw_board()
             pygame.display.flip()
             clock.tick(30)
         pygame.quit()
 
     def run_stepwise(self, solver: "Solver") -> None:
-        """Run the GUI and advance the solver one step at a time on button press."""
+        """Run the GUI and advance the solver one step at a time on button press.
+
+        Args:
+            solver (Solver): The Sudoku solver instance.
+        """
         clock = pygame.time.Clock()
         button_rect = pygame.Rect(
             self.size * 3, self.size * 9 + 10, self.size * 3, self.button_height
@@ -130,7 +189,13 @@ class SudokuGUI:
                     and forward_button_rect.collidepoint(event.pos)
                 ):
                     solver.solve(self.board)
-            self.draw_board()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    cell = self._get_cell_at_pos(event.pos)
+                    if cell:
+                        self.highlighted_cells = {cell} | set(cell.reachable_cells)
+                    else:
+                        self.highlighted_cells.clear()
+            self._draw_board()
             self._draw_step_button(button_rect)
             self._draw_run_button(forward_button_rect)
             pygame.display.flip()
