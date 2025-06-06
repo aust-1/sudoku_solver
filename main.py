@@ -3,6 +3,7 @@
 from sudoku.models import Board
 from sudoku.solver import CompositeSolver, PalindromeConstraint
 from sudoku.utils import SudokuPrinter
+from sudoku.utils import SudokuGUI
 
 
 def main() -> None:
@@ -64,8 +65,12 @@ def main() -> None:
             print("Candidates:", end=" ")
             print(", ".join(str(c) for c in sorted(cell.candidates)))
 
+    try:
+        gui = SudokuGUI(board)
+        gui.run()
+    except Exception as exc:  # GUI might fail in headless environments
+        print(f"GUI could not be started: {exc}")
+
 
 if __name__ == "__main__":
     main()
-
-# TODO: implémenter Loggerplusplus

@@ -36,6 +36,8 @@ class Solver(ABC):
         Returns:
             bool: `True` if the board is solved, `False` otherwise.
         """
+        self.logger.info("Starting solve loop")
         while self.apply(board):
-            pass
+            self.logger.info("Board changed, continuing solve loop")
+        self.logger.info("Solve loop finished")
         return board.is_solved()

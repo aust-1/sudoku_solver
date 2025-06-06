@@ -17,6 +17,7 @@ class SingleCandidateStrategy(Solver):
         Returns:
             bool: `True` if any cells were filled, `False` otherwise.
         """
+        self.logger.info("SingleCandidateStrategy running")
         moved = False
         for cell in board.get_all_cells():
             if not cell.is_filled() and len(cell.candidates) == 1:

@@ -19,6 +19,7 @@ class PairChoiceStrategy(Solver):
         Returns:
             bool: `True` if any cells were filled, `False` otherwise.
         """
+        self.logger.info("PairChoiceStrategy running")
         moved = False
         regions = [
             [board.get_row(i) for i in range(9)],

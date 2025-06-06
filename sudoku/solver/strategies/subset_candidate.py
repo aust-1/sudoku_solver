@@ -18,6 +18,7 @@ class _BaseSubsetCandidateStrategy(Solver):
             size (int): The size of the subset.
         """
         self.size = size
+        super().__init__()
 
     def regions(self, board: Board) -> Iterable[List[Cell]]:
         """Get all regions (rows, columns, boxes) in the Sudoku board.
@@ -44,6 +45,7 @@ class _BaseSubsetCandidateStrategy(Solver):
         Returns:
             bool: True if any candidates were eliminated, False otherwise.
         """
+        self.logger.info(f"{self.__class__.__name__} running")
         moved = False
         digits = list(range(1, 10))
         for region in self.regions(board):

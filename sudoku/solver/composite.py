@@ -56,6 +56,7 @@ class CompositeSolver(Solver):
             bool: `True` if one of the strategies made a change to the board, `False` otherwise.
         """
         for strat in self.strategies:
+            self.logger.info(f"Trying {strat.__class__.__name__}")
             if strat.apply(board):
                 self.logger.info(
                     f"Strategy {strat.__class__.__name__} made a change to the board."

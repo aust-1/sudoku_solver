@@ -27,10 +27,19 @@ class BacktrackingSolver(Solver):
         cell = unfilled[0]
 
         for cand in list(cell.candidates):
+            self.logger.info(
+                f"Trying {cand} at ({cell.row}, {cell.col}) in backtracking"
+            )
             copy = board.deep_copy()
             copy.get_cell(cell.row, cell.col).set_value(cand)
             solver = BacktrackingSolver()
             if solver.apply(copy):
                 board.copy_values_from(copy)
+                self.logger.info(
+                    f"Backtracking succeeded with {cand} at ({cell.row}, {cell.col})"
+                )
                 return True
+        self.logger.info(
+            f"Backtracking failed for cell ({cell.row}, {cell.col})"
+        )
         return False

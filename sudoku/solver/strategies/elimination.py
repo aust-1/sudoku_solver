@@ -17,6 +17,7 @@ class EliminationStrategy(Solver):
         Returns:
             bool: `True` if any candidates were eliminated, `False` otherwise.
         """
+        self.logger.info("EliminationStrategy running")
         moved = False
         for cell in board.get_all_cells():
             if cell.is_filled():

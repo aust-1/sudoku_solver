@@ -12,6 +12,7 @@ class _BaseSubsetChoiceStrategy(Solver):
 
     def __init__(self, size: int) -> None:
         self.size = size
+        super().__init__()
 
     def regions(self, board: Board) -> Iterable[List[Cell]]:
         """Get all regions (rows, columns, boxes) in the Sudoku board.
@@ -38,6 +39,7 @@ class _BaseSubsetChoiceStrategy(Solver):
         Returns:
             bool: True if any candidates were eliminated, False otherwise.
         """
+        self.logger.info(f"{self.__class__.__name__} running")
         moved = False
         for region in self.regions(board):
             groups: Dict[frozenset[int], List[Cell]] = {}

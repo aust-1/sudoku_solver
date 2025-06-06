@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Iterable, List
 
+from loggerplusplus import Logger
+
 if TYPE_CHECKING:
     from sudoku.solver.constrainst.base_constraint import BaseConstraint
 
@@ -15,6 +17,7 @@ class Board:
         """Create an empty board filled with cells."""
         self.grid: List[List[Cell]] = [[Cell(r, c) for c in range(9)] for r in range(9)]
         self.constraints: List["BaseConstraint"] = []
+        self.logger = Logger(identifier="Board", follow_logger_manager_rules=True)
         self._init_reachability()
 
     def _init_reachability(self) -> None:
@@ -47,6 +50,7 @@ class Board:
         Args:
             constraint (BaseConstraint): The constraint to add.
         """
+        self.logger.info(f"Adding constraint {constraint.__class__.__name__}")
         self.constraints.append(constraint)
         for cell in self.get_all_cells():
             cell.add_reachables(constraint.reachable_cells(self, cell))
@@ -162,6 +166,7 @@ class Board:
         Args:
             input_str (str): A string representation of the Sudoku board.
         """
+        self.logger.info("Loading board from string")
         digits = [d for d in input_str if d.isdigit()]
         for idx, d in enumerate(digits[:81]):
             if d != "0":
