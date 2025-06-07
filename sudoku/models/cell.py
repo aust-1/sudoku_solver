@@ -1,8 +1,11 @@
 from __future__ import annotations
 
-from typing import Iterable, Set
+from typing import TYPE_CHECKING
 
 from loggerplusplus import Logger
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 class Cell:
@@ -18,10 +21,11 @@ class Cell:
         self.row = row
         self.col = col
         self.value: int | None = None
-        self.candidates: Set[int] = set(range(1, 10))
-        self.reachable_cells: Set[Cell] = set()
+        self.candidates: set[int] = set(range(1, 10))
+        self.reachable_cells: set[Cell] = set()
         self.logger = Logger(
-            identifier=f"Cell {row}, {col}", follow_logger_manager_rules=True
+            identifier=f"Cell {row}, {col}",
+            follow_logger_manager_rules=True,
         )
 
     def add_reachables(self, cells: Iterable[Cell]) -> None:

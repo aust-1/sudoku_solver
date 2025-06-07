@@ -1,14 +1,18 @@
 from __future__ import annotations
 
-from sudoku.models import Board, Cell
+from typing import TYPE_CHECKING
+
 from sudoku.solver.constrainst.base_constraint import BaseConstraint
 from sudoku.solver.constrainst.clone_constraint import CloneConstraint
+
+if TYPE_CHECKING:
+    from sudoku.models import Board, Cell
 
 
 class PalindromeConstraint(BaseConstraint):
     """A class representing a palindrome constraint for Sudoku cells."""
 
-    def __init__(self, palindrome_cells: list[Cell]):
+    def __init__(self, palindrome_cells: list[Cell]) -> None:
         """Initialize the palindrome constraint with a list of cells.
 
         Args:
@@ -18,7 +22,7 @@ class PalindromeConstraint(BaseConstraint):
         self.clone_constraints: list[CloneConstraint] = []
         for i in range(len(palindrome_cells) // 2):
             self.clone_constraints.append(
-                CloneConstraint({palindrome_cells[i], palindrome_cells[-(i + 1)]})
+                CloneConstraint({palindrome_cells[i], palindrome_cells[-(i + 1)]}),
             )
 
     def check(self, board: Board) -> bool:
@@ -30,10 +34,7 @@ class PalindromeConstraint(BaseConstraint):
         Returns:
             bool: ``True`` if the constraint is satisfied, ``False`` otherwise.
         """
-        for constraint in self.clone_constraints:
-            if not constraint.check(board):
-                return False
-        return True
+        return all(constraint.check(board) for constraint in self.clone_constraints)
 
     def eliminate(self, board: Board) -> bool:
         """Automatically complete the palindrome constraint on the given board.
@@ -42,7 +43,9 @@ class PalindromeConstraint(BaseConstraint):
             board (Board): The Sudoku board to auto-complete.
 
         Returns:
-            bool: ``True`` if at least one candidate was eliminated, ``False`` otherwise.
+            bool:
+                ``True`` if at least one candidate was eliminated,
+                ``False`` otherwise.
         """
         eliminated = False
         for constraint in self.clone_constraints:

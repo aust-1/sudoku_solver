@@ -1,4 +1,4 @@
-class InvalidSudokuException(Exception):
+class InvalidSudokuError(Exception):
     """Raised when the Sudoku board is invalid.
 
     Args:

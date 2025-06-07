@@ -1,19 +1,22 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
 
 from loggerplusplus import Logger
 
-from sudoku.models import Board
+if TYPE_CHECKING:
+    from sudoku.models import Board
 
 
 class Solver(ABC):
     """Base solver interface."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the solver."""
         self.logger = Logger(
-            identifier=self.__class__.__name__, follow_logger_manager_rules=True
+            identifier=self.__class__.__name__,
+            follow_logger_manager_rules=True,
         )
 
     @abstractmethod

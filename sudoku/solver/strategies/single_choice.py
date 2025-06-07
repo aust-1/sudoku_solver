@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 from collections import Counter
+from typing import TYPE_CHECKING
 
-from sudoku.models import Board
-from sudoku.solver import Solver
+from sudoku.solver.solver import Solver
+
+if TYPE_CHECKING:
+    from sudoku.models import Board
 
 
 class SingleChoiceStrategy(Solver):

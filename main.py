@@ -49,17 +49,14 @@ def main() -> None:
                 board.get_cell(4, 3),
                 board.get_cell(3, 4),
                 board.get_cell(4, 5),
-            ]
+            ],
         ),
     )
 
     solver = CompositeSolver()
 
-    try:
-        gui = SudokuGUI(board)
-        gui.run_stepwise(solver)
-    except Exception as exc:
-        print(f"GUI could not be started: {exc}")
+    gui = SudokuGUI(board)
+    gui.run_stepwise(solver)
 
 
 if __name__ == "__main__":

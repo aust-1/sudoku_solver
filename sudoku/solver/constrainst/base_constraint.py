@@ -18,9 +18,12 @@ class BaseConstraint(ABC):
             board (Board): The Sudoku board to check.
 
         Returns:
-            bool: ``True`` if the constraint is satisfied, ``False`` otherwise.
+            bool:
+                ``True`` if the constraint is satisfied,
+                ``False`` otherwise.
         """
-        raise NotImplementedError("Subclasses should implement this method.")
+        msg = "Subclasses should implement this method."
+        raise NotImplementedError(msg)
 
     @abstractmethod
     def eliminate(self, board: Board) -> bool:
@@ -30,9 +33,12 @@ class BaseConstraint(ABC):
             board (Board): The Sudoku board to auto-complete.
 
         Returns:
-            bool: ``True`` if at least one candidate was eliminated, ``False`` otherwise.
+            bool:
+                ``True`` if at least one candidate was eliminated,
+                ``False`` otherwise.
         """
-        raise NotImplementedError("Subclasses should implement this method.")
+        msg = "Subclasses should implement this method."
+        raise NotImplementedError(msg)
 
     @abstractmethod
     def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:

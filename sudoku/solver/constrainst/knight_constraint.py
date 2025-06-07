@@ -1,11 +1,20 @@
 from __future__ import annotations
 
-from sudoku.models import Board, Cell
+from typing import TYPE_CHECKING
+
 from sudoku.solver.constrainst.base_constraint import BaseConstraint
+
+if TYPE_CHECKING:
+    from sudoku.models import Board, Cell
 
 
 class KnightConstraint(BaseConstraint):
     """A class representing a knight's movement constraint."""
+
+    def __init__(self) -> None:
+        """Initialize the knight's movement constraint."""
+        super().__init__()
+        self.size = 9
 
     def check(self, board: Board) -> bool:
         """Check if the knight's movement is valid.
@@ -16,8 +25,8 @@ class KnightConstraint(BaseConstraint):
         Returns:
             bool: ``True`` if the knight's movement is valid, ``False`` otherwise.
         """
-        for i in range(9):
-            for j in range(9):
+        for i in range(self.size):
+            for j in range(self.size):
                 value = board.get_cell(i, j).value
                 if value is not None:
                     reachable_cells = self.reachable_cells(board, board.get_cell(i, j))
@@ -34,11 +43,13 @@ class KnightConstraint(BaseConstraint):
             board (Board): The Sudoku board to auto-complete.
 
         Returns:
-            bool: ``True`` if at least one candidate was eliminated, ``False`` otherwise.
+            bool:
+                ``True`` if at least one candidate was eliminated,
+                ``False`` otherwise.
         """
         eliminated = False
-        for i in range(9):
-            for j in range(9):
+        for i in range(self.size):
+            for j in range(self.size):
                 value = board.get_cell(i, j).value
                 if value is not None:
                     reachable_cells = self.reachable_cells(board, board.get_cell(i, j))
@@ -58,12 +69,12 @@ class KnightConstraint(BaseConstraint):
         """
         reachable: set[Cell] = set()
         knight_moves = [(2, 1), (1, 2)]
-        sign = [-1, 1]
+        signs = [-1, 1]
         for dx, dy in knight_moves:
-            for sign_x in sign:
-                for sign_y in sign:
+            for sign_x in signs:
+                for sign_y in signs:
                     x = cell.row + dx * sign_x
                     y = cell.col + dy * sign_y
-                    if 0 <= x < 9 and 0 <= y < 9:
+                    if 0 <= x < self.size and 0 <= y < self.size:
                         reachable.add(board.get_cell(x, y))
         return reachable

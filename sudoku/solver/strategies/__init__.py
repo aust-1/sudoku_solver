@@ -18,14 +18,14 @@ from sudoku.solver.strategies.subset_choice import (
 __all__ = [
     "ConstraintStrategy",
     "EliminationStrategy",
-    "SingleChoiceStrategy",
-    "SingleCandidateStrategy",
-    "PairChoiceStrategy",
-    "TripleChoiceStrategy",
-    "QuadChoiceStrategy",
     "PairCandidateStrategy",
-    "TripleCandidateStrategy",
+    "PairChoiceStrategy",
     "QuadCandidateStrategy",
+    "QuadChoiceStrategy",
+    "SingleCandidateStrategy",
+    "SingleChoiceStrategy",
+    "TripleCandidateStrategy",
+    "TripleChoiceStrategy",
 ]
 
 

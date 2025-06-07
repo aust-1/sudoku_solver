@@ -1,9 +1,13 @@
 from __future__ import annotations
 
-from typing import Dict, Iterable, List
+from typing import TYPE_CHECKING
 
-from sudoku.models import Board, Cell
 from sudoku.solver.solver import Solver
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+    from sudoku.models import Board, Cell
 
 
 class _BaseSubsetChoiceStrategy(Solver):
@@ -13,16 +17,19 @@ class _BaseSubsetChoiceStrategy(Solver):
         self.size = size
         super().__init__()
 
-    def regions(self, board: Board) -> Iterable[List[Cell]]:
+    @staticmethod
+    def _regions(board: Board) -> Iterable[list[Cell]]:
         """Get all regions (rows, columns, boxes) in the Sudoku board.
 
         Args:
             board (Board): The Sudoku board.
 
         Returns:
-            Iterable[List[Cell]]: A list of all regions (rows, columns, boxes) in the Sudoku board.
+            Iterable[List[Cell]]: A list of all regions (rows, columns, boxes) in the
+            Sudoku board.
         """
-        # TODO: c'est pas les seules régions possibles, genre les diagonales, les régions personnalisées, les killers, etc.
+        # TODO: c'est pas les seules régions possibles, genre les diagonales, les
+        # régions personnalisées, les killers, etc.
         return (
             [board.get_row(i) for i in range(9)]
             + [board.get_col(i) for i in range(9)]
@@ -40,8 +47,8 @@ class _BaseSubsetChoiceStrategy(Solver):
         """
         self.logger.info(f"{self.__class__.__name__} running")
         moved = False
-        for region in self.regions(board):
-            groups: Dict[frozenset[int], List[Cell]] = {}
+        for region in _BaseSubsetChoiceStrategy._regions(board):
+            groups: dict[frozenset[int], list[Cell]] = {}
             for cell in region:
                 if not cell.is_filled() and len(cell.candidates) == self.size:
                     key = frozenset(cell.candidates)
@@ -58,21 +65,36 @@ class _BaseSubsetChoiceStrategy(Solver):
 
 
 class PairChoiceStrategy(_BaseSubsetChoiceStrategy):
-    """Pair choice strategy: If a pair of candidates appears only in two cells, eliminate them from other cells in the region."""
+    """Pair choice strategy.
+
+    If a pair of candidates appears only in two cells,
+    eliminate them from other cells in the region.
+    """
 
     def __init__(self) -> None:
+        """Initialise the pair choice strategy."""
         super().__init__(2)
 
 
 class TripleChoiceStrategy(_BaseSubsetChoiceStrategy):
-    """Triple choice strategy: If a triplet of candidates appears only in three cells, eliminate them from other cells in the region."""
+    """Triple choice strategy.
+
+    If a triplet of candidates appears only in three cells, eliminate them from other
+    cells in the region.
+    """
 
     def __init__(self) -> None:
+        """Initialise the triple choice strategy."""
         super().__init__(3)
 
 
 class QuadChoiceStrategy(_BaseSubsetChoiceStrategy):
-    """Quad choice strategy: If a quadruplet of candidates appears only in four cells, eliminate them from other cells in the region."""
+    """Quad choice strategy.
+
+    If a quadruplet of candidates appears only in four cells, eliminate them from other
+    cells in the region.
+    """
 
     def __init__(self) -> None:
+        """Initialise the quad choice strategy."""
         super().__init__(4)

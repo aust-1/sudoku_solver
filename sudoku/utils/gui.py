@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from typing import Optional, Set
+from typing import TYPE_CHECKING
 
 import pygame
 
-from sudoku.models import Board, Cell
 from sudoku.solver import PalindromeConstraint, Solver
+
+if TYPE_CHECKING:
+    from sudoku.models import Board, Cell
 
 
 class SudokuGUI:
@@ -23,16 +25,16 @@ class SudokuGUI:
         self.button_height = int(size / 2)
         pygame.init()
         self.screen = pygame.display.set_mode(
-            (size * 9, size * 9 + self.button_height + 20)
+            (size * 9, size * 9 + self.button_height + 20),
         )
         pygame.display.set_caption("Sudoku")
         self.value_font = pygame.font.SysFont(None, int(size / 1.5))
         self.candidate_font = pygame.font.SysFont(None, int(size / 3))
         self.button_font = pygame.font.SysFont(None, int(self.button_height * 0.8))
-        self.highlighted_cells: Set[Cell] = set()
+        self.highlighted_cells: set[Cell] = set()
         self.running = True
 
-    def _get_cell_at_pos(self, pos: tuple[int, int]) -> Optional[Cell]:
+    def _get_cell_at_pos(self, pos: tuple[int, int]) -> Cell | None:
         """Return the cell at the given screen position, if any."""
         x, y = pos
         if x >= self.size * 9 or y >= self.size * 9:
@@ -49,14 +51,14 @@ class SudokuGUI:
         highlight.fill((255, 255, 0, 80))
         for cell in self.highlighted_cells:
             rect = pygame.Rect(
-                cell.col * self.size,
-                cell.row * self.size,
-                self.size,
-                self.size,
+                left=cell.col * self.size,
+                top=cell.row * self.size,
+                width=self.size,
+                height=self.size,
             )
             self.screen.blit(highlight, rect)
 
-    def _draw_palindrome(self, constraint: "PalindromeConstraint") -> None:
+    def _draw_palindrome(self, constraint: PalindromeConstraint) -> None:
         """Draw a palindrome constraint as a translucent blue line.
 
         Args:
@@ -70,7 +72,13 @@ class SudokuGUI:
             for cell in constraint.palindrome
         ]
         surf = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
-        pygame.draw.lines(surf, (100, 100, 255, 120), False, points, 5)
+        pygame.draw.lines(
+            surf,
+            (100, 100, 255, 120),
+            closed=False,
+            points=points,
+            width=5,
+        )
         self.screen.blit(surf, (0, 0))
 
     def _draw_constraints(self) -> None:
@@ -106,7 +114,7 @@ class SudokuGUI:
                 x = c * self.size
                 y = r * self.size
                 if cell.value is not None:
-                    surf = self.value_font.render(str(cell.value), True, (0, 0, 0))
+                    surf = self.value_font.render(str(cell.value), 1, (0, 0, 0))
                     rect = surf.get_rect(center=(x + self.size / 2, y + self.size / 2))
                     self.screen.blit(surf, rect)
                 else:
@@ -115,13 +123,15 @@ class SudokuGUI:
                         col = (idx - 1) % 3
                         if idx in cell.candidates:
                             surf = self.candidate_font.render(
-                                str(idx), True, (100, 100, 100)
+                                str(idx),
+                                1,
+                                (100, 100, 100),
                             )
                             rect = surf.get_rect(
                                 center=(
                                     x + (col + 0.5) * self.size / 3,
                                     y + (row + 0.5) * self.size / 3,
-                                )
+                                ),
                             )
                             self.screen.blit(surf, rect)
 
@@ -137,14 +147,14 @@ class SudokuGUI:
         """Draw the step button."""
         pygame.draw.rect(self.screen, (200, 200, 200), rect)
         pygame.draw.rect(self.screen, (0, 0, 0), rect, 2)
-        text = self.button_font.render("Step", True, (0, 0, 0))
+        text = self.button_font.render("Step", 1, (0, 0, 0))
         self.screen.blit(text, text.get_rect(center=rect.center))
 
     def _draw_run_button(self, rect: pygame.Rect) -> None:
         """Draw the run button."""
         pygame.draw.rect(self.screen, (200, 200, 200), rect)
         pygame.draw.rect(self.screen, (0, 0, 0), rect, 2)
-        text = self.button_font.render(">>", True, (0, 0, 0))
+        text = self.button_font.render("Run", 1, (0, 0, 0))
         self.screen.blit(text, text.get_rect(center=rect.center))
 
     def run(self) -> None:
@@ -163,7 +173,7 @@ class SudokuGUI:
             clock.tick(30)
         pygame.quit()
 
-    def run_stepwise(self, solver: "Solver") -> None:
+    def run_stepwise(self, solver: Solver) -> None:
         """Run the GUI and advance the solver one step at a time on button press.
 
         Args:
@@ -171,17 +181,23 @@ class SudokuGUI:
         """
         clock = pygame.time.Clock()
         button_rect = pygame.Rect(
-            self.size * 3, self.size * 9 + 10, self.size * 3, self.button_height
+            left=self.size * 3,
+            top=self.size * 9 + 10,
+            width=self.size * 3,
+            height=self.button_height,
         )
         forward_button_rect = pygame.Rect(
-            self.size * 6, self.size * 9 + 10, self.size * 3, self.button_height
+            left=self.size * 6,
+            top=self.size * 9 + 10,
+            width=self.size * 3,
+            height=self.button_height,
         )
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN and button_rect.collidepoint(
-                    event.pos
+                    event.pos,
                 ):
                     solver.apply(self.board)
                 elif (

@@ -1,7 +1,11 @@
 from __future__ import annotations
 
-from sudoku.models import Board
-from sudoku.solver import Solver
+from typing import TYPE_CHECKING
+
+from sudoku.solver.solver import Solver
+
+if TYPE_CHECKING:
+    from sudoku.models import Board
 
 
 class EliminationStrategy(Solver):

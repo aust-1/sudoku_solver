@@ -1,10 +1,14 @@
 from __future__ import annotations
 
 from itertools import combinations
-from typing import Dict, Iterable, List, Set
+from typing import TYPE_CHECKING
 
-from sudoku.models import Board, Cell
-from sudoku.solver import Solver
+from sudoku.solver.solver import Solver
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+    from sudoku.models import Board, Cell
 
 
 class _BaseSubsetCandidateStrategy(Solver):
@@ -19,16 +23,19 @@ class _BaseSubsetCandidateStrategy(Solver):
         self.size = size
         super().__init__()
 
-    def regions(self, board: Board) -> Iterable[List[Cell]]:
+    @staticmethod
+    def _regions(board: Board) -> Iterable[list[Cell]]:
         """Get all regions (rows, columns, boxes) in the Sudoku board.
 
         Args:
             board (Board): The Sudoku board.
 
         Returns:
-            Iterable[List[Cell]]: A list of all regions (rows, columns, boxes) in the Sudoku board.
+            Iterable[List[Cell]]: A list of all regions (rows, columns, boxes) in the
+            Sudoku board.
         """
-        # TODO: c'est pas les seules régions possibles, genre les diagonales, les régions personnalisées, les killers, etc.
+        # TODO: c'est pas les seules régions possibles, genre les diagonales, les
+        # régions personnalisées, les killers, etc.
         return (
             [board.get_row(i) for i in range(9)]
             + [board.get_col(i) for i in range(9)]
@@ -47,8 +54,8 @@ class _BaseSubsetCandidateStrategy(Solver):
         self.logger.info(f"{self.__class__.__name__} running")
         moved = False
         digits: list[int] = list(range(1, 10))
-        for region in self.regions(board):
-            digit_cells: Dict[int, Set[Cell]] = {d: set() for d in digits}
+        for region in _BaseSubsetCandidateStrategy._regions(board):
+            digit_cells: dict[int, set[Cell]] = {d: set() for d in digits}
             for cell in region:
                 if cell.is_filled():
                     continue
@@ -77,6 +84,7 @@ class PairCandidateStrategy(_BaseSubsetCandidateStrategy):
     """Pair candidate strategy for hidden subsets."""
 
     def __init__(self) -> None:
+        """Initialise the pair candidate strategy."""
         super().__init__(2)
 
 
@@ -84,6 +92,7 @@ class TripleCandidateStrategy(_BaseSubsetCandidateStrategy):
     """Triple candidate strategy for hidden subsets."""
 
     def __init__(self) -> None:
+        """Initialise the triple candidate strategy."""
         super().__init__(3)
 
 
@@ -91,4 +100,5 @@ class QuadCandidateStrategy(_BaseSubsetCandidateStrategy):
     """Quad candidate strategy for hidden subsets."""
 
     def __init__(self) -> None:
+        """Initialise the quad candidate strategy."""
         super().__init__(4)

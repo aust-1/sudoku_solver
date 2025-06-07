@@ -1,8 +1,12 @@
 from __future__ import annotations
 
-from sudoku.models import Board, Cell
+from typing import TYPE_CHECKING
+
 from sudoku.solver.constrainst.base_constraint import BaseConstraint
 from sudoku.solver.constrainst.clone_constraint import CloneConstraint
+
+if TYPE_CHECKING:
+    from sudoku.models import Board, Cell
 
 # QUESTION: pas convaincu
 
@@ -10,11 +14,11 @@ from sudoku.solver.constrainst.clone_constraint import CloneConstraint
 class CloneZoneConstraint(BaseConstraint):
     """A class representing a clones constraint for Sudoku cells."""
 
-    def __init__(self, *clone_zones: list[Cell]):
+    def __init__(self, *clone_zones: list[Cell]) -> None:
         """Initialize the clones constraint with a list of cells.
 
         Args:
-            clone_cells (list[Cell]): The list of cells to apply constraints to.
+            *clone_cells (list[Cell]): The lists of cells to apply constraints to.
         """
         self.zones: list[list[Cell]] = []
         for zone in clone_zones:
@@ -34,19 +38,18 @@ class CloneZoneConstraint(BaseConstraint):
         Returns:
             bool: ``True`` if the constraint is satisfied, ``False`` otherwise.
         """
-        for constraint in self.clone_constraints:
-            if not constraint.check(board):
-                return False
-        return True
+        return all(constraint.check(board) for constraint in self.clone_constraints)
 
     def eliminate(self, board: Board) -> bool:
-        """Automatically complete the palindrome constraint on the given board.
+        """Automatically complete the clones constraint on the given board.
 
         Args:
             board (Board): The Sudoku board to auto-complete.
 
         Returns:
-            bool: ``True`` if at least one candidate was eliminated, ``False`` otherwise.
+            bool:
+                ``True`` if at least one candidate was eliminated,
+                ``False`` otherwise.
         """
         eliminated = False
         for constraint in self.clone_constraints:

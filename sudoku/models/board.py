@@ -1,19 +1,14 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterable, List
+from typing import TYPE_CHECKING
 
 from loggerplusplus import Logger
 
 from sudoku.models import Cell
-from sudoku.solver import (
-    CloneConstraint,
-    CloneZoneConstraint,
-    KingConstraint,
-    KnightConstraint,
-    PalindromeConstraint,
-)
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+
     from sudoku.solver.constrainst.base_constraint import BaseConstraint
 
 
@@ -22,8 +17,8 @@ class Board:
 
     def __init__(self) -> None:
         """Create an empty board filled with cells."""
-        self.grid: List[List[Cell]] = [[Cell(r, c) for c in range(9)] for r in range(9)]
-        self.constraints: List["BaseConstraint"] = []
+        self.grid: list[list[Cell]] = [[Cell(r, c) for c in range(9)] for r in range(9)]
+        self.constraints: list[BaseConstraint] = []
         self.logger = Logger(identifier="Board", follow_logger_manager_rules=True)
         self._init_reachability()
 
@@ -51,7 +46,7 @@ class Board:
             for cell in self.get_all_cells():
                 cell.add_reachables(constraint.reachable_cells(self, cell))
 
-    def add_constraint(self, constraint: "BaseConstraint") -> None:
+    def add_constraint(self, constraint: BaseConstraint) -> None:
         """Add a constraint to the board and update reachability.
 
         Args:
@@ -78,7 +73,7 @@ class Board:
         """
         return self.grid[row][col]
 
-    def get_row(self, r: int) -> List[Cell]:
+    def get_row(self, r: int) -> list[Cell]:
         """Return all cells in row ``r``.
 
         Args:
@@ -89,7 +84,7 @@ class Board:
         """
         return list(self.grid[r])
 
-    def get_col(self, c: int) -> List[Cell]:
+    def get_col(self, c: int) -> list[Cell]:
         """Return all cells in column ``c``.
 
         Args:
@@ -100,7 +95,7 @@ class Board:
         """
         return [self.grid[r][c] for r in range(9)]
 
-    def get_box(self, box_index: int) -> List[Cell]:
+    def get_box(self, box_index: int) -> list[Cell]:
         """Return all cells in box ``box_index`` (0..8).
 
         Args:
@@ -120,11 +115,10 @@ class Board:
     def get_all_cells(self) -> Iterable[Cell]:
         """Yield all cells in the board row by row.
 
-        Returns:
-            Iterable[Cell]: An iterable of all cells in the board.
-
         Yields:
-            Iterator[Iterable[Cell]]: An iterator over the rows of the board, each yielding the cells in that row.
+            Iterator[Iterable[Cell]]:
+                An iterator over the rows of the board,
+                each yielding the cells in that row.
         """
         for row in self.grid:
             yield from row
@@ -133,7 +127,9 @@ class Board:
         """Check if the board is valid according to Sudoku rules.
 
         Returns:
-            bool: `True` if all rows, columns and boxes contain no duplicates, `False` otherwise.
+            bool:
+                `True` if all rows, columns and boxes contain no duplicates,
+                `False` otherwise.
         """
 
         def region_valid(cells: Iterable[Cell]) -> bool:
@@ -206,6 +202,14 @@ class Board:
                 copy_cell = board.grid[r][c]
                 copy_cell.value = cell.value
                 copy_cell.candidates = set(cell.candidates)
+
+        from sudoku.solver import (
+            CloneConstraint,
+            CloneZoneConstraint,
+            KingConstraint,
+            KnightConstraint,
+            PalindromeConstraint,
+        )
 
         board.constraints = []
         for constraint in self.constraints:

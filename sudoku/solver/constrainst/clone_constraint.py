@@ -1,13 +1,17 @@
 from __future__ import annotations
 
-from sudoku.models import Board, Cell
+from typing import TYPE_CHECKING
+
 from sudoku.solver.constrainst.base_constraint import BaseConstraint
+
+if TYPE_CHECKING:
+    from sudoku.models import Board, Cell
 
 
 class CloneConstraint(BaseConstraint):
     """A class representing a clone constraint for Sudoku cells."""
 
-    def __init__(self, clone_cells: set[Cell]):
+    def __init__(self, clone_cells: set[Cell]) -> None:
         """Initialize the clone constraint with a list of cells.
 
         Args:
@@ -15,7 +19,7 @@ class CloneConstraint(BaseConstraint):
         """
         self.clone = clone_cells
 
-    def check(self, board: Board) -> bool:
+    def check(self, board: Board) -> bool:  # noqa: ARG002
         """Check if the clone constraint is satisfied.
 
         Args:
@@ -30,14 +34,16 @@ class CloneConstraint(BaseConstraint):
                 values.add(cell.value)
         return len(values) <= 1
 
-    def eliminate(self, board: Board) -> bool:
+    def eliminate(self, board: Board) -> bool:  # noqa: ARG002
         """Automatically complete the clone constraint on the given board.
 
         Args:
             board (Board): The Sudoku board to auto-complete.
 
         Returns:
-            bool: ``True`` if at least one candidate was eliminated, ``False`` otherwise.
+            bool:
+                ``True`` if at least one candidate was eliminated,
+                ``False`` otherwise.
         """
         eliminated = False
         values = set(range(1, 10))
@@ -50,7 +56,7 @@ class CloneConstraint(BaseConstraint):
                     # HACK: gestion de la mémoire de ouf avec des pointeurs
         return eliminated
 
-    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:
+    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:  # noqa: ARG002
         """Get the reachable cells based on the constraint.
 
         Args:
@@ -66,7 +72,6 @@ class CloneConstraint(BaseConstraint):
         reachable: set[Cell] = set()
         for clone_cell in self.clone:
             reachable.update(clone_cell.reachable_cells)
-        for clone_cell in self.clone:
-            reachable.discard(clone_cell)
+        reachable.difference_update(self.clone)
 
         return reachable
