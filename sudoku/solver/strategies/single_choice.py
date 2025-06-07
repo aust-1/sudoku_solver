@@ -30,12 +30,7 @@ class SingleChoiceStrategy(Solver):
         ]
         for region_group in regions:
             for region in region_group:
-                counter = Counter(
-                    cand
-                    for cell in region
-                    if not cell.is_filled()
-                    for cand in cell.candidates
-                )
+                counter = Counter(cand for cell in region for cand in cell.candidates)
                 for cell in region:
                     if not cell.is_filled():
                         unique = [c for c in cell.candidates if counter[c] == 1]

@@ -181,16 +181,16 @@ class SudokuGUI:
         """
         clock = pygame.time.Clock()
         button_rect = pygame.Rect(
-            left=self.size * 3,
-            top=self.size * 9 + 10,
-            width=self.size * 3,
-            height=self.button_height,
+            self.size * 3,
+            self.size * 9 + 10,
+            self.size * 3,
+            self.button_height,
         )
         forward_button_rect = pygame.Rect(
-            left=self.size * 6,
-            top=self.size * 9 + 10,
-            width=self.size * 3,
-            height=self.button_height,
+            self.size * 6,
+            self.size * 9 + 10,
+            self.size * 3,
+            self.button_height,
         )
         while self.running:
             for event in pygame.event.get():

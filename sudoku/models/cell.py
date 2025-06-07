@@ -54,6 +54,7 @@ class Cell:
         """
         self.value = v
         self.candidates.clear()
+        self.candidates.add(v)
         self.logger.info(f"Set value {v}")
 
     def eliminate(self, v: int) -> bool:
