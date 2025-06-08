@@ -18,7 +18,7 @@ class CloneZoneConstraint(BaseConstraint):
         """Initialize the clones constraint with a list of cells.
 
         Args:
-            *clone_cells (list[Cell]): The lists of cells to apply constraints to.
+            *clone_zones (list[Cell]): The lists of cells to apply constraints to.
         """
         self.zones: list[list[Cell]] = []
         for zone in clone_zones:

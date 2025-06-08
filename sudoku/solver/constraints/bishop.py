@@ -16,7 +16,7 @@ class BishopConstraint(BaseConstraint):
         super().__init__()
         self.bishop = bishop_cells
 
-    def check(self, board: Board) -> bool:
+    def check(self, board: Board) -> bool:  # noqa: ARG002
         """Check if the bishop's movement is valid.
 
         Args:
@@ -71,3 +71,11 @@ class BishopConstraint(BaseConstraint):
         reachable.discard(cell)
 
         return reachable
+
+    def get_regions(self) -> list[set[Cell]]:
+        """Get the regions defined by the bishop constraint.
+
+        Returns:
+            list[set[Cell]]: A list of sets of cells representing the regions.
+        """
+        return [self.bishop]

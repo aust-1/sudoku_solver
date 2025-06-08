@@ -5,8 +5,6 @@ from typing import TYPE_CHECKING
 from sudoku.solver.solver import Solver
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
-
     from sudoku.models import Board, Cell
 
 
@@ -16,25 +14,6 @@ class _BaseSubsetChoiceStrategy(Solver):
     def __init__(self, size: int) -> None:
         self.size = size
         super().__init__()
-
-    @staticmethod
-    def _regions(board: Board) -> Iterable[list[Cell]]:
-        """Get all regions (rows, columns, boxes) in the Sudoku board.
-
-        Args:
-            board (Board): The Sudoku board.
-
-        Returns:
-            Iterable[List[Cell]]: A list of all regions (rows, columns, boxes) in the
-            Sudoku board.
-        """
-        # TODO: c'est pas les seules régions possibles, genre les diagonales, les
-        # régions personnalisées, les killers, etc.
-        return (
-            [board.get_row(i) for i in range(9)]
-            + [board.get_col(i) for i in range(9)]
-            + [board.get_box(i) for i in range(9)]
-        )
 
     def apply(self, board: Board) -> bool:
         """Apply the naked subset choice strategy.
@@ -47,7 +26,7 @@ class _BaseSubsetChoiceStrategy(Solver):
         """
         self.logger.info(f"{self.__class__.__name__} running")
         moved = False
-        for region in _BaseSubsetChoiceStrategy._regions(board):
+        for region in board.regions:
             groups: dict[frozenset[int], list[Cell]] = {}
             for cell in region:
                 if not cell.is_filled() and len(cell.candidates) == self.size:

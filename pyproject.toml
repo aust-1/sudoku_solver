@@ -39,13 +39,11 @@ ignore = [
     "CPY001", # missing-copyright-notice
     "D100",   # undocumented-public-module
     "FIX002", # line-contains-todo
+    "FIX004", # line-contains-hack
     "G004",   # logging-f-string
     "TD002",  # missing-todo-author
     "TD003",  # missing-todo-link
 ]
-
-[tool.ruff.lint.pylint]
-max-positional-args = 2
 
 [tool.ruff.format]
 quote-style = "double"

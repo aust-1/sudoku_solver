@@ -19,7 +19,9 @@ class Board:
         """Create an empty board filled with cells."""
         self.grid: list[list[Cell]] = [[Cell(r, c) for c in range(9)] for r in range(9)]
         self.constraints: list[BaseConstraint] = []
+        self.regions: list[set[Cell]] = []
         self.logger = Logger(identifier="Board", follow_logger_manager_rules=True)
+        self._init_regions()
         self._init_reachability()
 
     def _init_reachability(self) -> None:
@@ -27,24 +29,66 @@ class Board:
         for cell in self.get_all_cells():
             cell.reachable_cells.clear()
 
-        for r in range(9):
-            row = self.get_row(r)
-            for cell in row:
-                cell.add_reachables(row)
-
-        for c in range(9):
-            col = self.get_col(c)
-            for cell in col:
-                cell.add_reachables(col)
-
-        for b in range(9):
-            box = self.get_box(b)
-            for cell in box:
-                cell.add_reachables(box)
+        for r in self.regions:
+            for cell in r:
+                cell.add_reachables(r)
 
         for constraint in self.constraints:
             for cell in self.get_all_cells():
                 cell.add_reachables(constraint.reachable_cells(self, cell))
+        for constraint in self.constraints:
+            for cell in self.get_all_cells():
+                cell.add_reachables(constraint.reachable_cells(self, cell))
+
+    def _init_regions(self) -> None:
+        """Initialise the regions of the board."""
+        self.regions = (
+            [self._get_row(r) for r in range(9)]
+            + [self._get_col(c) for c in range(9)]
+            + [self._get_box(b) for b in range(9)]
+        )
+
+        for constraint in self.constraints:
+            self.regions.extend(constraint.get_regions())
+
+    def _get_row(self, r: int) -> set[Cell]:
+        """Return all cells in row ``r``.
+
+        Args:
+            r (int): The row index of the cells.
+
+        Returns:
+            set[Cell]: All cells in the specified row.
+        """
+        return set(self.grid[r])
+
+    def _get_col(self, c: int) -> set[Cell]:
+        """Return all cells in column ``c``.
+
+        Args:
+            c (int): The column index of the cells.
+
+        Returns:
+            set[Cell]: All cells in the specified column.
+        """
+        return {self.grid[r][c] for r in range(9)}
+
+    def _get_box(self, box_index: int) -> set[Cell]:
+        """Return all cells in box ``box_index`` (0..8).
+
+        Args:
+            box_index (int): The index of the box (0..8).
+
+        Returns:
+            set[Cell]: All cells in the specified box.
+        """
+        start_r = (box_index // 3) * 3
+        start_c = (box_index % 3) * 3
+        return {
+            self.grid[r][c]
+            for r in range(start_r, start_r + 3)
+            for c in range(start_c, start_c + 3)
+        }
 
     def add_constraints(self, *constraints: BaseConstraint) -> None:
         """Add constraints to the board and update reachability.
@@ -55,8 +99,7 @@ class Board:
         for c in constraints:
             self.logger.info(f"Adding constraint {c.__class__.__name__}")
             self.constraints.append(c)
-            for cell in self.get_all_cells():
-                cell.add_reachables(c.reachable_cells(self, cell))
+            self.regions.extend(c.get_regions())
             for cell in self.get_all_cells():
                 cell.add_reachables(c.reachable_cells(self, cell))
             for cell in self.get_all_cells():
@@ -73,45 +116,6 @@ class Board:
             Cell: The cell at the specified row and column.
         """
         return self.grid[row][col]
-
-    def get_row(self, r: int) -> list[Cell]:
-        """Return all cells in row ``r``.
-
-        Args:
-            r (int): The row index of the cells.
-
-        Returns:
-            List[Cell]: All cells in the specified row.
-        """
-        return list(self.grid[r])
-
-    def get_col(self, c: int) -> list[Cell]:
-        """Return all cells in column ``c``.
-
-        Args:
-            c (int): The column index of the cells.
-
-        Returns:
-            List[Cell]: All cells in the specified column.
-        """
-        return [self.grid[r][c] for r in range(9)]
-
-    def get_box(self, box_index: int) -> list[Cell]:
-        """Return all cells in box ``box_index`` (0..8).
-
-        Args:
-            box_index (int): The index of the box (0..8).
-
-        Returns:
-            List[Cell]: All cells in the specified box.
-        """
-        start_r = (box_index // 3) * 3
-        start_c = (box_index % 3) * 3
-        return [
-            self.grid[r][c]
-            for r in range(start_r, start_r + 3)
-            for c in range(start_c, start_c + 3)
-        ]
 
     def get_all_cells(self) -> Iterable[Cell]:
         """Yield all cells in the board row by row.
@@ -146,9 +150,9 @@ class Board:
             return len(values) == len(set(values))
 
         basic_valid = all(
-            region_valid(self.get_row(g))
-            and region_valid(self.get_col(g))
-            and region_valid(self.get_box(g))
+            region_valid(self._get_row(g))
+            and region_valid(self._get_col(g))
+            and region_valid(self._get_box(g))
             for g in range(9)
         )
         if not basic_valid:

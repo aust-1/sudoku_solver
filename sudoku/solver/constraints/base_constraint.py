@@ -52,3 +52,11 @@ class BaseConstraint(ABC):
             set[Cell]: A set of reachable cells.
         """
         return set()
+
+    def get_regions(self) -> list[set[Cell]]:  # noqa: PLR6301
+        """Get the regions defined by the constraint.
+
+        Returns:
+            list[set[Cell]]: A list of sets of cells representing the regions.
+        """
+        return []

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 class ConstraintStrategy(Solver):
     """Apply additional constraints to eliminate candidates."""
 
-    def apply(self, board: Board) -> bool:
+    def apply(self, board: Board) -> bool:  # noqa: PLR6301
         """Apply constraint strategies to the board.
 
         Args:

@@ -27,13 +27,8 @@ class EliminationStrategy(Solver):
             if val is not None:
                 for peer in cell.reachable_cells:
                     moved |= peer.eliminate(val)
-        regions = (
-            [board.get_row(i) for i in range(9)]
-            + [board.get_col(i) for i in range(9)]
-            + [board.get_box(i) for i in range(9)]
-        )
-        # FIXME: c'est pas les seules régions, diagonales, extrabox, bishop, etc. refact avec contraintes
-        for region in regions:
+
+        for region in board.regions:
             for digit in range(1, 10):
                 cells = [
                     cell
