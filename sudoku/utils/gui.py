@@ -60,14 +60,14 @@ class SudokuGUI:
 
     def _draw_line(
         self,
-        line: list[Cell] | set[Cell],
+        line: list[Cell],
         color: tuple[int, int, int, int],
         width: int,
     ) -> None:
         """Draw a line on the Sudoku board.
 
         Args:
-            line (list[Cell] | set[Cell]): The line to draw.
+            line (list[Cell]): The line to draw.
             color (tuple[int, int, int, int]): The color of the line.
             width (int): The width of the line.
         """
@@ -88,6 +88,47 @@ class SudokuGUI:
         )
         self.screen.blit(surf, (0, 0))
 
+    @staticmethod
+    def _order_diagonal(cells: set[Cell]) -> list[Cell]:
+        """Return cells ordered by diagonal adjacency.
+
+        Args:
+            cells (set[Cell]): The cells to order.
+
+        Returns:
+            list[Cell]: The ordered cells.
+        """
+        if not cells:
+            return []
+
+        neighbors: dict[Cell, set[Cell]] = {
+            cell: {
+                other
+                for other in cells
+                if abs(cell.row - other.row) == 1 and abs(cell.col - other.col) == 1
+            }
+            for cell in cells
+        }
+        start = next((c for c in cells if len(neighbors[c]) == 1), cells.pop())
+        ordered = [start]
+        visited = {start}
+        while len(ordered) < len(cells):
+            last = ordered[-1]
+            nxt = next((n for n in neighbors[last] if n not in visited), None)
+            if nxt is None:
+                break
+            ordered.append(nxt)
+            visited.add(nxt)
+
+        if len(ordered) < len(cells):
+            ordered.extend(
+                sorted(
+                    [c for c in cells if c not in visited],
+                    key=lambda x: (x.row, x.col),
+                ),
+            )
+        return ordered
+
     def _draw_constraints(self) -> None:
         """Draw the constraints on the board."""
         for constraint in self.board.constraints:
@@ -99,7 +140,7 @@ class SudokuGUI:
                 )
             elif isinstance(constraint, BishopConstraint):
                 self._draw_line(
-                    constraint.bishop,
+                    self._order_diagonal(constraint.bishop),
                     (0, 130, 255, 255),
                     2,
                 )

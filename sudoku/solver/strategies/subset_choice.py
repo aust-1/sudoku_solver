@@ -58,9 +58,7 @@ class _BaseSubsetChoiceStrategy(Solver):
                     for cell in region:
                         if cell not in cells and not cell.is_filled():
                             for val in cand_set:
-                                if val in cell.candidates:
-                                    cell.eliminate(val)
-                                    moved = True
+                                moved |= cell.eliminate(val)
         return moved
 
 

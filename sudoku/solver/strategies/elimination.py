@@ -23,10 +23,28 @@ class EliminationStrategy(Solver):
         self.logger.info("EliminationStrategy running")
         moved = False
         for cell in board.get_all_cells():
-            if cell.is_filled():
-                val = cell.value
+            val = cell.value
+            if val is not None:
                 for peer in cell.reachable_cells:
-                    if val in peer.candidates:
-                        peer.eliminate(val)
-                        moved = True
+                    moved |= peer.eliminate(val)
+        regions = (
+            [board.get_row(i) for i in range(9)]
+            + [board.get_col(i) for i in range(9)]
+            + [board.get_box(i) for i in range(9)]
+        )
+        # FIXME: c'est pas les seules régions, diagonales, extrabox, bishop, etc. refact avec contraintes
+        for region in regions:
+            for digit in range(1, 10):
+                cells = [
+                    cell
+                    for cell in region
+                    if not cell.is_filled() and digit in cell.candidates
+                ]
+                if len(cells) == 0:
+                    continue
+                reachable_cells = set(board.get_all_cells())
+                for cell in cells:
+                    reachable_cells.intersection_update(cell.reachable_cells)
+                for peer in reachable_cells:
+                    moved |= peer.eliminate(digit)
         return moved

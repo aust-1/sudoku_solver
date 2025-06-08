@@ -48,7 +48,7 @@ class CloneConstraint(BaseConstraint):
         eliminated = False
         values = set(range(1, 10))
         for cell in self.clone:
-            values = values.intersection(cell.candidates)
+            values.intersection_update(cell.candidates)
         for i in range(1, 10):
             if i not in values:
                 for cell in self.clone:
