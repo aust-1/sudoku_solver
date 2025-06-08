@@ -167,7 +167,9 @@ class Board:
         Returns:
             bool: `True` if every cell has a value, `False` otherwise.
         """
-        return all(cell.is_filled() for cell in self.get_all_cells())
+        return (
+            all(cell.is_filled() for cell in self.get_all_cells()) and self.is_valid()
+        )
 
     def load_from(self, input_str: str) -> None:
         """Load digits into the board from a string (0 for empty).

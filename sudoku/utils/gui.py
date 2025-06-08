@@ -109,7 +109,7 @@ class SudokuGUI:
             }
             for cell in cells
         }
-        start = next((c for c in cells if len(neighbors[c]) == 1), cells.pop())
+        start = next(c for c in cells if len(neighbors[c]) == 1)
         ordered = [start]
         visited = {start}
         while len(ordered) < len(cells):
