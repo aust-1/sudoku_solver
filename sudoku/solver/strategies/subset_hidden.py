@@ -9,11 +9,14 @@ if TYPE_CHECKING:
     from sudoku.models import Board, Cell
 
 
-class _BaseSubsetCandidateStrategy(Solver):
-    """Base class for hidden subset strategies."""
+class _BaseHiddenSubsetStrategy(Solver):
+    """Base class for hidden subset strategies.
+
+    Provides shared logic for hidden subsets of size N.
+    """
 
     def __init__(self, size: int) -> None:
-        """Initialise the base subset candidate strategy.
+        """Initialise the base subset hidden strategy.
 
         Args:
             size (int): The size of the subset.
@@ -22,7 +25,7 @@ class _BaseSubsetCandidateStrategy(Solver):
         super().__init__()
 
     def apply(self, board: Board) -> bool:
-        """Apply the hidden subset candidate strategy.
+        """Apply the hidden subset strategy.
 
         Args:
             board (Board): The Sudoku board.
@@ -32,8 +35,10 @@ class _BaseSubsetCandidateStrategy(Solver):
         """
         self.logger.info(f"{self.__class__.__name__} running")
         moved = False
-        digits: list[int] = list(range(1, 10))
+        digits: list[int] = list(range(1, board.size + 1))
         for region in board.regions:
+            if len(region) != board.size:
+                continue
             digit_cells: dict[int, set[Cell]] = {d: set() for d in digits}
             for cell in region:
                 if cell.is_filled():
@@ -59,25 +64,37 @@ class _BaseSubsetCandidateStrategy(Solver):
         return moved
 
 
-class PairCandidateStrategy(_BaseSubsetCandidateStrategy):
-    """Pair candidate strategy for hidden subsets."""
+class HiddenPairStrategy(_BaseHiddenSubsetStrategy):
+    """Hidden pair strategy.
+
+    If a pair of specific digits appear as candidates in exactly two cells within a
+    single region, remove other candidates from those cells.
+    """
 
     def __init__(self) -> None:
-        """Initialise the pair candidate strategy."""
+        """Initialise the pair hidden strategy."""
         super().__init__(2)
 
 
-class TripleCandidateStrategy(_BaseSubsetCandidateStrategy):
-    """Triple candidate strategy for hidden subsets."""
+class HiddenTripleStrategy(_BaseHiddenSubsetStrategy):
+    """Hidden triple strategy.
+
+    If a triplet of specific digits appear as candidates in exactly three cells within a
+    single region, remove other candidates from those cells.
+    """
 
     def __init__(self) -> None:
-        """Initialise the triple candidate strategy."""
+        """Initialise the triple hidden strategy."""
         super().__init__(3)
 
 
-class QuadCandidateStrategy(_BaseSubsetCandidateStrategy):
-    """Quad candidate strategy for hidden subsets."""
+class HiddenQuadStrategy(_BaseHiddenSubsetStrategy):
+    """Hidden quad strategy.
+
+    If a quadruplet of specific digits appear as candidates in exactly four cells
+    within a single region, remove other candidates from those cells.
+    """
 
     def __init__(self) -> None:
-        """Initialise the quad candidate strategy."""
+        """Initialise the quad hidden strategy."""
         super().__init__(4)

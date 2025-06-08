@@ -8,10 +8,18 @@ if TYPE_CHECKING:
     from sudoku.models import Board, Cell
 
 
-class _BaseSubsetChoiceStrategy(Solver):
-    """Base class for naked subset strategies."""
+class _BaseNakedSubsetStrategy(Solver):
+    """Base class for naked subset strategies.
+
+    Provides shared logic for naked subsets of size N.
+    """
 
     def __init__(self, size: int) -> None:
+        """Initialise the base naked subset strategy.
+
+        Args:
+            size (int): The size of the subset.
+        """
         self.size = size
         super().__init__()
 
@@ -41,11 +49,11 @@ class _BaseSubsetChoiceStrategy(Solver):
         return moved
 
 
-class PairChoiceStrategy(_BaseSubsetChoiceStrategy):
-    """Pair choice strategy.
+class NakedPairStrategy(_BaseNakedSubsetStrategy):
+    """Naked pair strategy.
 
-    If a pair of candidates appears only in two cells,
-    eliminate them from other cells in the region.
+    If a pair of cells in the same region have only two identical digits as candidates,
+    remove those candidates from other cells in the region.
     """
 
     def __init__(self) -> None:
@@ -53,11 +61,11 @@ class PairChoiceStrategy(_BaseSubsetChoiceStrategy):
         super().__init__(2)
 
 
-class TripleChoiceStrategy(_BaseSubsetChoiceStrategy):
-    """Triple choice strategy.
+class NakedTripleStrategy(_BaseNakedSubsetStrategy):
+    """Naked triple strategy.
 
-    If a triplet of candidates appears only in three cells, eliminate them from other
-    cells in the region.
+    If a triplet of cells in the same region have only three identical digits as
+    candidates, remove those candidates from other cells in the region.
     """
 
     def __init__(self) -> None:
@@ -65,11 +73,11 @@ class TripleChoiceStrategy(_BaseSubsetChoiceStrategy):
         super().__init__(3)
 
 
-class QuadChoiceStrategy(_BaseSubsetChoiceStrategy):
-    """Quad choice strategy.
+class NakedQuadStrategy(_BaseNakedSubsetStrategy):
+    """Naked quad strategy.
 
-    If a quadruplet of candidates appears only in four cells, eliminate them from other
-    cells in the region.
+    If a quadruplet of cells in the same region have only four identical digits as
+    candidates, remove those candidates from other cells in the region.
     """
 
     def __init__(self) -> None:

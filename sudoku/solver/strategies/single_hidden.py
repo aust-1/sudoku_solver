@@ -9,8 +9,8 @@ if TYPE_CHECKING:
     from sudoku.models import Board
 
 
-class SingleChoiceStrategy(Solver):
-    """If a digit appears as candidate only once in a region, fill it."""
+class HiddenSingleStrategy(Solver):
+    """If a digit appears as a candidate only once in a region, fill it."""
 
     def apply(self, board: Board) -> bool:
         """Fill cells with candidates that appear only once in their region.
@@ -21,9 +21,11 @@ class SingleChoiceStrategy(Solver):
         Returns:
             bool: `True` if any cells were filled, `False` otherwise.
         """
-        self.logger.info("SingleChoiceStrategy running")
+        self.logger.info("HiddenSingleStrategy running")
         moved = False
         for region in board.regions:
+            if len(region) != board.size:
+                continue
             counter = Counter(cand for cell in region for cand in cell.candidates)
             for cell in region:
                 if not cell.is_filled():

@@ -29,7 +29,9 @@ class EliminationStrategy(Solver):
                     moved |= peer.eliminate(val)
 
         for region in board.regions:
-            for digit in range(1, 10):
+            if len(region) != board.size:
+                continue
+            for digit in range(1, board.size + 1):
                 cells = [
                     cell
                     for cell in region

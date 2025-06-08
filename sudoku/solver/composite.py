@@ -7,14 +7,14 @@ from sudoku.solver.solver import Solver
 from sudoku.solver.strategies import (
     ConstraintStrategy,
     EliminationStrategy,
-    PairCandidateStrategy,
-    PairChoiceStrategy,
-    QuadCandidateStrategy,
-    QuadChoiceStrategy,
-    SingleCandidateStrategy,
-    SingleChoiceStrategy,
-    TripleCandidateStrategy,
-    TripleChoiceStrategy,
+    HiddenPairStrategy,
+    HiddenQuadStrategy,
+    HiddenSingleStrategy,
+    HiddenTripleStrategy,
+    NakedPairStrategy,
+    NakedQuadStrategy,
+    NakedSingleStrategy,
+    NakedTripleStrategy,
 )
 
 if TYPE_CHECKING:
@@ -37,14 +37,14 @@ class CompositeSolver(Solver):
         super().__init__()
         self.strategies = strategies or [
             EliminationStrategy(),
-            SingleCandidateStrategy(),
-            SingleChoiceStrategy(),
-            PairChoiceStrategy(),
-            PairCandidateStrategy(),
-            TripleChoiceStrategy(),
-            TripleCandidateStrategy(),
-            QuadChoiceStrategy(),
-            QuadCandidateStrategy(),
+            HiddenSingleStrategy(),
+            NakedSingleStrategy(),
+            HiddenPairStrategy(),
+            NakedPairStrategy(),
+            HiddenTripleStrategy(),
+            NakedTripleStrategy(),
+            HiddenQuadStrategy(),
+            NakedQuadStrategy(),
             ConstraintStrategy(),
         ]
 

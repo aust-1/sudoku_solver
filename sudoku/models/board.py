@@ -15,9 +15,16 @@ if TYPE_CHECKING:
 class Board:
     """Represents the Sudoku board as a 9x9 grid of :class:`Cell` objects."""
 
-    def __init__(self) -> None:
-        """Create an empty board filled with cells."""
-        self.grid: list[list[Cell]] = [[Cell(r, c) for c in range(9)] for r in range(9)]
+    def __init__(self, size: int) -> None:
+        """Initialize the Sudoku board.
+
+        Args:
+            size (int): The size of the Sudoku board (e.g., 9 for a 9x9 board).
+        """
+        self.size = size
+        self.grid: list[list[Cell]] = [
+            [Cell(r, c, self.size) for c in range(self.size)] for r in range(self.size)
+        ]
         self.constraints: list[BaseConstraint] = []
         self.regions: list[set[Cell]] = []
         self.logger = Logger(identifier="Board", follow_logger_manager_rules=True)
@@ -43,9 +50,9 @@ class Board:
     def _init_regions(self) -> None:
         """Initialise the regions of the board."""
         self.regions = (
-            [self._get_row(r) for r in range(9)]
-            + [self._get_col(c) for c in range(9)]
-            + [self._get_box(b) for b in range(9)]
+            [self._get_row(r) for r in range(self.size)]
+            + [self._get_col(c) for c in range(self.size)]
+            + [self._get_box(b) for b in range(self.size)]
         )
 
         for constraint in self.constraints:
@@ -71,7 +78,7 @@ class Board:
         Returns:
             set[Cell]: All cells in the specified column.
         """
-        return {self.grid[r][c] for r in range(9)}
+        return {self.grid[r][c] for r in range(self.size)}
 
     def _get_box(self, box_index: int) -> set[Cell]:
         """Return all cells in box ``box_index`` (0..8).
@@ -138,7 +145,7 @@ class Board:
         """
 
         def region_valid(cells: Iterable[Cell]) -> bool:
-            """Check if a region (row, column, or box) is valid.
+            """Check if a region (row, column, box, ...) is valid.
 
             Args:
                 cells (Iterable[Cell]): The cells in the region.
@@ -149,12 +156,7 @@ class Board:
             values = [c.value for c in cells if c.is_filled()]
             return len(values) == len(set(values))
 
-        basic_valid = all(
-            region_valid(self._get_row(g))
-            and region_valid(self._get_col(g))
-            and region_valid(self._get_box(g))
-            for g in range(9)
-        )
+        basic_valid = all(region_valid(r) for r in self.regions if len(r) == self.size)
         if not basic_valid:
             return False
         return all(constraint.check(self) for constraint in self.constraints)
@@ -175,9 +177,9 @@ class Board:
         """
         self.logger.info("Loading board from string")
         digits = [d for d in input_str if d.isdigit()]
-        for idx, d in enumerate(digits[:81]):
+        for idx, d in enumerate(digits[: self.size * self.size]):
             if d != "0":
-                r, c = divmod(idx, 9)
+                r, c = divmod(idx, self.size)
                 self.grid[r][c].set_value(int(d))
 
     # TODO: Load stylé fichier, interface ?
@@ -189,8 +191,8 @@ class Board:
             str: A string representation of the Sudoku board.
         """
         lines: list[str] = []
-        for r in range(9):
-            row = " ".join(str(self.grid[r][c]) for c in range(9))
+        for r in range(self.size):
+            row = " ".join(str(self.grid[r][c]) for c in range(self.size))
             lines.append(row)
         return "\n".join(lines)
 
@@ -200,9 +202,9 @@ class Board:
         Returns:
             Board: A deep copy of the board.
         """
-        board = Board()
-        for r in range(9):
-            for c in range(9):
+        board = Board(self.size)
+        for r in range(self.size):
+            for c in range(self.size):
                 cell = self.grid[r][c]
                 copy_cell = board.grid[r][c]
                 copy_cell.value = cell.value
@@ -242,7 +244,7 @@ class Board:
         Args:
             other (Board): The board to copy values from.
         """
-        for r in range(9):
-            for c in range(9):
+        for r in range(self.size):
+            for c in range(self.size):
                 self.grid[r][c].value = other.grid[r][c].value
                 self.grid[r][c].candidates = set(other.grid[r][c].candidates)

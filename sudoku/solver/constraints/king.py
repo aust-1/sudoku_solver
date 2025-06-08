@@ -11,11 +11,6 @@ if TYPE_CHECKING:
 class KingConstraint(BaseConstraint):
     """A class representing a king's movement constraint."""
 
-    def __init__(self) -> None:
-        """Initialize the king's movement constraint."""
-        super().__init__()
-        self.size = 9
-
     def check(self, board: Board) -> bool:
         """Check if the king's movement is valid.
 
@@ -25,8 +20,8 @@ class KingConstraint(BaseConstraint):
         Returns:
             bool: ``True`` if the king's movement is valid, ``False`` otherwise.
         """
-        for i in range(self.size):
-            for j in range(self.size):
+        for i in range(board.size):
+            for j in range(board.size):
                 value = board.get_cell(i, j).value
                 if value is not None:
                     neighbor_cells = self.reachable_cells(board, board.get_cell(i, j))
@@ -47,8 +42,8 @@ class KingConstraint(BaseConstraint):
                 ``False`` otherwise.
         """
         eliminated = False
-        for i in range(self.size):
-            for j in range(self.size):
+        for i in range(board.size):
+            for j in range(board.size):
                 value = board.get_cell(i, j).value
                 if value is not None:
                     neighbor_cells = self.reachable_cells(board, board.get_cell(i, j))
@@ -56,7 +51,7 @@ class KingConstraint(BaseConstraint):
                         eliminated |= cell.eliminate(value)
         return eliminated
 
-    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:
+    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:  # noqa: PLR6301
         """Get the reachable cells based on the constraint.
 
         Args:
@@ -70,8 +65,8 @@ class KingConstraint(BaseConstraint):
         for x in range(-1, 2):
             for y in range(-1, 2):
                 if (
-                    0 <= cell.row + x < self.size
-                    and 0 <= cell.col + y < self.size
+                    0 <= cell.row + x < board.size
+                    and 0 <= cell.col + y < board.size
                     and (x != 0 or y != 0)
                 ):
                     reachable.add(board.get_cell(cell.row + x, cell.col + y))

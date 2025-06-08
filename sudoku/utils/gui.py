@@ -25,7 +25,7 @@ class SudokuGUI:
         self.button_height = int(size / 2)
         pygame.init()
         self.screen = pygame.display.set_mode(
-            (size * 9, size * 9 + self.button_height + 20),
+            (size * board.size, size * board.size + self.button_height + 20),
         )
         pygame.display.set_caption("Sudoku")
         self.value_font = pygame.font.SysFont(None, int(size / 1.5))
@@ -37,7 +37,7 @@ class SudokuGUI:
     def _get_cell_at_pos(self, pos: tuple[int, int]) -> Cell | None:
         """Return the cell at the given screen position, if any."""
         x, y = pos
-        if x >= self.size * 9 or y >= self.size * 9:
+        if x >= self.size * self.board.size or y >= self.size * self.board.size:
             return None
         row = y // self.size
         col = x // self.size
@@ -147,27 +147,27 @@ class SudokuGUI:
 
     def _draw_grid(self) -> None:
         """Draw the Sudoku grid."""
-        for i in range(10):
+        for i in range(self.board.size + 1):
             width = 3 if i % 3 == 0 else 1
             pygame.draw.line(
                 self.screen,
                 (0, 0, 0),
                 (0, i * self.size),
-                (9 * self.size, i * self.size),
+                (self.board.size * self.size, i * self.size),
                 width,
             )
             pygame.draw.line(
                 self.screen,
                 (0, 0, 0),
                 (i * self.size, 0),
-                (i * self.size, 9 * self.size),
+                (i * self.size, self.board.size * self.size),
                 width,
             )
 
     def _draw_values(self) -> None:
         """Draw the values in the Sudoku grid."""
-        for r in range(9):
-            for c in range(9):
+        for r in range(self.board.size):
+            for c in range(self.board.size):
                 cell = self.board.get_cell(r, c)
                 x = c * self.size
                 y = r * self.size
@@ -176,7 +176,7 @@ class SudokuGUI:
                     rect = surf.get_rect(center=(x + self.size / 2, y + self.size / 2))
                     self.screen.blit(surf, rect)
                 else:
-                    for idx in range(1, 10):
+                    for idx in range(1, self.board.size + 1):
                         row = (idx - 1) // 3
                         col = (idx - 1) % 3
                         if idx in cell.candidates:
@@ -240,13 +240,13 @@ class SudokuGUI:
         clock = pygame.time.Clock()
         button_rect = pygame.Rect(
             self.size * 3,
-            self.size * 9 + 10,
+            self.size * self.board.size + 10,
             self.size * 3,
             self.button_height,
         )
         forward_button_rect = pygame.Rect(
             self.size * 6,
-            self.size * 9 + 10,
+            self.size * self.board.size + 10,
             self.size * 3,
             self.button_height,
         )

@@ -53,7 +53,7 @@ class BishopConstraint(BaseConstraint):
                     eliminated |= neighbor_cell.eliminate(value)
         return eliminated
 
-    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:
+    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:  # noqa: ARG002
         """Get the reachable cells based on the constraint.
 
         Args:

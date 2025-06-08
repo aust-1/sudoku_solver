@@ -11,11 +11,6 @@ if TYPE_CHECKING:
 class KnightConstraint(BaseConstraint):
     """A class representing a knight's movement constraint."""
 
-    def __init__(self) -> None:
-        """Initialize the knight's movement constraint."""
-        super().__init__()
-        self.size = 9
-
     def check(self, board: Board) -> bool:
         """Check if the knight's movement is valid.
 
@@ -25,8 +20,8 @@ class KnightConstraint(BaseConstraint):
         Returns:
             bool: ``True`` if the knight's movement is valid, ``False`` otherwise.
         """
-        for i in range(self.size):
-            for j in range(self.size):
+        for i in range(board.size):
+            for j in range(board.size):
                 value = board.get_cell(i, j).value
                 if value is not None:
                     reachable_cells = self.reachable_cells(board, board.get_cell(i, j))
@@ -48,8 +43,8 @@ class KnightConstraint(BaseConstraint):
                 ``False`` otherwise.
         """
         eliminated = False
-        for i in range(self.size):
-            for j in range(self.size):
+        for i in range(board.size):
+            for j in range(board.size):
                 value = board.get_cell(i, j).value
                 if value is not None:
                     reachable_cells = self.reachable_cells(board, board.get_cell(i, j))
@@ -57,7 +52,7 @@ class KnightConstraint(BaseConstraint):
                         eliminated |= cell.eliminate(value)
         return eliminated
 
-    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:
+    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:  # noqa: PLR6301
         """Get the reachable cells based on the constraint.
 
         Args:
@@ -75,6 +70,6 @@ class KnightConstraint(BaseConstraint):
                 for sign_y in signs:
                     x = cell.row + dx * sign_x
                     y = cell.col + dy * sign_y
-                    if 0 <= x < self.size and 0 <= y < self.size:
+                    if 0 <= x < board.size and 0 <= y < board.size:
                         reachable.add(board.get_cell(x, y))
         return reachable

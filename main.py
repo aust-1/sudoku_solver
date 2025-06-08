@@ -11,7 +11,7 @@ from sudoku.utils import SudokuGUI
 
 def main() -> None:
     """Load a puzzle, solve it and print the result."""
-    board = Board()
+    board = Board(9)
     puzzle = (
         "900000006"
         "000000000"

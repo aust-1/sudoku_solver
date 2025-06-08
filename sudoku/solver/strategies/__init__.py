@@ -2,30 +2,30 @@
 
 from sudoku.solver.strategies.constraint import ConstraintStrategy
 from sudoku.solver.strategies.elimination import EliminationStrategy
-from sudoku.solver.strategies.single_candidate import SingleCandidateStrategy
-from sudoku.solver.strategies.single_choice import SingleChoiceStrategy
-from sudoku.solver.strategies.subset_candidate import (
-    PairCandidateStrategy,
-    QuadCandidateStrategy,
-    TripleCandidateStrategy,
+from sudoku.solver.strategies.single_hidden import HiddenSingleStrategy
+from sudoku.solver.strategies.single_naked import NakedSingleStrategy
+from sudoku.solver.strategies.subset_hidden import (
+    HiddenPairStrategy,
+    HiddenQuadStrategy,
+    HiddenTripleStrategy,
 )
-from sudoku.solver.strategies.subset_choice import (
-    PairChoiceStrategy,
-    QuadChoiceStrategy,
-    TripleChoiceStrategy,
+from sudoku.solver.strategies.subset_naked import (
+    NakedPairStrategy,
+    NakedQuadStrategy,
+    NakedTripleStrategy,
 )
 
 __all__ = [
     "ConstraintStrategy",
     "EliminationStrategy",
-    "PairCandidateStrategy",
-    "PairChoiceStrategy",
-    "QuadCandidateStrategy",
-    "QuadChoiceStrategy",
-    "SingleCandidateStrategy",
-    "SingleChoiceStrategy",
-    "TripleCandidateStrategy",
-    "TripleChoiceStrategy",
+    "HiddenPairStrategy",
+    "HiddenQuadStrategy",
+    "HiddenSingleStrategy",
+    "HiddenTripleStrategy",
+    "NakedPairStrategy",
+    "NakedQuadStrategy",
+    "NakedSingleStrategy",
+    "NakedTripleStrategy",
 ]
 
 

@@ -34,7 +34,7 @@ class CloneConstraint(BaseConstraint):
                 values.add(cell.value)
         return len(values) <= 1
 
-    def eliminate(self, board: Board) -> bool:  # noqa: ARG002
+    def eliminate(self, board: Board) -> bool:
         """Automatically complete the clone constraint on the given board.
 
         Args:
@@ -46,10 +46,10 @@ class CloneConstraint(BaseConstraint):
                 ``False`` otherwise.
         """
         eliminated = False
-        values = set(range(1, 10))
+        values = set(range(1, board.size + 1))
         for cell in self.clone:
             values.intersection_update(cell.candidates)
-        for i in range(1, 10):
+        for i in range(1, board.size + 1):
             if i not in values:
                 for cell in self.clone:
                     eliminated |= cell.eliminate(i)
