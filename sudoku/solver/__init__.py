@@ -2,7 +2,9 @@
 
 from sudoku.solver.backtracking import BacktrackingSolver
 from sudoku.solver.composite import CompositeSolver
-from sudoku.solver.constrainst import (
+from sudoku.solver.constraints import (
+    BaseConstraint,
+    BishopConstraint,
     CloneConstraint,
     CloneZoneConstraint,
     KingConstraint,
@@ -25,6 +27,8 @@ from sudoku.solver.strategies import (
 
 __all__ = [
     "BacktrackingSolver",
+    "BaseConstraint",
+    "BishopConstraint",
     "CloneConstraint",
     "CloneZoneConstraint",
     "CompositeSolver",

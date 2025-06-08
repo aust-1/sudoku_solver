@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import pygame
 
-from sudoku.solver import PalindromeConstraint, Solver
+from sudoku.solver import BishopConstraint, PalindromeConstraint, Solver
 
 if TYPE_CHECKING:
     from sudoku.models import Board, Cell
@@ -51,33 +51,40 @@ class SudokuGUI:
         highlight.fill((255, 255, 0, 80))
         for cell in self.highlighted_cells:
             rect = pygame.Rect(
-                left=cell.col * self.size,
-                top=cell.row * self.size,
-                width=self.size,
-                height=self.size,
+                cell.col * self.size,
+                cell.row * self.size,
+                self.size,
+                self.size,
             )
             self.screen.blit(highlight, rect)
 
-    def _draw_palindrome(self, constraint: PalindromeConstraint) -> None:
-        """Draw a palindrome constraint as a translucent blue line.
+    def _draw_line(
+        self,
+        line: list[Cell] | set[Cell],
+        color: tuple[int, int, int, int],
+        width: int,
+    ) -> None:
+        """Draw a line on the Sudoku board.
 
         Args:
-            constraint (PalindromeConstraint): The palindrome constraint to draw.
+            line (list[Cell] | set[Cell]): The line to draw.
+            color (tuple[int, int, int, int]): The color of the line.
+            width (int): The width of the line.
         """
         points = [
             (
                 cell.col * self.size + self.size / 2,
                 cell.row * self.size + self.size / 2,
             )
-            for cell in constraint.palindrome
+            for cell in line
         ]
         surf = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
         pygame.draw.lines(
             surf,
-            (100, 100, 255, 120),
+            color,
             closed=False,
             points=points,
-            width=5,
+            width=width,
         )
         self.screen.blit(surf, (0, 0))
 
@@ -85,7 +92,17 @@ class SudokuGUI:
         """Draw the constraints on the board."""
         for constraint in self.board.constraints:
             if isinstance(constraint, PalindromeConstraint):
-                self._draw_palindrome(constraint)
+                self._draw_line(
+                    constraint.palindrome,
+                    (0, 140, 255, 120),
+                    5,
+                )
+            elif isinstance(constraint, BishopConstraint):
+                self._draw_line(
+                    constraint.bishop,
+                    (0, 130, 255, 255),
+                    2,
+                )
 
     def _draw_grid(self) -> None:
         """Draw the Sudoku grid."""

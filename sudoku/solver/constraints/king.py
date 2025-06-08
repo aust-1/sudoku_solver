@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from sudoku.solver.constrainst.base_constraint import BaseConstraint
+from sudoku.solver.constraints.base_constraint import BaseConstraint
 
 if TYPE_CHECKING:
     from sudoku.models import Board, Cell

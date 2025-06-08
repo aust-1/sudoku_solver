@@ -1,14 +1,16 @@
 """Model classes for Sudoku constraints."""
 
-from sudoku.solver.constrainst.base_constraint import BaseConstraint
-from sudoku.solver.constrainst.clone_constraint import CloneConstraint
-from sudoku.solver.constrainst.clone_zone_constraint import CloneZoneConstraint
-from sudoku.solver.constrainst.king_constraint import KingConstraint
-from sudoku.solver.constrainst.knight_constraint import KnightConstraint
-from sudoku.solver.constrainst.palindrome_constraint import PalindromeConstraint
+from sudoku.solver.constraints.base_constraint import BaseConstraint
+from sudoku.solver.constraints.bishop import BishopConstraint
+from sudoku.solver.constraints.clone import CloneConstraint
+from sudoku.solver.constraints.clone_zone_constraint import CloneZoneConstraint
+from sudoku.solver.constraints.king import KingConstraint
+from sudoku.solver.constraints.knight import KnightConstraint
+from sudoku.solver.constraints.palindrome import PalindromeConstraint
 
 __all__ = [
     "BaseConstraint",
+    "BishopConstraint",
     "CloneConstraint",
     "CloneZoneConstraint",
     "KingConstraint",
@@ -19,7 +21,6 @@ __all__ = [
 # TODO: Arrow
 # TODO: Ascending Sequences
 # TODO: Between Lines
-# TODO: Bishop
 # TODO: Consecutive
 # TODO: Couples
 # TODO: Diagonal

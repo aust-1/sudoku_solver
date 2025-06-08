@@ -9,7 +9,7 @@ from sudoku.models import Cell
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from sudoku.solver.constrainst.base_constraint import BaseConstraint
+    from sudoku.solver.constraints.base_constraint import BaseConstraint
 
 
 class Board:
@@ -46,20 +46,21 @@ class Board:
             for cell in self.get_all_cells():
                 cell.add_reachables(constraint.reachable_cells(self, cell))
 
-    def add_constraint(self, constraint: BaseConstraint) -> None:
-        """Add a constraint to the board and update reachability.
+    def add_constraints(self, *constraints: BaseConstraint) -> None:
+        """Add constraints to the board and update reachability.
 
         Args:
-            constraint (BaseConstraint): The constraint to add.
+            *constraints (BaseConstraint): The constraints to add.
         """
-        self.logger.info(f"Adding constraint {constraint.__class__.__name__}")
-        self.constraints.append(constraint)
-        for cell in self.get_all_cells():
-            cell.add_reachables(constraint.reachable_cells(self, cell))
-        for cell in self.get_all_cells():
-            cell.add_reachables(constraint.reachable_cells(self, cell))
-        for cell in self.get_all_cells():
-            cell.add_reachables(constraint.reachable_cells(self, cell))
+        for c in constraints:
+            self.logger.info(f"Adding constraint {c.__class__.__name__}")
+            self.constraints.append(c)
+            for cell in self.get_all_cells():
+                cell.add_reachables(c.reachable_cells(self, cell))
+            for cell in self.get_all_cells():
+                cell.add_reachables(c.reachable_cells(self, cell))
+            for cell in self.get_all_cells():
+                cell.add_reachables(c.reachable_cells(self, cell))
 
     def get_cell(self, row: int, col: int) -> Cell:
         """Return the cell at ``row``, ``col``.
@@ -215,20 +216,20 @@ class Board:
         for constraint in self.constraints:
             if isinstance(constraint, CloneConstraint):
                 cells = {board.get_cell(c.row, c.col) for c in constraint.clone}
-                board.add_constraint(CloneConstraint(cells))
+                board.add_constraints(CloneConstraint(cells))
             elif isinstance(constraint, CloneZoneConstraint):
                 for clone_constraint in constraint.clone_constraints:
                     cells = {
                         board.get_cell(c.row, c.col) for c in clone_constraint.clone
                     }
-                    board.add_constraint(CloneConstraint(cells))
+                    board.add_constraints(CloneConstraint(cells))
             elif isinstance(constraint, PalindromeConstraint):
                 cells = [board.get_cell(c.row, c.col) for c in constraint.palindrome]
-                board.add_constraint(PalindromeConstraint(cells))
+                board.add_constraints(PalindromeConstraint(cells))
             elif isinstance(constraint, KingConstraint):
-                board.add_constraint(KingConstraint())
+                board.add_constraints(KingConstraint())
             elif isinstance(constraint, KnightConstraint):
-                board.add_constraint(KnightConstraint())
+                board.add_constraints(KnightConstraint())
         return board
 
     def copy_values_from(self, other: Board) -> None:
