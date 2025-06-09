@@ -15,6 +15,7 @@ from sudoku.solver.strategies import (
     NakedQuadStrategy,
     NakedSingleStrategy,
     NakedTripleStrategy,
+    XWingStrategy,
 )
 
 if TYPE_CHECKING:
@@ -45,6 +46,7 @@ class CompositeSolver(Solver):
             NakedTripleStrategy(),
             HiddenQuadStrategy(),
             NakedQuadStrategy(),
+            XWingStrategy(),
             ConstraintStrategy(),
         ]
 

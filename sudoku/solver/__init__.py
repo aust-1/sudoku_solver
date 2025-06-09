@@ -23,6 +23,7 @@ from sudoku.solver.strategies import (
     NakedQuadStrategy,
     NakedSingleStrategy,
     NakedTripleStrategy,
+    XWingStrategy,
 )
 
 __all__ = [
@@ -46,4 +47,5 @@ __all__ = [
     "NakedTripleStrategy",
     "PalindromeConstraint",
     "Solver",
+    "XWingStrategy",
 ]

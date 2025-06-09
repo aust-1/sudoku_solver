@@ -14,6 +14,7 @@ from sudoku.solver.strategies.subset_naked import (
     NakedQuadStrategy,
     NakedTripleStrategy,
 )
+from sudoku.solver.strategies.x_wing import XWingStrategy
 
 __all__ = [
     "ConstraintStrategy",
@@ -26,6 +27,7 @@ __all__ = [
     "NakedQuadStrategy",
     "NakedSingleStrategy",
     "NakedTripleStrategy",
+    "XWingStrategy",
 ]
 
 
@@ -47,7 +49,6 @@ __all__ = [
 # TODO: W-Wing
 # TODO: WXYZ Wing
 # TODO: X-Cycles
-# TODO: X-Wing
 # TODO: XY-Chain
 # TODO: XY-Wing
 # TODO: XYZ-Wing
