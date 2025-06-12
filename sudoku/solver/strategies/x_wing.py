@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from itertools import combinations
 from typing import TYPE_CHECKING
 
 from sudoku.solver.solver import Solver
 
 if TYPE_CHECKING:
-    from sudoku.models import Board
+    from sudoku.models import Board, Cell
 
 
 class XWingStrategy(Solver):
@@ -25,52 +24,46 @@ class XWingStrategy(Solver):
         moved = False
         digits = range(1, board.size + 1)
 
-        for digit in digits:
-            row_candidates: dict[int, tuple[int, int]] = {}
-            for r in range(board.size):
-                cols = [
-                    c
-                    for c in range(board.size)
-                    if (
-                        not board.get_cell(r, c).is_filled()
-                        and digit in board.get_cell(r, c).candidates
-                    )
-                ]
-                if len(cols) == 2:
-                    row_candidates[r] = (cols[0], cols[1])
-            for r1, r2 in combinations(row_candidates, 2):
-                if row_candidates[r1] == row_candidates[r2]:
-                    c1, c2 = row_candidates[r1]
-                    for r in range(board.size):
-                        if r in {r1, r2}:
-                            continue
-                        for c in (c1, c2):
-                            cell = board.get_cell(r, c)
-                            if cell.eliminate(digit):
-                                moved = True
+        regions = [r for r in board.regions if len(r) == board.size]
 
         for digit in digits:
-            col_candidates: dict[int, tuple[int, int]] = {}
-            for c in range(board.size):
-                rows = [
-                    r
-                    for r in range(board.size)
-                    if (
-                        not board.get_cell(r, c).is_filled()
-                        and digit in board.get_cell(r, c).candidates
-                    )
+            candidate_pairs: list[tuple[Cell, Cell]] = []
+            for region in regions:
+                cells = [
+                    cell
+                    for cell in region
+                    if not cell.is_filled() and digit in cell.candidates
                 ]
-                if len(rows) == 2:
-                    col_candidates[c] = (rows[0], rows[1])
-            for c1, c2 in combinations(col_candidates, 2):
-                if col_candidates[c1] == col_candidates[c2]:
-                    r1, r2 = col_candidates[c1]
-                    for c in range(board.size):
-                        if c in {c1, c2}:
-                            continue
-                        for r in (r1, r2):
-                            cell = board.get_cell(r, c)
-                            if cell.eliminate(digit):
-                                moved = True
+                if len(cells) == 2:  # noqa: PLR2004
+                    candidate_pairs.append((cells[0], cells[1]))
+
+            for i in range(len(candidate_pairs)):
+                (a1, b1) = candidate_pairs[i]
+                for j in range(i + 1, len(candidate_pairs)):
+                    (a2, b2) = candidate_pairs[j]
+
+                    targets1 = a1.reachable_cells.copy()
+                    targets2 = b1.reachable_cells.copy()
+
+                    if a2 in a1.reachable_cells and b2 in b1.reachable_cells:
+                        targets1.intersection_update(a2.reachable_cells)
+                        targets2.intersection_update(b2.reachable_cells)
+                    elif a2 in b1.reachable_cells and b2 in a1.reachable_cells:
+                        targets1.intersection_update(b2.reachable_cells)
+                        targets2.intersection_update(a2.reachable_cells)
+                    else:
+                        continue
+
+                    targets = (targets1.union(targets2)).difference(
+                        {
+                            a1,
+                            b1,
+                            a2,
+                            b2,
+                        }
+                    )
+                    for cell in targets:
+                        if cell.eliminate(digit):
+                            moved = True
 
         return moved
