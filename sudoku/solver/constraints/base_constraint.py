@@ -40,8 +40,7 @@ class BaseConstraint(ABC):
         msg = "Subclasses should implement this method."
         raise NotImplementedError(msg)
 
-    @abstractmethod
-    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:
+    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:  # noqa: PLR6301, ARG002
         """Get the reachable cells based on the constraint.
 
         Args:

@@ -24,6 +24,18 @@ class _BaseHiddenSubsetStrategy(Solver):
         self.size = size
         super().__init__()
 
+    @staticmethod
+    def _eliminate_candidates(
+        cells: set[Cell],
+        combo: tuple[int, ...],
+    ) -> bool:
+        moved = False
+        for cell in cells:
+            for val in list(cell.candidates):
+                if val not in combo:
+                    moved |= cell.eliminate(val)
+        return moved
+
     def apply(self, board: Board) -> bool:
         """Apply the hidden subset strategy.
 
@@ -57,10 +69,7 @@ class _BaseHiddenSubsetStrategy(Solver):
                     and 1 <= len(digit_cells[d]) <= self.size
                     for d in combo
                 ):
-                    for cell in cells_union:
-                        for val in list(cell.candidates):
-                            if val not in combo:
-                                moved |= cell.eliminate(val)
+                    moved |= self._eliminate_candidates(cells_union, combo)
         return moved
 
 

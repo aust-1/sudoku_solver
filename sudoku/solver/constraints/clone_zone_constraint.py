@@ -26,8 +26,8 @@ class CloneZoneConstraint(BaseConstraint):
 
         self.clone_constraints: list[CloneConstraint] = []
         for i in range(len(self.zones[0])):
-            zone = {self.zones[j][i] for j in range(len(self.zones))}
-            self.clone_constraints.append(CloneConstraint(zone))
+            column_cells: set[Cell] = {self.zones[j][i] for j in range(len(self.zones))}
+            self.clone_constraints.append(CloneConstraint(column_cells))
 
     def check(self, board: Board) -> bool:
         """Check if the clones constraint is satisfied.

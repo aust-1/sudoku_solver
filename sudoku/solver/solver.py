@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from loggerplusplus import Logger
+from loggerplusplus import Logger  # type: ignore[import-untyped]
 
 if TYPE_CHECKING:
     from sudoku.models import Board

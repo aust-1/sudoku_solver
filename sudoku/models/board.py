@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from loggerplusplus import Logger
+from loggerplusplus import Logger  # type: ignore[import-untyped]
 
 from sudoku.models import Cell
 
@@ -10,6 +10,14 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from sudoku.solver.constraints.base_constraint import BaseConstraint
+
+from sudoku.solver import (
+    CloneConstraint,
+    CloneZoneConstraint,
+    KingConstraint,
+    KnightConstraint,
+    PalindromeConstraint,
+)
 
 
 class Board:
@@ -212,28 +220,18 @@ class Board:
                 copy_cell.value = cell.value
                 copy_cell.candidates = set(cell.candidates)
 
-        from sudoku.solver import (
-            CloneConstraint,
-            CloneZoneConstraint,
-            KingConstraint,
-            KnightConstraint,
-            PalindromeConstraint,
-        )
-
         board.constraints = []
         for constraint in self.constraints:
             if isinstance(constraint, CloneConstraint):
-                cells = {board.get_cell(c.row, c.col) for c in constraint.clone}
-                board.add_constraints(CloneConstraint(cells))
+                clone_cells = constraint.clone.copy()
+                board.add_constraints(CloneConstraint(clone_cells))
             elif isinstance(constraint, CloneZoneConstraint):
                 for clone_constraint in constraint.clone_constraints:
-                    cells = {
-                        board.get_cell(c.row, c.col) for c in clone_constraint.clone
-                    }
-                    board.add_constraints(CloneConstraint(cells))
+                    clone_cells = clone_constraint.clone.copy()
+                    board.add_constraints(CloneConstraint(clone_cells))
             elif isinstance(constraint, PalindromeConstraint):
-                cells = [board.get_cell(c.row, c.col) for c in constraint.palindrome]
-                board.add_constraints(PalindromeConstraint(cells))
+                palindrome_cells: list[Cell] = constraint.palindrome.copy()
+                board.add_constraints(PalindromeConstraint(palindrome_cells))
             elif isinstance(constraint, KingConstraint):
                 board.add_constraints(KingConstraint())
             elif isinstance(constraint, KnightConstraint):

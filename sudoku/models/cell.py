@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from loggerplusplus import Logger
+from loggerplusplus import Logger  # type: ignore[import-untyped]
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

@@ -23,6 +23,19 @@ class _BaseNakedSubsetStrategy(Solver):
         self.size = size
         super().__init__()
 
+    @staticmethod
+    def _remove_candidates(
+        region: set[Cell],
+        cells: list[Cell],
+        cand_set: frozenset[int],
+    ) -> bool:
+        moved = False
+        for cell in region:
+            if cell not in cells and not cell.is_filled():
+                for val in cand_set:
+                    moved |= cell.eliminate(val)
+        return moved
+
     def apply(self, board: Board) -> bool:
         """Apply the naked subset choice strategy.
 
@@ -42,10 +55,7 @@ class _BaseNakedSubsetStrategy(Solver):
                     groups.setdefault(key, []).append(cell)
             for cand_set, cells in groups.items():
                 if len(cells) == self.size:
-                    for cell in region:
-                        if cell not in cells and not cell.is_filled():
-                            for val in cand_set:
-                                moved |= cell.eliminate(val)
+                    moved |= self._remove_candidates(region, cells, cand_set)
         return moved
 
 
