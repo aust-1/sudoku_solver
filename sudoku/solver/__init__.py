@@ -10,6 +10,7 @@ from sudoku.solver.constraints import (
     KingConstraint,
     KnightConstraint,
     PalindromeConstraint,
+    ParityConstraint,
 )
 from sudoku.solver.solver import Solver
 from sudoku.solver.strategies import (
@@ -46,6 +47,7 @@ __all__ = [
     "NakedSingleStrategy",
     "NakedTripleStrategy",
     "PalindromeConstraint",
+    "ParityConstraint",
     "Solver",
     "XWingStrategy",
 ]
