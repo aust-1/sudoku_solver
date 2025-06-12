@@ -12,7 +12,7 @@ class Cell:
     """Represents a cell in the Sudoku grid."""
 
     def __init__(self, row: int, col: int, size: int) -> None:
-        """Initialise an empty cell at ``row``, ``col``.
+        """Initialise an empty cell at `row`, `col`.
 
         Args:
             row (int): The row index of the cell.

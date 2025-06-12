@@ -18,7 +18,7 @@ class XWingStrategy(Solver):
             board: The Sudoku board.
 
         Returns:
-            ``True`` if any candidates were eliminated, ``False`` otherwise.
+            `True` if any candidates were eliminated, `False` otherwise.
         """
         self.logger.info("XWingStrategy running")
         moved = False
@@ -60,7 +60,7 @@ class XWingStrategy(Solver):
                             b1,
                             a2,
                             b2,
-                        }
+                        },
                     )
                     for cell in targets:
                         if cell.eliminate(digit):

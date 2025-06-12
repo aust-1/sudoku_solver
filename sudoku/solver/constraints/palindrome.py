@@ -32,7 +32,7 @@ class PalindromeConstraint(BaseConstraint):
             board (Board): The Sudoku board to check.
 
         Returns:
-            bool: ``True`` if the constraint is satisfied, ``False`` otherwise.
+            bool: `True` if the constraint is satisfied, `False` otherwise.
         """
         return all(constraint.check(board) for constraint in self.clone_constraints)
 
@@ -44,8 +44,8 @@ class PalindromeConstraint(BaseConstraint):
 
         Returns:
             bool:
-                ``True`` if at least one candidate was eliminated,
-                ``False`` otherwise.
+                `True` if at least one candidate was eliminated,
+                `False` otherwise.
         """
         eliminated = False
         for constraint in self.clone_constraints:

@@ -42,8 +42,8 @@ class CloneConstraint(BaseConstraint):
 
         Returns:
             bool:
-                ``True`` if at least one candidate was eliminated,
-                ``False`` otherwise.
+                `True` if at least one candidate was eliminated,
+                `False` otherwise.
         """
         eliminated = False
         values = set(range(1, board.size + 1))

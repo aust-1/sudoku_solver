@@ -59,8 +59,8 @@ class _BaseHiddenSubsetStrategy(Solver):
                 ):
                     for cell in cells_union:
                         for val in list(cell.candidates):
-                            if val not in combo and cell.eliminate(val):
-                                moved = True
+                            if val not in combo:
+                                moved |= cell.eliminate(val)
         return moved
 
 

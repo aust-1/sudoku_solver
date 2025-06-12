@@ -19,8 +19,8 @@ class BaseConstraint(ABC):
 
         Returns:
             bool:
-                ``True`` if the constraint is satisfied,
-                ``False`` otherwise.
+                `True` if the constraint is satisfied,
+                `False` otherwise.
         """
         msg = "Subclasses should implement this method."
         raise NotImplementedError(msg)
@@ -34,8 +34,8 @@ class BaseConstraint(ABC):
 
         Returns:
             bool:
-                ``True`` if at least one candidate was eliminated,
-                ``False`` otherwise.
+                `True` if at least one candidate was eliminated,
+                `False` otherwise.
         """
         msg = "Subclasses should implement this method."
         raise NotImplementedError(msg)

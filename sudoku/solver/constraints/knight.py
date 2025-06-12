@@ -18,7 +18,7 @@ class KnightConstraint(BaseConstraint):
             board (Board): The Sudoku board.
 
         Returns:
-            bool: ``True`` if the knight's movement is valid, ``False`` otherwise.
+            bool: `True` if the knight's movement is valid, `False` otherwise.
         """
         for i in range(board.size):
             for j in range(board.size):
@@ -39,8 +39,8 @@ class KnightConstraint(BaseConstraint):
 
         Returns:
             bool:
-                ``True`` if at least one candidate was eliminated,
-                ``False`` otherwise.
+                `True` if at least one candidate was eliminated,
+                `False` otherwise.
         """
         eliminated = False
         for i in range(board.size):

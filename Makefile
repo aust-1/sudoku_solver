@@ -1,7 +1,8 @@
 .PHONY: format lint typecheck check all
 
 format:
-	@echo "▶ Formatage avec Black et isort..."
+	@echo "▶ Formatage avec Ruff, puis Black et isort..."
+	ruff format
 	black .
 	isort .
 

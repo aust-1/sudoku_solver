@@ -59,7 +59,7 @@ class Board:
             self.regions.extend(constraint.get_regions())
 
     def _get_row(self, r: int) -> set[Cell]:
-        """Return all cells in row ``r``.
+        """Return all cells in row `r`.
 
         Args:
             r (int): The row index of the cells.
@@ -70,7 +70,7 @@ class Board:
         return set(self.grid[r])
 
     def _get_col(self, c: int) -> set[Cell]:
-        """Return all cells in column ``c``.
+        """Return all cells in column `c`.
 
         Args:
             c (int): The column index of the cells.
@@ -81,7 +81,7 @@ class Board:
         return {self.grid[r][c] for r in range(self.size)}
 
     def _get_box(self, box_index: int) -> set[Cell]:
-        """Return all cells in box ``box_index`` (0..8).
+        """Return all cells in box `box_index` (0..8).
 
         Args:
             box_index (int): The index of the box (0..8).
@@ -113,7 +113,7 @@ class Board:
                 cell.add_reachables(c.reachable_cells(self, cell))
 
     def get_cell(self, row: int, col: int) -> Cell:
-        """Return the cell at ``row``, ``col``.
+        """Return the cell at `row`, `col`.
 
         Args:
             row (int): The row index of the cell.

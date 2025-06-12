@@ -23,7 +23,7 @@ class BishopConstraint(BaseConstraint):
             board (Board): The Sudoku board.
 
         Returns:
-            bool: ``True`` if the bishop's movement is valid, ``False`` otherwise.
+            bool: `True` if the bishop's movement is valid, `False` otherwise.
         """
         values: set[int] = set()
         for cell in self.bishop:
@@ -41,8 +41,8 @@ class BishopConstraint(BaseConstraint):
 
         Returns:
             bool:
-                ``True`` if at least one candidate was eliminated,
-                ``False`` otherwise.
+                `True` if at least one candidate was eliminated,
+                `False` otherwise.
         """
         eliminated = False
         for cell in self.bishop:
