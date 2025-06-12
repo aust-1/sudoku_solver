@@ -4,6 +4,7 @@ from sudoku.solver.constraints.base_constraint import BaseConstraint
 from sudoku.solver.constraints.bishop import BishopConstraint
 from sudoku.solver.constraints.clone import CloneConstraint
 from sudoku.solver.constraints.clone_zone_constraint import CloneZoneConstraint
+from sudoku.solver.constraints.even_odd import ParityConstraint
 from sudoku.solver.constraints.king import KingConstraint
 from sudoku.solver.constraints.knight import KnightConstraint
 from sudoku.solver.constraints.palindrome import PalindromeConstraint
@@ -16,6 +17,7 @@ __all__ = [
     "KingConstraint",
     "KnightConstraint",
     "PalindromeConstraint",
+    "ParityConstraint",
 ]
 
 # TODO: Arrow
@@ -25,7 +27,6 @@ __all__ = [
 # TODO: Couples
 # TODO: Diagonal
 # TODO: Dutch
-# TODO: Even-Odd
 # TODO: German
 # TODO: Greater Than
 # TODO: Jigsaw
