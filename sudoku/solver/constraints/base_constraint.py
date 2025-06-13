@@ -59,3 +59,7 @@ class BaseConstraint(ABC):
             list[set[Cell]]: A list of sets of cells representing the regions.
         """
         return []
+
+
+# TODO: add a method for the gui
+# TODO: add a method for the deep copy

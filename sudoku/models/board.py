@@ -14,9 +14,11 @@ if TYPE_CHECKING:
 from sudoku.solver import (
     CloneConstraint,
     CloneZoneConstraint,
+    KillerConstraint,
     KingConstraint,
     KnightConstraint,
     PalindromeConstraint,
+    ParityConstraint,
 )
 
 
@@ -232,6 +234,18 @@ class Board:
             elif isinstance(constraint, PalindromeConstraint):
                 palindrome_cells: list[Cell] = constraint.palindrome.copy()
                 board.add_constraints(PalindromeConstraint(palindrome_cells))
+            elif isinstance(constraint, KillerConstraint):
+                board.add_constraints(
+                    KillerConstraint(
+                        constraint.killer_cells.copy(),
+                        constraint.sum,
+                        self.size,
+                    ),
+                )
+            elif isinstance(constraint, ParityConstraint):
+                board.add_constraints(
+                    ParityConstraint(constraint.parity_cell, constraint.rest),
+                )
             elif isinstance(constraint, KingConstraint):
                 board.add_constraints(KingConstraint())
             elif isinstance(constraint, KnightConstraint):

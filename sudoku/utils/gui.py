@@ -144,6 +144,7 @@ class SudokuGUI:
                     (0, 130, 255, 255),
                     2,
                 )
+        # TODO: even odd constraints, killer constraints
 
     def _draw_grid(self) -> None:
         """Draw the Sudoku grid."""
