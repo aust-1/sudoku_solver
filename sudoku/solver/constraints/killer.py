@@ -22,10 +22,10 @@ class KillerConstraint(BaseConstraint):
         """
         self.killer_cells = cells
         self.sum = total_sum
-        self.possible_combinations: set[set[int]] = set()
+        self.possible_combinations: set[frozenset[int]] = set()
         for combination in combinations(range(1, board_size + 1), len(cells)):
             if sum(combination) == total_sum:
-                self.possible_combinations.add(set(combination))
+                self.possible_combinations.add(frozenset(combination))
 
     def check(self, board: Board) -> bool:  # noqa: ARG002
         """Check if the killer constraint is satisfied.
@@ -38,7 +38,79 @@ class KillerConstraint(BaseConstraint):
             == self.sum
         )
 
-    def eliminate(self, board: Board) -> bool:
+    def _eliminate_combinations(self) -> None:
+        """Eliminate invalid combinations based on the current state of the board."""
+        # Remove combinations that not contain filled cells
+        for cell in self.killer_cells:
+            if cell.is_filled():
+                value = cell.value
+                self.possible_combinations = {
+                    comb for comb in self.possible_combinations if value in comb
+                }
+
+        valid_combinations: set[frozenset[int]] = set()
+        for combination in self.possible_combinations:
+            # Check that each digit appears in at least one candidate cell
+            if not all(
+                any(
+                    (c.value == digit or digit in c.candidates)
+                    for c in self.killer_cells
+                )
+                for digit in combination
+            ):
+                continue
+
+            # Check that every cell can take at least one digit of the combination
+            if any(
+                not cell.is_filled()
+                and not any(d in cell.candidates for d in combination)
+                for cell in self.killer_cells
+            ):
+                continue
+
+            valid_combinations.add(frozenset(combination))
+        self.possible_combinations = valid_combinations
+
+    def _eliminate_candidates(self) -> bool:
+        """Eliminate candidates based on the current possible combinations.
+
+        Returns:
+            bool: `True` if any candidates were eliminated, `False` otherwise.
+        """
+        eliminated = False
+
+        # Force a digit if only one cell can contain it
+        digits = set(self.possible_combinations.pop())
+        for comb in self.possible_combinations:
+            digits.intersection_update(comb)
+
+        for digit in digits:
+            possible_cells = [
+                cell
+                for cell in self.killer_cells
+                if (not cell.is_filled() and digit in cell.candidates)
+                or cell.value == digit
+            ]
+            if len(possible_cells) == 1 and not possible_cells[0].is_filled():
+                possible_cells[0].set_value(digit)
+                eliminated = True
+
+        # Eliminate candidates that are not in any remaining combination
+        for cell in self.killer_cells:
+            if cell.is_filled():
+                continue
+            allowed_digits = {
+                d
+                for comb in self.possible_combinations
+                for d in comb
+                if d in cell.candidates
+            }
+            for digit in set(cell.candidates):
+                if digit not in allowed_digits:
+                    eliminated |= cell.eliminate(digit)
+        return eliminated
+
+    def eliminate(self, board: Board) -> bool:  # noqa: ARG002
         """Automatically complete the killer constraint on the given board.
 
         Args:
@@ -50,13 +122,10 @@ class KillerConstraint(BaseConstraint):
                 `False` otherwise.
         """
         eliminated = False
-        for cell in self.killer_cells:
-            if cell.is_filled():
-                for combination in self.possible_combinations:
-                    if cell.value not in combination:
-                        self.possible_combinations.remove(combination)
-                        # FIXME: delete the combination in the set fix, copy ?
-        # TODO: implement logic to obliger un nombre si le en fonction d'une région tel nombre est nécessairement dans la killer
-        # TODO: implement logic to eliminate candidates based on the remaining possible combinations
-        # TODO: implement logic to eliminate possible combinations that cannot be satisfied by the remaining cells
+
+        self._eliminate_combinations()
+
+        if self.possible_combinations:
+            eliminated |= self._eliminate_candidates()
+
         return eliminated

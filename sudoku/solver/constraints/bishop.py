@@ -14,7 +14,7 @@ class BishopConstraint(BaseConstraint):
     def __init__(self, bishop_cells: set[Cell]) -> None:
         """Initialize the bishop's movement constraint."""
         super().__init__()
-        self.bishop = bishop_cells
+        self.bishop_cells = bishop_cells
 
     def check(self, board: Board) -> bool:  # noqa: ARG002
         """Check if the bishop's movement is valid.
@@ -26,7 +26,7 @@ class BishopConstraint(BaseConstraint):
             bool: `True` if the bishop's movement is valid, `False` otherwise.
         """
         values: set[int] = set()
-        for cell in self.bishop:
+        for cell in self.bishop_cells:
             if cell.value is not None:
                 if cell.value in values:
                     return False
@@ -45,7 +45,7 @@ class BishopConstraint(BaseConstraint):
                 `False` otherwise.
         """
         eliminated = False
-        for cell in self.bishop:
+        for cell in self.bishop_cells:
             value = cell.value
             if value is not None:
                 neighbor_cells = self.reachable_cells(board, cell)
@@ -63,11 +63,11 @@ class BishopConstraint(BaseConstraint):
         Returns:
             set[Cell]: A set of reachable cells.
         """
-        if cell not in self.bishop:
+        if cell not in self.bishop_cells:
             return set()
 
         reachable: set[Cell] = set()
-        reachable.update(self.bishop)
+        reachable.update(self.bishop_cells)
         reachable.discard(cell)
 
         return reachable
@@ -78,4 +78,4 @@ class BishopConstraint(BaseConstraint):
         Returns:
             list[set[Cell]]: A list of sets of cells representing the regions.
         """
-        return [self.bishop]
+        return [self.bishop_cells]

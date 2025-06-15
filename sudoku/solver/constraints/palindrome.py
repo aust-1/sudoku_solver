@@ -18,7 +18,7 @@ class PalindromeConstraint(BaseConstraint):
         Args:
             palindrome_cells (list[Cell]): The list of cells to apply constraints to.
         """
-        self.palindrome: list[Cell] = palindrome_cells
+        self.palindrome_cells: list[Cell] = palindrome_cells
         self.clone_constraints: list[CloneConstraint] = []
         for i in range(len(palindrome_cells) // 2):
             self.clone_constraints.append(

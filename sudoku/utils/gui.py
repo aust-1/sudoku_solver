@@ -134,13 +134,13 @@ class SudokuGUI:
         for constraint in self.board.constraints:
             if isinstance(constraint, PalindromeConstraint):
                 self._draw_line(
-                    constraint.palindrome,
+                    constraint.palindrome_cells,
                     (0, 140, 255, 120),
                     5,
                 )
             elif isinstance(constraint, BishopConstraint):
                 self._draw_line(
-                    self._order_diagonal(constraint.bishop),
+                    self._order_diagonal(constraint.bishop_cells),
                     (0, 130, 255, 255),
                     2,
                 )

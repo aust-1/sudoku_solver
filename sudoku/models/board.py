@@ -225,14 +225,14 @@ class Board:
         board.constraints = []
         for constraint in self.constraints:
             if isinstance(constraint, CloneConstraint):
-                clone_cells = constraint.clone.copy()
+                clone_cells = constraint.clone_cells.copy()
                 board.add_constraints(CloneConstraint(clone_cells))
             elif isinstance(constraint, CloneZoneConstraint):
                 for clone_constraint in constraint.clone_constraints:
-                    clone_cells = clone_constraint.clone.copy()
+                    clone_cells = clone_constraint.clone_cells.copy()
                     board.add_constraints(CloneConstraint(clone_cells))
             elif isinstance(constraint, PalindromeConstraint):
-                palindrome_cells: list[Cell] = constraint.palindrome.copy()
+                palindrome_cells: list[Cell] = constraint.palindrome_cells.copy()
                 board.add_constraints(PalindromeConstraint(palindrome_cells))
             elif isinstance(constraint, KillerConstraint):
                 board.add_constraints(

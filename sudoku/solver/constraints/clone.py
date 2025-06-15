@@ -17,7 +17,7 @@ class CloneConstraint(BaseConstraint):
         Args:
             clone_cells (set[Cell]): The list of cells to apply constraints to.
         """
-        self.clone = clone_cells
+        self.clone_cells = clone_cells
 
     def check(self, board: Board) -> bool:  # noqa: ARG002
         """Check if the clone constraint is satisfied.
@@ -29,7 +29,7 @@ class CloneConstraint(BaseConstraint):
             bool: `True` if the constraint is satisfied, `False` otherwise.
         """
         values: set[int] = set()
-        for cell in self.clone:
+        for cell in self.clone_cells:
             if cell.value is not None:
                 values.add(cell.value)
         return len(values) <= 1
@@ -47,11 +47,11 @@ class CloneConstraint(BaseConstraint):
         """
         eliminated = False
         values = set(range(1, board.size + 1))
-        for cell in self.clone:
+        for cell in self.clone_cells:
             values.intersection_update(cell.candidates)
         for i in range(1, board.size + 1):
             if i not in values:
-                for cell in self.clone:
+                for cell in self.clone_cells:
                     eliminated |= cell.eliminate(i)
                     # HACK: gestion de la mémoire de ouf avec des pointeurs
         return eliminated
@@ -66,12 +66,12 @@ class CloneConstraint(BaseConstraint):
         Returns:
             set[Cell]: A set of reachable cells.
         """
-        if cell not in self.clone:
+        if cell not in self.clone_cells:
             return set()
 
         reachable: set[Cell] = set()
-        for clone_cell in self.clone:
+        for clone_cell in self.clone_cells:
             reachable.update(clone_cell.reachable_cells)
-        reachable.difference_update(self.clone)
+        reachable.difference_update(self.clone_cells)
 
         return reachable
