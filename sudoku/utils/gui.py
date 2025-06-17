@@ -276,3 +276,6 @@ class SudokuGUI:
             pygame.display.flip()
             clock.tick(30)
         pygame.quit()
+
+
+# TODO: add list des cellules en higlligth qui sont cochées décochées
