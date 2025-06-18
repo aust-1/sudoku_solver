@@ -8,6 +8,7 @@ from sudoku.solver.constraints.even_odd import ParityConstraint
 from sudoku.solver.constraints.killer import KillerConstraint
 from sudoku.solver.constraints.king import KingConstraint
 from sudoku.solver.constraints.knight import KnightConstraint
+from sudoku.solver.constraints.kropki import KropkiConstraint
 from sudoku.solver.constraints.palindrome import PalindromeConstraint
 
 __all__ = [
@@ -18,6 +19,7 @@ __all__ = [
     "KillerConstraint",
     "KingConstraint",
     "KnightConstraint",
+    "KropkiConstraint",
     "PalindromeConstraint",
     "ParityConstraint",
 ]
@@ -32,7 +34,6 @@ __all__ = [
 # TODO: German
 # TODO: Greater Than
 # TODO: Jigsaw
-# TODO: Kropki
 # TODO: Little Unique Killer
 # TODO: Lockout Lines
 # TODO: Non-Consecutive

@@ -4,6 +4,8 @@ from sudoku.models import Board
 from sudoku.solver import (
     BishopConstraint,
     CompositeSolver,
+    KillerConstraint,
+    ParityConstraint,
 )
 from sudoku.utils import SudokuGUI
 
@@ -97,6 +99,17 @@ def main() -> None:
                 board.get_cell(1, 4),
                 board.get_cell(0, 5),
             },
+        ),
+        ParityConstraint.even(board.get_cell(0, 0)),
+        ParityConstraint.odd(board.get_cell(0, 1)),
+        KillerConstraint(
+            {
+                board.get_cell(0, 0),
+                board.get_cell(0, 1),
+                board.get_cell(1, 0),
+            },
+            23,
+            board.size,
         ),
     )
 

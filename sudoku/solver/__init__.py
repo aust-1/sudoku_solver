@@ -10,6 +10,7 @@ from sudoku.solver.constraints import (
     KillerConstraint,
     KingConstraint,
     KnightConstraint,
+    KropkiConstraint,
     PalindromeConstraint,
     ParityConstraint,
 )
@@ -44,6 +45,7 @@ __all__ = [
     "KillerConstraint",
     "KingConstraint",
     "KnightConstraint",
+    "KropkiConstraint",
     "NakedPairStrategy",
     "NakedQuadStrategy",
     "NakedSingleStrategy",
