@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from sudoku.models import Board, Cell
+    from sudoku.utils.gui import SudokuGUI
 
 
 class BaseConstraint(ABC):
@@ -40,10 +41,10 @@ class BaseConstraint(ABC):
         msg = "Subclasses should implement this method."
         raise NotImplementedError(msg)
 
-    def reachable_cells(
+    def reachable_cells(  # noqa: PLR6301
         self,
-        board: Board,
-        cell: Cell,
+        _board: Board,
+        _cell: Cell,
     ) -> set[Cell]:
         """Get the reachable cells based on the constraint.
 
@@ -64,6 +65,13 @@ class BaseConstraint(ABC):
         """
         return []
 
+    def draw(self, _gui: SudokuGUI) -> None:  # noqa: PLR6301
+        """Draw this constraint on `_gui` if supported.
 
-# TODO: add a method for the gui
+        Args:
+            _gui (SudokuGUI): The GUI to draw on.
+        """
+        return
+
+
 # TODO: add a method for the deep copy

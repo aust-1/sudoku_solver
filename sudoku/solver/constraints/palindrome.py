@@ -7,6 +7,7 @@ from sudoku.solver.constraints.clone import CloneConstraint
 
 if TYPE_CHECKING:
     from sudoku.models import Board, Cell
+    from sudoku.utils.gui import SudokuGUI
 
 
 class PalindromeConstraint(BaseConstraint):
@@ -66,3 +67,11 @@ class PalindromeConstraint(BaseConstraint):
         for constraint in self.clone_constraints:
             reachable_cells.update(constraint.reachable_cells(board, cell))
         return reachable_cells
+
+    def draw(self, gui: SudokuGUI) -> None:
+        """Draw this palindrome constraint on `gui` if supported.
+
+        Args:
+            gui (SudokuGUI): The GUI to draw on.
+        """
+        gui.draw_line(self.palindrome_cells, (0, 140, 255, 120), 5)

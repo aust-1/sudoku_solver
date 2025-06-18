@@ -4,10 +4,9 @@ from typing import TYPE_CHECKING
 
 import pygame
 
-from sudoku.solver import BishopConstraint, PalindromeConstraint, Solver
-
 if TYPE_CHECKING:
     from sudoku.models import Board, Cell
+    from sudoku.solver import Solver
 
 
 class SudokuGUI:
@@ -58,7 +57,7 @@ class SudokuGUI:
             )
             self.screen.blit(highlight, rect)
 
-    def _draw_line(
+    def draw_line(
         self,
         line: list[Cell],
         color: tuple[int, int, int, int],
@@ -88,8 +87,141 @@ class SudokuGUI:
         )
         self.screen.blit(surf, (0, 0))
 
+    def draw_circle(
+        self,
+        cell: Cell,
+        color: tuple[int, int, int, int],
+    ) -> None:
+        """Draw a circle centred in `cell`.
+
+        Args:
+            cell (Cell): The cell to draw on.
+            color (tuple[int, int, int, int]): The color of the circle.
+        """
+        surf = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
+        pygame.draw.circle(
+            surf,
+            color,
+            (self.size // 2, self.size // 2),
+            self.size // 2 - 5,
+        )
+        self.screen.blit(surf, (cell.col * self.size, cell.row * self.size))
+
+    def draw_square(
+        self,
+        cell: Cell,
+        color: tuple[int, int, int, int],
+    ) -> None:
+        """Draw a square centred in `cell`.
+
+        Args:
+            cell (Cell): The cell to draw on.
+            color (tuple[int, int, int, int]): The color of the square.
+        """
+        surf = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
+        margin = 6
+        pygame.draw.rect(
+            surf,
+            color,
+            pygame.Rect(margin, margin, self.size - 2 * margin, self.size - 2 * margin),
+        )
+        self.screen.blit(surf, (cell.col * self.size, cell.row * self.size))
+
     @staticmethod
-    def _order_diagonal(cells: set[Cell]) -> list[Cell]:
+    def _draw_dashed_line(
+        surf: pygame.Surface,
+        start: tuple[int, int],
+        end: tuple[int, int],
+        color: tuple[int, int, int, int],
+    ) -> None:
+        """Draw a dashed line on `surf` from `start` to `end`.
+
+        Args:
+            surf (pygame.Surface): The surface to draw on.
+            start (tuple[int, int]): The starting point of the line.
+            end (tuple[int, int]): The ending point of the line.
+            color (tuple[int, int, int, int]): The color of the line.
+        """
+        width = 1
+        dash_length = 5
+        x1, y1 = start
+        x2, y2 = end
+        dx = x2 - x1
+        dy = y2 - y1
+        distance = max(abs(dx), abs(dy))
+        for i in range(0, distance, dash_length * 2):
+            start_pos = (
+                x1 + dx * i // distance,
+                y1 + dy * i // distance,
+            )
+            end_pos = (
+                x1 + dx * min(i + dash_length, distance) // distance,
+                y1 + dy * min(i + dash_length, distance) // distance,
+            )
+            pygame.draw.line(surf, color, start_pos, end_pos, width)
+
+    def draw_killer_cage(
+        self,
+        cells: set[Cell],
+        total_sum: int,
+        color: tuple[int, int, int, int],
+    ) -> None:
+        """Draw a killer cage around `cells` with the sum displayed.
+
+        Args:
+            cells (set[Cell]): The cells to draw the cage around.
+            total_sum (int): The total sum of the cage.
+            color (tuple[int, int, int, int], optional): The color of the cage.
+        """
+        surf = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
+        for cell in cells:
+            x = cell.col * self.size
+            y = cell.row * self.size
+            rect = pygame.Rect(x, y, self.size, self.size)
+            neighbors = {
+                "top": (
+                    self.board.get_cell(cell.row - 1, cell.col)
+                    if cell.row > 0
+                    else None
+                ),
+                "bottom": (
+                    self.board.get_cell(cell.row + 1, cell.col)
+                    if cell.row < self.board.size - 1
+                    else None
+                ),
+                "left": (
+                    self.board.get_cell(cell.row, cell.col - 1)
+                    if cell.col > 0
+                    else None
+                ),
+                "right": (
+                    self.board.get_cell(cell.row, cell.col + 1)
+                    if cell.col < self.board.size - 1
+                    else None
+                ),
+            }
+            if neighbors["top"] not in cells:
+                self._draw_dashed_line(surf, rect.topleft, rect.topright, color)
+            if neighbors["right"] not in cells:
+                self._draw_dashed_line(surf, rect.topright, rect.bottomright, color)
+            if neighbors["bottom"] not in cells:
+                self._draw_dashed_line(surf, rect.bottomleft, rect.bottomright, color)
+            if neighbors["left"] not in cells:
+                self._draw_dashed_line(surf, rect.topleft, rect.bottomleft, color)
+        self.screen.blit(surf, (0, 0))
+
+        top_left = min(cells, key=lambda c: (c.row, c.col))
+        text = self.candidate_font.render(str(total_sum), 1, color[:3])
+        self.screen.blit(
+            text,
+            (top_left.col * self.size + 2, top_left.row * self.size + 2),
+        )
+
+    # TODO: color of the killer cage change petit à petit grâce à variable statique
+    # TODO: killer cage avec marge à l'intérieur
+
+    @staticmethod
+    def order_diagonal(cells: set[Cell]) -> list[Cell]:
         """Return cells ordered by diagonal adjacency.
 
         Args:
@@ -132,19 +264,7 @@ class SudokuGUI:
     def _draw_constraints(self) -> None:
         """Draw the constraints on the board."""
         for constraint in self.board.constraints:
-            if isinstance(constraint, PalindromeConstraint):
-                self._draw_line(
-                    constraint.palindrome_cells,
-                    (0, 140, 255, 120),
-                    5,
-                )
-            elif isinstance(constraint, BishopConstraint):
-                self._draw_line(
-                    self._order_diagonal(constraint.bishop_cells),
-                    (0, 130, 255, 255),
-                    2,
-                )
-        # TODO: even odd constraints, killer constraints
+            constraint.draw(self)
 
     def _draw_grid(self) -> None:
         """Draw the Sudoku grid."""

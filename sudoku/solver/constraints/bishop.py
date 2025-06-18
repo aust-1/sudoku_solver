@@ -6,6 +6,7 @@ from sudoku.solver.constraints.base_constraint import BaseConstraint
 
 if TYPE_CHECKING:
     from sudoku.models import Board, Cell
+    from sudoku.utils.gui import SudokuGUI
 
 
 class BishopConstraint(BaseConstraint):
@@ -79,3 +80,15 @@ class BishopConstraint(BaseConstraint):
             list[set[Cell]]: A list of sets of cells representing the regions.
         """
         return [self.bishop_cells]
+
+    def draw(self, gui: SudokuGUI) -> None:
+        """Draw this bishop constraint on `gui` if supported.
+
+        Args:
+            gui (SudokuGUI): The GUI to draw on.
+        """
+        gui.draw_line(
+            gui.order_diagonal(self.bishop_cells),
+            (0, 130, 255, 255),
+            2,
+        )

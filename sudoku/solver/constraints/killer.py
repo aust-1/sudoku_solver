@@ -7,6 +7,7 @@ from sudoku.solver.constraints.base_constraint import BaseConstraint
 
 if TYPE_CHECKING:
     from sudoku.models import Board, Cell
+    from sudoku.utils.gui import SudokuGUI
 
 
 class KillerConstraint(BaseConstraint):
@@ -129,3 +130,11 @@ class KillerConstraint(BaseConstraint):
             eliminated |= self._eliminate_candidates()
 
         return eliminated
+
+    def draw(self, gui: SudokuGUI) -> None:
+        """Draw this bishop constraint on `gui` if supported.
+
+        Args:
+            gui (SudokuGUI): The GUI to draw on.
+        """
+        gui.draw_killer_cage(self.killer_cells, self.sum, (255, 0, 0, 255))

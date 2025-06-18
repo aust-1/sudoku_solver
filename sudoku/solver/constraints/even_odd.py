@@ -6,6 +6,7 @@ from sudoku.solver.constraints.base_constraint import BaseConstraint
 
 if TYPE_CHECKING:
     from sudoku.models import Board, Cell
+    from sudoku.utils.gui import SudokuGUI
 
 
 class ParityConstraint(BaseConstraint):
@@ -73,3 +74,15 @@ class ParityConstraint(BaseConstraint):
             eliminated |= self.parity_cell.eliminate(digit)
 
         return eliminated
+
+    def draw(self, gui: SudokuGUI) -> None:
+        """Draw this bishop constraint on `gui` if supported.
+
+        Args:
+            gui (SudokuGUI): The GUI to draw on.
+        """
+        color = (200, 200, 200, 156)
+        if self.rest == 1:
+            gui.draw_circle(self.parity_cell, color)
+        else:
+            gui.draw_square(self.parity_cell, color)
