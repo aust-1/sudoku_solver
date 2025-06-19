@@ -168,9 +168,11 @@ class Board:
             values = [c.value for c in cells if c.is_filled()]
             return len(values) == len(set(values))
 
-        basic_valid = all(region_valid(r) for r in self.regions if len(r) == self.size)
+        basic_valid = all(region_valid(r) for r in self.regions)
         if not basic_valid:
+            self.logger.debug("Basic validity check failed")
             return False
+        self.logger.debug("Basic validity check passed")
         return all(constraint.check(self) for constraint in self.constraints)
 
     def is_solved(self) -> bool:

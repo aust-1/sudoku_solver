@@ -27,7 +27,12 @@ class KnightConstraint(BaseConstraint):
                     reachable_cells = self.reachable_cells(board, board.get_cell(i, j))
                     for cell in reachable_cells:
                         neighbor_value = cell.value
-                        if neighbor_value is not None and neighbor_value != value:
+                        if neighbor_value is not None and neighbor_value == value:
+                            self.logger.debug(
+                                f"Knight constraint violated at cell ({i}, {j})"
+                                f" and neighbor cell ({cell.row}, {cell.col})"
+                                f" with value {value}",
+                            )
                             return False
         return True
 

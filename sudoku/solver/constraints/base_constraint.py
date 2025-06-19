@@ -13,6 +13,8 @@ if TYPE_CHECKING:
 class BaseConstraint(ABC):
     """A class representing a base constraint for the Sudoku board."""
 
+    msg = "Subclasses should implement this method."
+
     def __init__(self, logger: Logger | None = None) -> None:
         """Initialize the base constraint.
 
@@ -37,8 +39,7 @@ class BaseConstraint(ABC):
                 `True` if the constraint is satisfied,
                 `False` otherwise.
         """
-        msg = "Subclasses should implement this method."
-        raise NotImplementedError(msg)
+        raise NotImplementedError(self.msg)
 
     @abstractmethod
     def eliminate(self, board: Board) -> bool:
@@ -52,8 +53,7 @@ class BaseConstraint(ABC):
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
         """
-        msg = "Subclasses should implement this method."
-        raise NotImplementedError(msg)
+        raise NotImplementedError(self.msg)
 
     def reachable_cells(  # noqa: PLR6301
         self,
@@ -97,5 +97,4 @@ class BaseConstraint(ABC):
         Returns:
             BaseConstraint: A deep copy of the constraint.
         """
-        msg = "Subclasses should implement this method."
-        raise NotImplementedError(msg)
+        raise NotImplementedError(self.msg)

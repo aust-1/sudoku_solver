@@ -206,7 +206,10 @@ class KillerConstraint(BaseConstraint):
             BaseConstraint: A deep copy of the constraint.
         """
         return KillerConstraint(
-            self.killer_cells.copy(), self.sum, self.board_size, self.color
+            self.killer_cells.copy(),
+            self.sum,
+            self.board_size,
+            self.color,
         )
 
 
