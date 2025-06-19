@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+import colorsys
 from itertools import combinations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ClassVar
 
 from loggerplusplus import Logger  # type: ignore[import-untyped]
 
@@ -14,6 +15,20 @@ if TYPE_CHECKING:
 
 class KillerConstraint(BaseConstraint):
     """A class representing a killer constraint."""
+
+    _killer_cage_index: ClassVar[int] = 0
+
+    @classmethod
+    def _next_killer_color(cls) -> tuple[int, int, int, int]:
+        """Get the next color for a killer cage.
+
+        Returns:
+            tuple[int, int, int, int]: The RGBA color for the next killer cage.
+        """
+        hue = (cls._killer_cage_index * 0.15) % 1.0
+        cls._killer_cage_index += 1
+        r, g, b = colorsys.hsv_to_rgb(hue, 1.0, 1.0)
+        return (int(r * 255), int(g * 255), int(b * 255), 255)
 
     def __init__(self, cells: set[Cell], total_sum: int, board_size: int) -> None:
         """Initialize the killer constraint.
@@ -32,6 +47,7 @@ class KillerConstraint(BaseConstraint):
         self.killer_cells = cells
         self.sum = total_sum
         self.possible_combinations: set[frozenset[int]] = set()
+        self.color = self._next_killer_color()
         for combination in combinations(range(1, board_size + 1), len(cells)):
             if sum(combination) == total_sum:
                 self.possible_combinations.add(frozenset(combination))
@@ -156,15 +172,24 @@ class KillerConstraint(BaseConstraint):
 
         return eliminated
 
+    def get_regions(self, board: Board) -> list[set[Cell]]:  # noqa: ARG002
+        """Get the regions defined by the killer constraint.
+
+        Args:
+            board (Board): The Sudoku board.
+
+        Returns:
+            list[set[Cell]]: A list of sets of cells representing the regions.
+        """
+        return [self.killer_cells]
+
     def draw(self, gui: SudokuGUI) -> None:
         """Draw this bishop constraint on `gui` if supported.
 
         Args:
             gui (SudokuGUI): The GUI to draw on.
         """
-        gui.draw_killer_cage(self.killer_cells, self.sum)
+        gui.draw_killer_cage(self.killer_cells, self.sum, self.color)
 
-
-# TODO: A tester
 
 # TODO: centralisation des killer constraints pour faire toutes les sous cages
