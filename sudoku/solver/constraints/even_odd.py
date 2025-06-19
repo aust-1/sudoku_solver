@@ -83,6 +83,6 @@ class ParityConstraint(BaseConstraint):
         """
         color = (200, 200, 200, 156)
         if self.rest == 1:
-            gui.draw_circle(self.parity_cell, color)
+            gui.draw_circle_in_cell(self.parity_cell, color)
         else:
             gui.draw_square(self.parity_cell, color)

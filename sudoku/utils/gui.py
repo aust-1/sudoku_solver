@@ -87,7 +87,7 @@ class SudokuGUI:
         )
         self.screen.blit(surf, (0, 0))
 
-    def draw_circle(
+    def draw_circle_in_cell(
         self,
         cell: Cell,
         color: tuple[int, int, int, int],
@@ -106,6 +106,40 @@ class SudokuGUI:
             self.size // 2 - 5,
         )
         self.screen.blit(surf, (cell.col * self.size, cell.row * self.size))
+
+    def draw_circle_between_cells(
+        self,
+        cell1: Cell,
+        cell2: Cell,
+        color: tuple[int, int, int, int],
+    ) -> None:
+        """Draw a circle between `cell1` and `cell2`.
+
+        Args:
+            cell1 (Cell): The first cell.
+            cell2 (Cell): The second cell.
+            color (tuple[int, int, int, int]): The color of the circle.
+        """
+        surf = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
+        pygame.draw.circle(
+            surf,
+            (0, 0, 0, 255),
+            (self.size // 2, self.size // 2),
+            self.size // 10,
+        )
+        pygame.draw.circle(
+            surf,
+            color,
+            (self.size // 2, self.size // 2),
+            self.size // 10 - 2,
+        )
+        self.screen.blit(
+            surf,
+            (
+                (cell1.col * self.size + cell2.col * self.size) / 2,
+                (cell1.row * self.size + cell2.row * self.size) / 2,
+            ),
+        )
 
     def draw_square(
         self,

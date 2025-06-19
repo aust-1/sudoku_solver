@@ -165,15 +165,15 @@ class KropkiConstraint(BaseConstraint):
         Args:
             gui (SudokuGUI): The GUI to draw on.
         """
-        color = (0, 0, 0, 255) if self.is_black_dot else (0, 0, 0, 0)
+        color = (0, 0, 0, 255) if self.is_black_dot else (255, 255, 255, 255)
 
-        gui.draw_circle(self.cell1, color)
-        gui.draw_circle(self.cell2, color)
-        # TODO: draw circle between the two cells
+        gui.draw_circle_between_cells(self.cell1, self.cell2, color)
 
 
 # TODO: implement logique quand plusieurs kropki à la suite
 
 # TODO: code plus intelligent mixte par couleur. pas de test de value is None or not en
-# amont juste pour chaque boucle soit on fixela valeur soit on fait une boucle pour
+# amont juste pour chaque boucle soit on fixe la valeur soit on fait une boucle pour
 # chaque candidat
+
+# TODO: A tester
