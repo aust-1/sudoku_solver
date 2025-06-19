@@ -3,7 +3,7 @@ from __future__ import annotations
 from itertools import combinations
 from typing import TYPE_CHECKING
 
-from loggerplusplus import Logger
+from loggerplusplus import Logger  # type: ignore[import-untyped]
 
 from sudoku.solver.constraints.base_constraint import BaseConstraint
 
@@ -162,7 +162,7 @@ class KillerConstraint(BaseConstraint):
         Args:
             gui (SudokuGUI): The GUI to draw on.
         """
-        gui.draw_killer_cage(self.killer_cells, self.sum, (255, 0, 0, 255))
+        gui.draw_killer_cage(self.killer_cells, self.sum)
 
 
 # TODO: A tester

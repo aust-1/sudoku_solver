@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import colorsys
+from typing import TYPE_CHECKING, ClassVar
 
 import pygame
 
@@ -11,6 +12,20 @@ if TYPE_CHECKING:
 
 class SudokuGUI:
     """Simple PyGame interface to visualise a Sudoku board and candidates."""
+
+    _killer_cage_index: ClassVar[int] = 0
+
+    @classmethod
+    def _next_killer_color(cls) -> tuple[int, int, int, int]:
+        """Get the next color for a killer cage.
+
+        Returns:
+            tuple[int, int, int, int]: The RGBA color for the next killer cage.
+        """
+        hue = (cls._killer_cage_index * 0.05) % 1.0
+        cls._killer_cage_index += 1
+        r, g, b = colorsys.hsv_to_rgb(hue, 1.0, 1.0)
+        return (int(r * 255), int(g * 255), int(b * 255), 255)
 
     def __init__(self, board: Board, size: int = 60) -> None:
         """Initialise the Sudoku GUI.
@@ -78,6 +93,7 @@ class SudokuGUI:
             for cell in line
         ]
         surf = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
+
         pygame.draw.lines(
             surf,
             color,
@@ -86,6 +102,7 @@ class SudokuGUI:
             width=width,
         )
         self.screen.blit(surf, (0, 0))
+        # FIXME: à la fin et au début ça doit aller un peu moins loin
 
     def draw_circle_in_cell(
         self,
@@ -198,16 +215,21 @@ class SudokuGUI:
         self,
         cells: set[Cell],
         total_sum: int,
-        color: tuple[int, int, int, int],
+        color: tuple[int, int, int, int] | None = None,
     ) -> None:
         """Draw a killer cage around `cells` with the sum displayed.
 
         Args:
             cells (set[Cell]): The cells to draw the cage around.
             total_sum (int): The total sum of the cage.
-            color (tuple[int, int, int, int], optional): The color of the cage.
+            color (tuple[int, int, int, int] | None): The color of the cage.
+                If `None` a color is generated automatically.
         """
+        if color is None:
+            color = self._next_killer_color()
+
         surf = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
+        margin = 3
         for cell in cells:
             x = cell.col * self.size
             y = cell.row * self.size
@@ -235,24 +257,41 @@ class SudokuGUI:
                 ),
             }
             if neighbors["top"] not in cells:
-                self._draw_dashed_line(surf, rect.topleft, rect.topright, color)
+                self._draw_dashed_line(
+                    surf,
+                    (rect.left + margin, rect.top + margin),
+                    (rect.right - margin, rect.top + margin),
+                    color,
+                )
             if neighbors["right"] not in cells:
-                self._draw_dashed_line(surf, rect.topright, rect.bottomright, color)
+                self._draw_dashed_line(
+                    surf,
+                    (rect.right - margin, rect.top + margin),
+                    (rect.right - margin, rect.bottom - margin),
+                    color,
+                )
             if neighbors["bottom"] not in cells:
-                self._draw_dashed_line(surf, rect.bottomleft, rect.bottomright, color)
+                self._draw_dashed_line(
+                    surf,
+                    (rect.left + margin, rect.bottom - margin),
+                    (rect.right - margin, rect.bottom - margin),
+                    color,
+                )
             if neighbors["left"] not in cells:
-                self._draw_dashed_line(surf, rect.topleft, rect.bottomleft, color)
+                self._draw_dashed_line(
+                    surf,
+                    (rect.left + margin, rect.top + margin),
+                    (rect.left + margin, rect.bottom - margin),
+                    color,
+                )
         self.screen.blit(surf, (0, 0))
 
         top_left = min(cells, key=lambda c: (c.row, c.col))
-        text = self.candidate_font.render(str(total_sum), 1, color[:3])
+        text = self.candidate_font.render(str(total_sum), 1, [0, 0, 0])
         self.screen.blit(
             text,
             (top_left.col * self.size + 2, top_left.row * self.size + 2),
         )
-
-    # TODO: color of the killer cage change petit à petit grâce à variable statique
-    # TODO: killer cage avec marge à l'intérieur
 
     @staticmethod
     def order_diagonal(cells: set[Cell]) -> list[Cell]:
