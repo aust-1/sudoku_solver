@@ -19,6 +19,7 @@ class ParityConstraint(BaseConstraint):
             cell (Cell): The cell to constrain.
             rest (int): The remainder when the cell value is divided by 2.
         """
+        super().__init__()
         self.parity_cell = cell
         self.rest = rest
 
@@ -65,6 +66,9 @@ class ParityConstraint(BaseConstraint):
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
         """
+        self.logger.debug(
+            f"Eliminating candidates for {self.__class__.__name__} constraint",
+        )
         eliminated = False
         digits = range(1, board.size + 1)
 

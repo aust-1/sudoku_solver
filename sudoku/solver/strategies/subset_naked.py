@@ -45,7 +45,7 @@ class _BaseNakedSubsetStrategy(Solver):
         Returns:
             bool: True if any candidates were eliminated, False otherwise.
         """
-        self.logger.info(f"{self.__class__.__name__} running")
+        self.logger.debug(f"{self.__class__.__name__} running")
         moved = False
         for region in board.regions:
             groups: dict[frozenset[int], list[Cell]] = {}

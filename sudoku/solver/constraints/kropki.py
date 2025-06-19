@@ -20,9 +20,18 @@ class KropkiConstraint(BaseConstraint):
             color (str): The color of the Kropki constraint (black or white).
 
         Raises:
+            ValueError: If the cells are not adjacent.
             ValueError: If the color is not 'black' or 'white'.
         """
+        super().__init__()
         self.cell1, self.cell2 = kropki_cells
+
+        if (abs(self.cell1.row - self.cell2.row) == 1) == (
+            abs(self.cell1.col - self.cell2.col) == 1
+        ):
+            msg = "Kropki constraint cells must be adjacent."
+            raise ValueError(msg)
+
         if color == "black":
             self.is_black_dot = True
             self.cell1.eliminate(5)
@@ -96,6 +105,9 @@ class KropkiConstraint(BaseConstraint):
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
         """
+        self.logger.debug(
+            f"Eliminating candidates for {self.__class__.__name__} constraint",
+        )
         eliminated = False
 
         if self.is_black_dot:

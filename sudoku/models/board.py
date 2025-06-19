@@ -114,7 +114,7 @@ class Board:
             *constraints (BaseConstraint): The constraints to add.
         """
         for c in constraints:
-            self.logger.info(f"Adding constraint {c.__class__.__name__}")
+            self.logger.debug(f"Adding constraint {c.__class__.__name__}")
             self.constraints.append(c)
             self.regions.extend(c.get_regions(self))
             for cell in self.get_all_cells():
@@ -199,7 +199,7 @@ class Board:
         Args:
             input_str (str): A string representation of the Sudoku board.
         """
-        self.logger.info("Loading board from string")
+        self.logger.debug("Loading board from string")
         digits = [d for d in input_str if d.isdigit()]
         for idx, d in enumerate(digits[: self.size * self.size]):
             if d != "0":

@@ -19,6 +19,7 @@ class PalindromeConstraint(BaseConstraint):
         Args:
             palindrome_cells (list[Cell]): The list of cells to apply constraints to.
         """
+        super().__init__()
         self.palindrome_cells: list[Cell] = palindrome_cells
         self.clone_constraints: list[CloneConstraint] = []
         for i in range(len(palindrome_cells) // 2):
@@ -48,6 +49,9 @@ class PalindromeConstraint(BaseConstraint):
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
         """
+        self.logger.debug(
+            f"Eliminating candidates for {self.__class__.__name__} constraint",
+        )
         eliminated = False
         for constraint in self.clone_constraints:
             eliminated |= constraint.eliminate(board)

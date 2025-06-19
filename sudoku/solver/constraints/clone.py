@@ -17,6 +17,7 @@ class CloneConstraint(BaseConstraint):
         Args:
             clone_cells (set[Cell]): The list of cells to apply constraints to.
         """
+        super().__init__()
         self.clone_cells = clone_cells
 
     def check(self, board: Board) -> bool:  # noqa: ARG002
@@ -45,6 +46,9 @@ class CloneConstraint(BaseConstraint):
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
         """
+        self.logger.debug(
+            f"Eliminating candidates for {self.__class__.__name__} constraint",
+        )
         eliminated = False
         values = set(range(1, board.size + 1))
         for cell in self.clone_cells:

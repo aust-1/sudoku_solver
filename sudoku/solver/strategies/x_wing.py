@@ -20,7 +20,7 @@ class XWingStrategy(Solver):
         Returns:
             `True` if any candidates were eliminated, `False` otherwise.
         """
-        self.logger.info("XWingStrategy running")
+        self.logger.debug("XWingStrategy running")
         moved = False
         digits = range(1, board.size + 1)
 

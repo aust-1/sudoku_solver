@@ -30,7 +30,7 @@ class BacktrackingSolver(Solver):
         cell = unfilled[0]
 
         for cand in list(cell.candidates):
-            self.logger.info(
+            self.logger.debug(
                 f"Trying {cand} at ({cell.row}, {cell.col}) in backtracking",
             )
             copy = board.deep_copy()

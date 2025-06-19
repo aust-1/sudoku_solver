@@ -21,7 +21,7 @@ class HiddenSingleStrategy(Solver):
         Returns:
             bool: `True` if any cells were filled, `False` otherwise.
         """
-        self.logger.info("HiddenSingleStrategy running")
+        self.logger.debug("HiddenSingleStrategy running")
         moved = False
         for region in board.regions:
             if len(region) != board.size:

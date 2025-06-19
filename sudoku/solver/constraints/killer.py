@@ -3,6 +3,8 @@ from __future__ import annotations
 from itertools import combinations
 from typing import TYPE_CHECKING
 
+from loggerplusplus import Logger
+
 from sudoku.solver.constraints.base_constraint import BaseConstraint
 
 if TYPE_CHECKING:
@@ -21,6 +23,12 @@ class KillerConstraint(BaseConstraint):
             total_sum (int): The sum of the cell values.
             board_size (int): The size of the board.
         """
+        super().__init__(
+            Logger(
+                identifier=f"{total_sum},{self.__class__.__name__}",
+                follow_logger_manager_rules=True,
+            ),
+        )
         self.killer_cells = cells
         self.sum = total_sum
         self.possible_combinations: set[frozenset[int]] = set()
@@ -44,44 +52,53 @@ class KillerConstraint(BaseConstraint):
         # Remove combinations that not contain filled cells
         for cell in self.killer_cells:
             if cell.is_filled():
-                value = cell.value
                 self.possible_combinations = {
-                    comb for comb in self.possible_combinations if value in comb
+                    comb for comb in self.possible_combinations if cell.value in comb
                 }
 
         valid_combinations: set[frozenset[int]] = set()
-        for combination in self.possible_combinations:
+        for comb in self.possible_combinations:
             # Check that each digit appears in at least one candidate cell
             if not all(
                 any(
                     (c.value == digit or digit in c.candidates)
                     for c in self.killer_cells
                 )
-                for digit in combination
+                for digit in comb
             ):
+                self.logger.warning(
+                    f"Invalid comb: {comb}, not all digits present in candidates",
+                )
                 continue
 
             # Check that every cell can take at least one digit of the combination
             if any(
-                not cell.is_filled()
-                and not any(d in cell.candidates for d in combination)
+                not cell.is_filled() and not any(d in cell.candidates for d in comb)
                 for cell in self.killer_cells
             ):
+                self.logger.debug(
+                    f"Invalid comb: {comb}, not all cells can take a digit",
+                )
                 continue
 
-            valid_combinations.add(frozenset(combination))
+            valid_combinations.add(frozenset(comb))
         self.possible_combinations = valid_combinations
 
-    def _eliminate_candidates(self) -> bool:
+    def _eliminate_candidates(self, board: Board) -> bool:
         """Eliminate candidates based on the current possible combinations.
+
+        Args:
+            board (Board): The Sudoku board to check against.
 
         Returns:
             bool: `True` if any candidates were eliminated, `False` otherwise.
         """
         eliminated = False
 
-        # Force a digit if only one cell can contain it
-        digits = set(self.possible_combinations.pop())
+        # Eliminate candidates des cells reachs par les cellules qui ont une valeur qui
+        # est dans l'intersection de toutes les combinaisons possibles
+        # TODO: translate this comment
+        digits = set(range(1, board.size + 1))
         for comb in self.possible_combinations:
             digits.intersection_update(comb)
 
@@ -92,9 +109,14 @@ class KillerConstraint(BaseConstraint):
                 if (not cell.is_filled() and digit in cell.candidates)
                 or cell.value == digit
             ]
-            if len(possible_cells) == 1 and not possible_cells[0].is_filled():
-                possible_cells[0].set_value(digit)
-                eliminated = True
+
+            reachable_cells: set[Cell] = set(board.get_all_cells())
+            for cell in possible_cells:
+                reachable_cells.intersection_update(cell.reachable_cells)
+            reachable_cells.difference_update(possible_cells)
+
+            for cell in reachable_cells:
+                eliminated |= cell.eliminate(digit)
 
         # Eliminate candidates that are not in any remaining combination
         for cell in self.killer_cells:
@@ -111,7 +133,7 @@ class KillerConstraint(BaseConstraint):
                     eliminated |= cell.eliminate(digit)
         return eliminated
 
-    def eliminate(self, board: Board) -> bool:  # noqa: ARG002
+    def eliminate(self, board: Board) -> bool:
         """Automatically complete the killer constraint on the given board.
 
         Args:
@@ -122,12 +144,15 @@ class KillerConstraint(BaseConstraint):
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
         """
+        self.logger.debug(
+            f"Eliminating candidates for {self.__class__.__name__} constraint",
+        )
         eliminated = False
 
         self._eliminate_combinations()
 
         if self.possible_combinations:
-            eliminated |= self._eliminate_candidates()
+            eliminated |= self._eliminate_candidates(board)
 
         return eliminated
 
@@ -141,3 +166,5 @@ class KillerConstraint(BaseConstraint):
 
 
 # TODO: A tester
+
+# TODO: centralisation des killer constraints pour faire toutes les sous cages

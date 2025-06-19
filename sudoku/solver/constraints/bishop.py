@@ -45,6 +45,9 @@ class BishopConstraint(BaseConstraint):
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
         """
+        self.logger.debug(
+            f"Eliminating candidates for {self.__class__.__name__} constraint",
+        )
         eliminated = False
         for cell in self.bishop_cells:
             value = cell.value

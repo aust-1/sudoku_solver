@@ -45,7 +45,7 @@ class _BaseHiddenSubsetStrategy(Solver):
         Returns:
             bool: True if any candidates were eliminated, False otherwise.
         """
-        self.logger.info(f"{self.__class__.__name__} running")
+        self.logger.debug(f"{self.__class__.__name__} running")
         moved = False
         digits: list[int] = list(range(1, board.size + 1))
         for region in board.regions:

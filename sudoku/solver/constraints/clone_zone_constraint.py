@@ -20,6 +20,7 @@ class CloneZoneConstraint(BaseConstraint):
         Args:
             *clone_zones (list[Cell]): The lists of cells to apply constraints to.
         """
+        super().__init__()
         self.zones: list[list[Cell]] = []
         for zone in clone_zones:
             self.zones.append(zone)
@@ -51,6 +52,9 @@ class CloneZoneConstraint(BaseConstraint):
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
         """
+        self.logger.debug(
+            f"Eliminating candidates for {self.__class__.__name__} constraint",
+        )
         eliminated = False
         for constraint in self.clone_constraints:
             eliminated |= constraint.eliminate(board)

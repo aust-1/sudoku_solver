@@ -3,6 +3,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
+from loggerplusplus import Logger  # type: ignore[import-untyped]
+
 if TYPE_CHECKING:
     from sudoku.models import Board, Cell
     from sudoku.utils.gui import SudokuGUI
@@ -10,6 +12,18 @@ if TYPE_CHECKING:
 
 class BaseConstraint(ABC):
     """A class representing a base constraint for the Sudoku board."""
+
+    def __init__(self, logger: Logger | None = None) -> None:
+        """Initialize the base constraint.
+
+        Args:
+            logger (Logger | None): An optional logger instance for logging.
+            Defaults to None.
+        """
+        self.logger = logger or Logger(
+            identifier=self.__class__.__name__,
+            follow_logger_manager_rules=True,
+        )
 
     @abstractmethod
     def check(self, board: Board) -> bool:
