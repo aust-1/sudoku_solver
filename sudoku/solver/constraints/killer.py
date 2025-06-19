@@ -138,3 +138,6 @@ class KillerConstraint(BaseConstraint):
             gui (SudokuGUI): The GUI to draw on.
         """
         gui.draw_killer_cage(self.killer_cells, self.sum, (255, 0, 0, 255))
+
+
+# TODO: A tester

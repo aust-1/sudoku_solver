@@ -5,7 +5,9 @@ from sudoku.solver import (
     BishopConstraint,
     CompositeSolver,
     KillerConstraint,
+    KropkiConstraint,
     ParityConstraint,
+    UniversalConstraint,
 )
 from sudoku.utils import SudokuGUI
 
@@ -111,6 +113,9 @@ def main() -> None:
             23,
             board.size,
         ),
+        KropkiConstraint.black({board.get_cell(0, 0), board.get_cell(0, 1)}),
+        KropkiConstraint.white({board.get_cell(1, 1), board.get_cell(1, 2)}),
+        UniversalConstraint(),
     )
 
     solver = CompositeSolver()

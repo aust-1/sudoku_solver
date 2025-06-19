@@ -73,8 +73,11 @@ class BishopConstraint(BaseConstraint):
 
         return reachable
 
-    def get_regions(self) -> list[set[Cell]]:
-        """Get the regions defined by the bishop constraint.
+    def get_regions(self, board: Board) -> list[set[Cell]]:  # noqa: ARG002
+        """Get the regions defined by the constraint.
+
+        Args:
+            board (Board): The Sudoku board.
 
         Returns:
             list[set[Cell]]: A list of sets of cells representing the regions.

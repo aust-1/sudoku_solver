@@ -10,6 +10,7 @@ from sudoku.solver.constraints.king import KingConstraint
 from sudoku.solver.constraints.knight import KnightConstraint
 from sudoku.solver.constraints.kropki import KropkiConstraint
 from sudoku.solver.constraints.palindrome import PalindromeConstraint
+from sudoku.solver.constraints.universal import UniversalConstraint
 
 __all__ = [
     "BaseConstraint",
@@ -22,6 +23,7 @@ __all__ = [
     "KropkiConstraint",
     "PalindromeConstraint",
     "ParityConstraint",
+    "UniversalConstraint",
 ]
 
 # TODO: Arrow
@@ -47,7 +49,6 @@ __all__ = [
 # TODO: Slow Thermo
 # TODO: Thermo
 # TODO: Twisted Consecutive
-# TODO: Universal
 # TODO: Windoku
 # TODO: X-Sum
 # TODO: XV
