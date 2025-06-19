@@ -180,6 +180,17 @@ class KropkiConstraint(BaseConstraint):
 
         gui.draw_circle_between_cells(self.cell1, self.cell2, color)
 
+    def deep_copy(self) -> KropkiConstraint:
+        """Create a deep copy of the constraint.
+
+        Returns:
+            BaseConstraint: A deep copy of the constraint.
+        """
+        return KropkiConstraint(
+            {self.cell1, self.cell2},
+            "black" if self.is_black_dot else "white",
+        )
+
 
 # TODO: implement logique quand plusieurs kropki à la suite
 

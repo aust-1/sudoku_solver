@@ -76,3 +76,11 @@ class KnightConstraint(BaseConstraint):
                     if 0 <= x < board.size and 0 <= y < board.size:
                         reachable.add(board.get_cell(x, y))
         return reachable
+
+    def deep_copy(self) -> KnightConstraint:  # noqa: PLR6301
+        """Create a deep copy of the constraint.
+
+        Returns:
+            BaseConstraint: A deep copy of the constraint.
+        """
+        return KnightConstraint()

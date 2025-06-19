@@ -30,13 +30,20 @@ class KillerConstraint(BaseConstraint):
         r, g, b = colorsys.hsv_to_rgb(hue, 1.0, 1.0)
         return (int(r * 255), int(g * 255), int(b * 255), 255)
 
-    def __init__(self, cells: set[Cell], total_sum: int, board_size: int) -> None:
+    def __init__(
+        self,
+        cells: set[Cell],
+        total_sum: int,
+        board_size: int,
+        color: tuple[int, int, int, int] | None = None,
+    ) -> None:
         """Initialize the killer constraint.
 
         Args:
             cells (set[Cell]): The cells to constrain.
             total_sum (int): The sum of the cell values.
             board_size (int): The size of the board.
+            color (tuple[int, int, int, int] | None): The color of the cage.
         """
         super().__init__(
             Logger(
@@ -46,9 +53,10 @@ class KillerConstraint(BaseConstraint):
         )
         self.killer_cells = cells
         self.sum = total_sum
+        self.board_size = board_size
         self.possible_combinations: set[frozenset[int]] = set()
-        self.color = self._next_killer_color()
-        for combination in combinations(range(1, board_size + 1), len(cells)):
+        self.color = color or self._next_killer_color()
+        for combination in combinations(range(1, self.board_size + 1), len(cells)):
             if sum(combination) == total_sum:
                 self.possible_combinations.add(frozenset(combination))
 
@@ -82,7 +90,7 @@ class KillerConstraint(BaseConstraint):
                 )
                 for digit in comb
             ):
-                self.logger.warning(
+                self.logger.debug(
                     f"Invalid comb: {comb}, not all digits present in candidates",
                 )
                 continue
@@ -190,6 +198,16 @@ class KillerConstraint(BaseConstraint):
             gui (SudokuGUI): The GUI to draw on.
         """
         gui.draw_killer_cage(self.killer_cells, self.sum, self.color)
+
+    def deep_copy(self) -> KillerConstraint:
+        """Create a deep copy of the constraint.
+
+        Returns:
+            BaseConstraint: A deep copy of the constraint.
+        """
+        return KillerConstraint(
+            self.killer_cells.copy(), self.sum, self.board_size, self.color
+        )
 
 
 # TODO: centralisation des killer constraints pour faire toutes les sous cages

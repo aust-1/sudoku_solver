@@ -11,16 +11,6 @@ if TYPE_CHECKING:
 
     from sudoku.solver.constraints.base_constraint import BaseConstraint
 
-from sudoku.solver import (
-    CloneConstraint,
-    CloneZoneConstraint,
-    KillerConstraint,
-    KingConstraint,
-    KnightConstraint,
-    PalindromeConstraint,
-    ParityConstraint,
-)
-
 
 class Board:
     """Represents the Sudoku board as a 9x9 grid of :class:`Cell` objects."""
@@ -236,32 +226,7 @@ class Board:
 
         board.constraints = []
         for constraint in self.constraints:
-            if isinstance(constraint, CloneConstraint):
-                clone_cells = constraint.clone_cells.copy()
-                board.add_constraints(CloneConstraint(clone_cells))
-            elif isinstance(constraint, CloneZoneConstraint):
-                for clone_constraint in constraint.clone_constraints:
-                    clone_cells = clone_constraint.clone_cells.copy()
-                    board.add_constraints(CloneConstraint(clone_cells))
-            elif isinstance(constraint, PalindromeConstraint):
-                palindrome_cells: list[Cell] = constraint.palindrome_cells.copy()
-                board.add_constraints(PalindromeConstraint(palindrome_cells))
-            elif isinstance(constraint, KillerConstraint):
-                board.add_constraints(
-                    KillerConstraint(
-                        constraint.killer_cells.copy(),
-                        constraint.sum,
-                        self.size,
-                    ),
-                )
-            elif isinstance(constraint, ParityConstraint):
-                board.add_constraints(
-                    ParityConstraint(constraint.parity_cell, constraint.rest),
-                )
-            elif isinstance(constraint, KingConstraint):
-                board.add_constraints(KingConstraint())
-            elif isinstance(constraint, KnightConstraint):
-                board.add_constraints(KnightConstraint())
+            board.add_constraints(constraint.deep_copy())
         return board
 
     def copy_values_from(self, other: Board) -> None:

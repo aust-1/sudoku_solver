@@ -79,3 +79,11 @@ class UniversalConstraint(BaseConstraint):
                 regions.append(region)
 
         return regions
+
+    def deep_copy(self) -> UniversalConstraint:  # noqa: PLR6301
+        """Create a deep copy of the constraint.
+
+        Returns:
+            BaseConstraint: A deep copy of the constraint.
+        """
+        return UniversalConstraint()

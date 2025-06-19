@@ -79,3 +79,11 @@ class PalindromeConstraint(BaseConstraint):
             gui (SudokuGUI): The GUI to draw on.
         """
         gui.draw_line(self.palindrome_cells, (0, 140, 255, 120), 5)
+
+    def deep_copy(self) -> PalindromeConstraint:
+        """Create a deep copy of the constraint.
+
+        Returns:
+            BaseConstraint: A deep copy of the constraint.
+        """
+        return PalindromeConstraint(self.palindrome_cells.copy())

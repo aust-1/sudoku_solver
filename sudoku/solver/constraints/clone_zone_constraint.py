@@ -74,3 +74,11 @@ class CloneZoneConstraint(BaseConstraint):
         for constraint in self.clone_constraints:
             reachable_cells.update(constraint.reachable_cells(board, cell))
         return reachable_cells
+
+    def deep_copy(self) -> CloneZoneConstraint:
+        """Create a deep copy of the constraint.
+
+        Returns:
+            BaseConstraint: A deep copy of the constraint.
+        """
+        return CloneZoneConstraint(*[zone.copy() for zone in self.zones])

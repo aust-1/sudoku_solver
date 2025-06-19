@@ -90,3 +90,11 @@ class ParityConstraint(BaseConstraint):
             gui.draw_circle_in_cell(self.parity_cell, color)
         else:
             gui.draw_square(self.parity_cell, color)
+
+    def deep_copy(self) -> ParityConstraint:
+        """Create a deep copy of the constraint.
+
+        Returns:
+            BaseConstraint: A deep copy of the constraint.
+        """
+        return ParityConstraint(self.parity_cell, self.rest)

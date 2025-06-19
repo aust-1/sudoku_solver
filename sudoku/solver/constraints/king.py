@@ -74,3 +74,11 @@ class KingConstraint(BaseConstraint):
                 ):
                     reachable.add(board.get_cell(cell.row + x, cell.col + y))
         return reachable
+
+    def deep_copy(self) -> KingConstraint:  # noqa: PLR6301
+        """Create a deep copy of the constraint.
+
+        Returns:
+            BaseConstraint: A deep copy of the constraint.
+        """
+        return KingConstraint()

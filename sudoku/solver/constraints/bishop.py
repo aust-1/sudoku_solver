@@ -98,3 +98,11 @@ class BishopConstraint(BaseConstraint):
             (0, 130, 255, 255),
             2,
         )
+
+    def deep_copy(self) -> BishopConstraint:
+        """Create a deep copy of the constraint.
+
+        Returns:
+            BaseConstraint: A deep copy of the constraint.
+        """
+        return BishopConstraint(self.bishop_cells.copy())

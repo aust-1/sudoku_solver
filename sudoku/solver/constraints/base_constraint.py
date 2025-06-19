@@ -90,5 +90,12 @@ class BaseConstraint(ABC):
         """
         return
 
+    @abstractmethod
+    def deep_copy(self) -> BaseConstraint:
+        """Create a deep copy of the constraint.
 
-# TODO: add a method for the deep copy
+        Returns:
+            BaseConstraint: A deep copy of the constraint.
+        """
+        msg = "Subclasses should implement this method."
+        raise NotImplementedError(msg)

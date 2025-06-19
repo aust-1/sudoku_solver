@@ -79,3 +79,11 @@ class CloneConstraint(BaseConstraint):
         reachable.difference_update(self.clone_cells)
 
         return reachable
+
+    def deep_copy(self) -> CloneConstraint:
+        """Create a deep copy of the constraint.
+
+        Returns:
+            BaseConstraint: A deep copy of the constraint.
+        """
+        return CloneConstraint(self.clone_cells.copy())
