@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from sudoku.solver.backtracking import BacktrackingSolver
 from sudoku.solver.solver import Solver
 from sudoku.solver.strategies import (
+    ChainViolationGuardStrategy,
     ConstraintStrategy,
     EliminationStrategy,
     HiddenPairStrategy,
@@ -48,6 +49,7 @@ class CompositeSolver(Solver):
             NakedQuadStrategy(),
             XWingStrategy(),
             ConstraintStrategy(),
+            ChainViolationGuardStrategy(),
         ]
 
     def apply(self, board: Board) -> bool:

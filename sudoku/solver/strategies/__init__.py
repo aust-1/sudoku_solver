@@ -1,5 +1,6 @@
 """Solving strategies for Sudoku puzzles."""
 
+from sudoku.solver.strategies.chain_violation_guard import ChainViolationGuardStrategy
 from sudoku.solver.strategies.constraint import ConstraintStrategy
 from sudoku.solver.strategies.elimination import EliminationStrategy
 from sudoku.solver.strategies.single_hidden import HiddenSingleStrategy
@@ -17,6 +18,7 @@ from sudoku.solver.strategies.subset_naked import (
 from sudoku.solver.strategies.x_wing import XWingStrategy
 
 __all__ = [
+    "ChainViolationGuardStrategy",
     "ConstraintStrategy",
     "EliminationStrategy",
     "HiddenPairStrategy",
@@ -35,7 +37,6 @@ __all__ = [
 # TODO: Magic Triple
 # TODO: Pair Reduction
 # TODO: Violation Prevention
-# TODO: Chain violation Guard
 # TODO: Empty Rectangle
 # TODO: Forcing Chain
 # TODO: Hidden Unique Rectangle

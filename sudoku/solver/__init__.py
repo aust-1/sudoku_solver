@@ -17,6 +17,7 @@ from sudoku.solver.constraints import (
 )
 from sudoku.solver.solver import Solver
 from sudoku.solver.strategies import (
+    ChainViolationGuardStrategy,
     ConstraintStrategy,
     EliminationStrategy,
     HiddenPairStrategy,
@@ -34,6 +35,7 @@ __all__ = [
     "BacktrackingSolver",
     "BaseConstraint",
     "BishopConstraint",
+    "ChainViolationGuardStrategy",
     "CloneConstraint",
     "CloneZoneConstraint",
     "CompositeSolver",
