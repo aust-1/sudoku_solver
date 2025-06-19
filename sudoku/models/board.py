@@ -66,7 +66,7 @@ class Board:
         )
 
         for constraint in self.constraints:
-            self.regions.extend(constraint.get_regions())
+            self.regions.extend(constraint.get_regions(self))
 
     def _get_row(self, r: int) -> set[Cell]:
         """Return all cells in row `r`.
@@ -117,6 +117,18 @@ class Board:
             self.logger.info(f"Adding constraint {c.__class__.__name__}")
             self.constraints.append(c)
             self.regions.extend(c.get_regions(self))
+            for cell in self.get_all_cells():
+                cell.add_reachables(c.reachable_cells(self, cell))
+            for cell in self.get_all_cells():
+                cell.add_reachables(c.reachable_cells(self, cell))
+
+        for c in constraints:
+            for cell in self.get_all_cells():
+                cell.add_reachables(c.reachable_cells(self, cell))
+            for cell in self.get_all_cells():
+                cell.add_reachables(c.reachable_cells(self, cell))
+
+        for c in constraints:
             for cell in self.get_all_cells():
                 cell.add_reachables(c.reachable_cells(self, cell))
             for cell in self.get_all_cells():
