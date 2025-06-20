@@ -11,6 +11,45 @@ if TYPE_CHECKING:
 class BacktrackingSolver(Solver):
     """Recursive backtracking solver used as a last resort."""
 
+    def __init__(self) -> None:
+        """Initialise the backtracking solver and its helper strategies."""
+        super().__init__()
+
+        from sudoku.solver.strategies import (
+            ConstraintStrategy,
+            EliminationStrategy,
+            HiddenPairStrategy,
+            HiddenQuadStrategy,
+            HiddenSingleStrategy,
+            HiddenTripleStrategy,
+            NakedPairStrategy,
+            NakedQuadStrategy,
+            NakedSingleStrategy,
+            NakedTripleStrategy,
+            XWingStrategy,
+        )
+
+        self.strategies: list[Solver] = [
+            EliminationStrategy(),
+            HiddenSingleStrategy(),
+            NakedSingleStrategy(),
+            HiddenPairStrategy(),
+            NakedPairStrategy(),
+            HiddenTripleStrategy(),
+            NakedTripleStrategy(),
+            HiddenQuadStrategy(),
+            NakedQuadStrategy(),
+            XWingStrategy(),
+            ConstraintStrategy(),
+        ]
+
+    def _apply_strategies(self, board: Board) -> None:
+        progress = True
+        while progress:
+            progress = False
+            for strat in self.strategies:
+                progress |= strat.apply(board)
+
     def apply(self, board: Board) -> bool:
         """Attempt to solve the Sudoku board using backtracking.
 
@@ -20,6 +59,11 @@ class BacktrackingSolver(Solver):
         Returns:
             bool: `True` if the board is solved, `False` otherwise.
         """
+        if not board.is_valid():
+            return False
+
+        self._apply_strategies(board)
+
         if not board.is_valid():
             return False
         if board.is_solved():
