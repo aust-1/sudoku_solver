@@ -33,6 +33,10 @@ class CloneConstraint(BaseConstraint):
         for cell in self.clone_cells:
             if cell.value is not None:
                 values.add(cell.value)
+        if len(values) > 1:
+            self.logger.debug(
+                f"Clone constraint violated in cells {self.clone_cells}",
+            )
         return len(values) <= 1
 
     def eliminate(self, board: Board) -> bool:

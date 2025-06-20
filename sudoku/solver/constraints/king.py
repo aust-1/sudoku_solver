@@ -27,6 +27,11 @@ class KingConstraint(BaseConstraint):
                     neighbor_cells = self.reachable_cells(board, board.get_cell(i, j))
                     for cell in neighbor_cells:
                         if cell.value is not None and cell.value != value:
+                            self.logger.debug(
+                                f"King constraint violated at cell ({i}, {j})"
+                                f" and neighbor cell ({cell.row}, {cell.col})"
+                                f" with value {value}",
+                            )
                             return False
         return True
 

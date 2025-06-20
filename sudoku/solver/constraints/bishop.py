@@ -30,6 +30,10 @@ class BishopConstraint(BaseConstraint):
         for cell in self.bishop_cells:
             if cell.value is not None:
                 if cell.value in values:
+                    self.logger.debug(
+                        f"Bishop constraint violated at cell ({cell.row}, {cell.col})"
+                        f" with value {cell.value}",
+                    )
                     return False
                 values.add(cell.value)
         return True
