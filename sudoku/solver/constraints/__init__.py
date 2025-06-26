@@ -11,6 +11,7 @@ from sudoku.solver.constraints.knight import KnightConstraint
 from sudoku.solver.constraints.kropki import KropkiConstraint
 from sudoku.solver.constraints.palindrome import PalindromeConstraint
 from sudoku.solver.constraints.universal import UniversalConstraint
+from sudoku.solver.constraints.xv import XVConstraint
 
 __all__ = [
     "BaseConstraint",
@@ -24,6 +25,7 @@ __all__ = [
     "PalindromeConstraint",
     "ParityConstraint",
     "UniversalConstraint",
+    "XVConstraint",
 ]
 
 # TODO: Arrow
@@ -51,5 +53,4 @@ __all__ = [
 # TODO: Twisted Consecutive
 # TODO: Windoku
 # TODO: X-Sum
-# TODO: XV
 # TODO: Zipper Line

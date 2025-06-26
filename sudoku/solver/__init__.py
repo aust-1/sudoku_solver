@@ -14,6 +14,7 @@ from sudoku.solver.constraints import (
     PalindromeConstraint,
     ParityConstraint,
     UniversalConstraint,
+    XVConstraint,
 )
 from sudoku.solver.solver import Solver
 from sudoku.solver.strategies import (
@@ -57,5 +58,6 @@ __all__ = [
     "ParityConstraint",
     "Solver",
     "UniversalConstraint",
+    "XVConstraint",
     "XWingStrategy",
 ]

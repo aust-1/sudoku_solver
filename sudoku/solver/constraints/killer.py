@@ -214,3 +214,4 @@ class KillerConstraint(BaseConstraint):
 
 
 # TODO: centralisation des killer constraints pour faire toutes les sous cages
+# TODO: si une combinaison supprime tous les candidats d'une cellule, on supprime la combinaison
