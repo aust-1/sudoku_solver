@@ -25,8 +25,8 @@ class Board:
         self.grid: list[list[Cell]] = [
             [Cell(r, c, self.size) for c in range(self.size)] for r in range(self.size)
         ]
-        self.constraints: list[BaseConstraint] = []
-        self.regions: list[set[Cell]] = []
+        self.constraints: set[BaseConstraint] = set()
+        self.regions: dict[str, set[Cell]] = {}
         self.logger = Logger(identifier="Board", follow_logger_manager_rules=True)
         self._init_regions()
         self._init_reachability()
@@ -36,7 +36,7 @@ class Board:
         for cell in self.get_all_cells():
             cell.reachable_cells.clear()
 
-        for r in self.regions:
+        for r in self.regions.values():
             for cell in r:
                 cell.add_reachables(r)
 
@@ -49,14 +49,13 @@ class Board:
 
     def _init_regions(self) -> None:
         """Initialise the regions of the board."""
-        self.regions = (
-            [self._get_row(r) for r in range(self.size)]
-            + [self._get_col(c) for c in range(self.size)]
-            + [self._get_box(b) for b in range(self.size)]
-        )
+        for i in range(self.size):
+            self.regions[f"row{i}"] = self._get_row(i)
+            self.regions[f"col{i}"] = self._get_col(i)
+            self.regions[f"box{i}"] = self._get_box(i)
 
         for constraint in self.constraints:
-            self.regions.extend(constraint.get_regions(self))
+            self.regions.update(constraint.get_regions(self))
 
     def _get_row(self, r: int) -> set[Cell]:
         """Return all cells in row `r`.
@@ -105,8 +104,8 @@ class Board:
         """
         for c in constraints:
             self.logger.debug(f"Adding constraint {c.__class__.__name__}")
-            self.constraints.append(c)
-            self.regions.extend(c.get_regions(self))
+            self.constraints.add(c)
+            self.regions.update(c.get_regions(self))
             for cell in self.get_all_cells():
                 cell.add_reachables(c.reachable_cells(self, cell))
             for cell in self.get_all_cells():
@@ -168,7 +167,7 @@ class Board:
             values = [c.value for c in cells if c.is_filled()]
             return len(values) == len(set(values))
 
-        basic_valid = all(region_valid(r) for r in self.regions)
+        basic_valid = all(region_valid(r) for r in self.regions.values())
         if not basic_valid:
             self.logger.debug("Basic validity check failed")
             return False
@@ -226,7 +225,7 @@ class Board:
                 copy_cell.value = cell.value
                 copy_cell.candidates = set(cell.candidates)
 
-        board.constraints = []
+        board.constraints = set()
         for constraint in self.constraints:
             board.add_constraints(constraint.deep_copy())
         return board

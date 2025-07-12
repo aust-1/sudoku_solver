@@ -33,7 +33,6 @@ class ChainViolationGuardStrategy(Solver):
             HiddenTripleStrategy,
             NakedPairStrategy,
             NakedQuadStrategy,
-            NakedSingleStrategy,
             NakedTripleStrategy,
             XWingStrategy,
         )
@@ -43,7 +42,6 @@ class ChainViolationGuardStrategy(Solver):
         solver = CompositeSolver([
             EliminationStrategy(),
             HiddenSingleStrategy(),
-            NakedSingleStrategy(),
             HiddenPairStrategy(),
             NakedPairStrategy(),
             HiddenTripleStrategy(),
@@ -65,11 +63,12 @@ class ChainViolationGuardStrategy(Solver):
         Returns:
             `True` if any candidates were eliminated, `False` otherwise.
         """
+        self.logger.debug("ChainViolationGuardStrategy running")
         moved = False
         for cell in board.get_all_cells():
             if cell.is_filled():
                 continue
-            for cand in list(cell.candidates):
+            for cand in set(cell.candidates):
                 if not self._is_candidate_valid(board, cell, cand):
                     return cell.eliminate(cand)
         return moved

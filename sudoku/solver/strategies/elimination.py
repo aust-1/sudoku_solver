@@ -22,13 +22,8 @@ class EliminationStrategy(Solver):
         """
         self.logger.debug("EliminationStrategy running")
         moved = False
-        for cell in board.get_all_cells():
-            val = cell.value
-            if val is not None:
-                for peer in cell.reachable_cells:
-                    moved |= peer.eliminate(val)
 
-        for region in board.regions:
+        for name, region in board.regions.items():
             if len(region) != board.size:
                 continue
             for digit in range(1, board.size + 1):
@@ -42,6 +37,14 @@ class EliminationStrategy(Solver):
                 reachable_cells = set(board.get_all_cells())
                 for cell in cells:
                     reachable_cells.intersection_update(cell.reachable_cells)
+
+                eliminated = False
                 for peer in reachable_cells:
-                    moved |= peer.eliminate(digit)
+                    eliminated |= peer.eliminate(digit)
+                if eliminated:
+                    moved = True
+                    self.logger.debug(
+                        f"Eliminated due to intersection of {cells} in {name}",
+                    )
+
         return moved

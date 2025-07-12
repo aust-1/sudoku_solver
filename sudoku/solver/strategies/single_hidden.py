@@ -23,7 +23,7 @@ class HiddenSingleStrategy(Solver):
         """
         self.logger.debug("HiddenSingleStrategy running")
         moved = False
-        for region in board.regions:
+        for name, region in board.regions.items():
             if len(region) != board.size:
                 continue
             counter = Counter(cand for cell in region for cand in cell.candidates)
@@ -33,4 +33,7 @@ class HiddenSingleStrategy(Solver):
                     if len(unique) == 1:
                         cell.set_value(unique[0])
                         moved = True
+                        self.logger.debug(
+                            f"Filled due to hidden single in {name}",
+                        )
         return moved

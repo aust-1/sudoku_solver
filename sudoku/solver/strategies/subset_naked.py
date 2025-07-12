@@ -47,15 +47,22 @@ class _BaseNakedSubsetStrategy(Solver):
         """
         self.logger.debug(f"{self.__class__.__name__} running")
         moved = False
-        for region in board.regions:
+        for name, region in board.regions.items():
             groups: dict[frozenset[int], list[Cell]] = {}
             for cell in region:
                 if not cell.is_filled() and len(cell.candidates) == self.size:
                     key = frozenset(cell.candidates)
                     groups.setdefault(key, []).append(cell)
             for cand_set, cells in groups.items():
-                if len(cells) == self.size:
-                    moved |= self._remove_candidates(region, cells, cand_set)
+                if len(cells) == self.size and self._remove_candidates(
+                    region,
+                    cells,
+                    cand_set,
+                ):
+                    moved = True
+                    self.logger.debug(
+                        f"Eliminated due to naked subset {cand_set} in {name}",
+                    )
         return moved
 
 

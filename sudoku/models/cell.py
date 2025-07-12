@@ -38,6 +38,7 @@ class Cell:
         for cell in cells:
             if cell is not self:
                 self.reachable_cells.add(cell)
+        # TODO: si tu vois un clone, tu vois aussi l'autre
 
     def is_filled(self) -> bool:
         """Check if the cell is filled.
@@ -73,10 +74,21 @@ class Cell:
         self.logger.info(f"Eliminated candidate {v}")
         return True
 
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         """Return a string representation of the cell.
 
         Returns:
             str: A string representation of the cell.
         """
         return str(self.value) if self.value is not None else "."
+
+    def __repr__(self) -> str:
+        """Return a string representation of the cell.
+
+        Returns:
+            str: A string representation of the cell.
+        """
+        return f"C{self.row}.{self.col}"
+
+
+# TODO: row and col en +1

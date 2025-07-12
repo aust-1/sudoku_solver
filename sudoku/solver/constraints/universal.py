@@ -58,16 +58,16 @@ class UniversalConstraint(BaseConstraint):
 
         return reachable_cells
 
-    def get_regions(self, board: Board) -> list[set[Cell]]:  # noqa: PLR6301
+    def get_regions(self, board: Board) -> dict[str, set[Cell]]:  # noqa: PLR6301
         """Get the regions defined by the universal constraint.
 
         Args:
             board (Board): The Sudoku board.
 
         Returns:
-            list[set[Cell]]: A list of sets of cells representing the regions.
+            dict[str,set[Cell]]: A dictionary of sets of cells representing the regions.
         """
-        regions: list[set[Cell]] = []
+        regions: dict[str, set[Cell]] = {}
 
         for i in range(3):
             for j in range(3):
@@ -76,7 +76,7 @@ class UniversalConstraint(BaseConstraint):
                     for x in range(i, board.size, 3)
                     for y in range(j, board.size, 3)
                 }
-                regions.append(region)
+                regions[f"universal_{i}_{j}"] = region
 
         return regions
 

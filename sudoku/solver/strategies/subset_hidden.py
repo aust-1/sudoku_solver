@@ -31,7 +31,7 @@ class _BaseHiddenSubsetStrategy(Solver):
     ) -> bool:
         moved = False
         for cell in cells:
-            for val in list(cell.candidates):
+            for val in set(cell.candidates):
                 if val not in combo:
                     moved |= cell.eliminate(val)
         return moved
@@ -48,7 +48,7 @@ class _BaseHiddenSubsetStrategy(Solver):
         self.logger.debug(f"{self.__class__.__name__} running")
         moved = False
         digits: list[int] = list(range(1, board.size + 1))
-        for region in board.regions:
+        for name, region in board.regions.items():
             if len(region) != board.size:
                 continue
             digit_cells: dict[int, set[Cell]] = {d: set() for d in digits}
@@ -68,8 +68,11 @@ class _BaseHiddenSubsetStrategy(Solver):
                     digit_cells[d] <= cells_union
                     and 1 <= len(digit_cells[d]) <= self.size
                     for d in combo
-                ):
-                    moved |= self._eliminate_candidates(cells_union, combo)
+                ) and self._eliminate_candidates(cells_union, combo):
+                    moved = True
+                    self.logger.debug(
+                        f"Eliminated due to combination {combo} in {name}",
+                    )
         return moved
 
 
@@ -107,3 +110,6 @@ class HiddenQuadStrategy(_BaseHiddenSubsetStrategy):
     def __init__(self) -> None:
         """Initialise the quad hidden strategy."""
         super().__init__(4)
+
+
+# FIXME: pas besoin d'être dans la même région, n cells qui se reach toutes entre elles

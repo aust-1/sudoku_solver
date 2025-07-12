@@ -38,7 +38,7 @@ class BishopConstraint(BaseConstraint):
                 values.add(cell.value)
         return True
 
-    def eliminate(self, board: Board) -> bool:
+    def eliminate(self, board: Board) -> bool:  # noqa: ARG002, PLR6301
         """Automatically complete the bishop's movement constraint on the given board.
 
         Args:
@@ -49,17 +49,7 @@ class BishopConstraint(BaseConstraint):
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
         """
-        self.logger.debug(
-            f"Eliminating candidates for {self.__class__.__name__} constraint",
-        )
-        eliminated = False
-        for cell in self.bishop_cells:
-            value = cell.value
-            if value is not None:
-                neighbor_cells = self.reachable_cells(board, cell)
-                for neighbor_cell in neighbor_cells:
-                    eliminated |= neighbor_cell.eliminate(value)
-        return eliminated
+        return False
 
     def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:  # noqa: ARG002
         """Get the reachable cells based on the constraint.
@@ -80,16 +70,19 @@ class BishopConstraint(BaseConstraint):
 
         return reachable
 
-    def get_regions(self, board: Board) -> list[set[Cell]]:  # noqa: ARG002
+    def get_regions(self, board: Board) -> dict[str, set[Cell]]:
         """Get the regions defined by the constraint.
 
         Args:
             board (Board): The Sudoku board.
 
         Returns:
-            list[set[Cell]]: A list of sets of cells representing the regions.
+            dict[str,set[Cell]]: A dictionary of sets of cells representing the regions.
         """
-        return [self.bishop_cells]
+        idx = 1
+        while f"bishop_{idx}" in board.regions:
+            idx += 1
+        return {f"bishop_{idx}": self.bishop_cells}
 
     def draw(self, gui: SudokuGUI) -> None:
         """Draw this bishop constraint on `gui` if supported.

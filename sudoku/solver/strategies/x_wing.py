@@ -24,10 +24,10 @@ class XWingStrategy(Solver):
         moved = False
         digits = range(1, board.size + 1)
 
-        regions = [r for r in board.regions if len(r) == board.size]
+        regions = [r for r in board.regions.values() if len(r) == board.size]
 
         for digit in digits:
-            candidate_pairs: list[tuple[Cell, Cell]] = []
+            strong_links: set[tuple[Cell, Cell]] = set()
             for region in regions:
                 cells = [
                     cell
@@ -35,13 +35,10 @@ class XWingStrategy(Solver):
                     if not cell.is_filled() and digit in cell.candidates
                 ]
                 if len(cells) == 2:  # noqa: PLR2004
-                    candidate_pairs.append((cells[0], cells[1]))
+                    strong_links.add((cells[0], cells[1]))
 
-            for i in range(len(candidate_pairs)):
-                (a1, b1) = candidate_pairs[i]
-                for j in range(i + 1, len(candidate_pairs)):
-                    (a2, b2) = candidate_pairs[j]
-
+            for a1, b1 in strong_links:
+                for a2, b2 in strong_links:
                     targets1 = a1.reachable_cells.copy()
                     targets2 = b1.reachable_cells.copy()
 
@@ -65,5 +62,8 @@ class XWingStrategy(Solver):
                     for cell in targets:
                         if cell.eliminate(digit):
                             moved = True
+                            self.logger.debug(
+                                f"({a1.row}, {a1.col}), ({b1.row}, {b1.col}), ({a2.row}, {a2.col}), ({b2.row}, {b2.col})",
+                            )
 
         return moved

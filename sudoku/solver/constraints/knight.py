@@ -36,7 +36,7 @@ class KnightConstraint(BaseConstraint):
                             return False
         return True
 
-    def eliminate(self, board: Board) -> bool:
+    def eliminate(self, board: Board) -> bool:  # noqa: ARG002, PLR6301
         """Automatically complete the knight's movement constraint on the given board.
 
         Args:
@@ -47,18 +47,7 @@ class KnightConstraint(BaseConstraint):
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
         """
-        self.logger.debug(
-            f"Eliminating candidates for {self.__class__.__name__} constraint",
-        )
-        eliminated = False
-        for i in range(board.size):
-            for j in range(board.size):
-                value = board.get_cell(i, j).value
-                if value is not None:
-                    reachable_cells = self.reachable_cells(board, board.get_cell(i, j))
-                    for cell in reachable_cells:
-                        eliminated |= cell.eliminate(value)
-        return eliminated
+        return False
 
     def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:  # noqa: PLR6301
         """Get the reachable cells based on the constraint.

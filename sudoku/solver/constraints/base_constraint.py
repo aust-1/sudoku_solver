@@ -71,16 +71,16 @@ class BaseConstraint(ABC):
         """
         return set()
 
-    def get_regions(self, _board: Board) -> list[set[Cell]]:  # noqa: PLR6301
+    def get_regions(self, _board: Board) -> dict[str, set[Cell]]:  # noqa: PLR6301
         """Get the regions defined by the constraint.
 
         Args:
-            board (Board): The Sudoku board.
+            _board (Board): The Sudoku board.
 
         Returns:
-            list[set[Cell]]: A list of sets of cells representing the regions.
+            dict[str,set[Cell]]: A dictionary mapping region names to sets of cells.
         """
-        return []
+        return {}
 
     def draw(self, _gui: SudokuGUI) -> None:  # noqa: PLR6301
         """Draw this constraint on `_gui` if supported.

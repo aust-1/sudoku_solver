@@ -110,9 +110,6 @@ class KropkiConstraint(BaseConstraint):
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
         """
-        self.logger.debug(
-            f"Eliminating candidates for {self.__class__.__name__} constraint",
-        )
         eliminated = False
 
         cell1_candidates: set[int] = set(self.cell1.candidates)
@@ -131,7 +128,11 @@ class KropkiConstraint(BaseConstraint):
                 possible |= self._is_kropki_valid(v1, v2)
             if not possible:
                 eliminated |= self.cell2.eliminate(v2)
-
+        if eliminated:
+            self.logger.debug(
+                f"Eliminated due to Kropki {'black' if self.is_black_dot else 'white'}"
+                f" in {self.cell1} and {self.cell2}",
+            )
         return eliminated
 
     def draw(self, gui: SudokuGUI) -> None:

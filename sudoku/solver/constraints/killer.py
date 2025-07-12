@@ -168,31 +168,34 @@ class KillerConstraint(BaseConstraint):
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
         """
-        self.logger.debug(
-            f"Eliminating candidates for {self.__class__.__name__} constraint",
-        )
         eliminated = False
 
         self._eliminate_combinations()
 
         if self.possible_combinations:
             eliminated |= self._eliminate_candidates(board)
-
+        if eliminated:
+            self.logger.debug(
+                f"Eliminated due to killer sum: {self.sum} in {self.killer_cells}",
+            )
         return eliminated
 
-    def get_regions(self, board: Board) -> list[set[Cell]]:  # noqa: ARG002
+    def get_regions(self, board: Board) -> dict[str, set[Cell]]:
         """Get the regions defined by the killer constraint.
 
         Args:
             board (Board): The Sudoku board.
 
         Returns:
-            list[set[Cell]]: A list of sets of cells representing the regions.
+            dict[str,set[Cell]]: A dictionary of sets of cells representing the regions.
         """
-        return [self.killer_cells]
+        idx = 1
+        while f"killer_{idx}" in board.regions:
+            idx += 1
+        return {f"killer_{idx}": self.killer_cells}
 
     def draw(self, gui: SudokuGUI) -> None:
-        """Draw this bishop constraint on `gui` if supported.
+        """Draw this killer constraint on `gui` if supported.
 
         Args:
             gui (SudokuGUI): The GUI to draw on.

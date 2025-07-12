@@ -31,7 +31,7 @@ class XVConstraint(BaseConstraint):
         ):
             msg = "XV constraint cells must be adjacent."
             raise ValueError(msg)
-        self.killer_constraints: KillerConstraint = KillerConstraint(
+        self.killer_constraint: KillerConstraint = KillerConstraint(
             {self.cell1, self.cell2},
             total_sum=total_sum,
             board_size=9,
@@ -70,7 +70,7 @@ class XVConstraint(BaseConstraint):
         Returns:
             bool: `True` if the XV constraint is satisfied, `False` otherwise.
         """
-        return self.killer_constraints.check(board)
+        return self.killer_constraint.check(board)
 
     def eliminate(self, board: Board) -> bool:
         """Automatically complete the XV constraint on the given board.
@@ -83,10 +83,7 @@ class XVConstraint(BaseConstraint):
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
         """
-        self.logger.debug(
-            f"Eliminating candidates for {self.__class__.__name__} constraint",
-        )
-        return self.killer_constraints.eliminate(board)
+        return self.killer_constraint.eliminate(board)
 
     def draw(self, gui: SudokuGUI) -> None:
         """Draw this XV constraint on `gui` if supported.
@@ -94,7 +91,12 @@ class XVConstraint(BaseConstraint):
         Args:
             gui (SudokuGUI): The GUI to draw on.
         """
-        # TODO: Implement drawing logic for XV constraint
+        gui.write_text_between_cells(
+            self.cell1,
+            self.cell2,
+            "X" if self.killer_constraint.sum == 10 else "V",
+        )
+        # FIXME: c'est dégueulasse
 
     def deep_copy(self) -> XVConstraint:
         """Create a deep copy of the constraint.
@@ -104,5 +106,8 @@ class XVConstraint(BaseConstraint):
         """
         return XVConstraint(
             {self.cell1, self.cell2},
-            total_sum=self.killer_constraints.sum,
+            total_sum=self.killer_constraint.sum,
         )
+
+
+# QUESTION: init par set ou deux cells
