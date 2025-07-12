@@ -70,6 +70,20 @@ class KropkiConstraint(BaseConstraint):
         """
         return cls(kropki_cells, color="white")
 
+    def _is_kropki_valid(self, v1: int, v2: int) -> bool:
+        """Check if the Kropki constraint is satisfied for the given values.
+
+        Args:
+            v1 (int): The value of the first cell.
+            v2 (int): The value of the second cell.
+
+        Returns:
+            bool: True if the Kropki constraint is satisfied, False otherwise.
+        """
+        if self.is_black_dot:
+            return v1 == v2 * 2 or v2 == v1 * 2
+        return v1 == v2 + 1 or v2 == v1 + 1
+
     def check(self, board: Board) -> bool:  # noqa: ARG002
         """Check if the Kropki constraint is satisfied.
 
@@ -79,19 +93,10 @@ class KropkiConstraint(BaseConstraint):
         Returns:
             bool: `True` if the Kropki constraint is satisfied, `False` otherwise.
         """
-        if self.is_black_dot:
-            return (
-                self.cell1.value is None
-                or self.cell2.value is None
-                or self.cell1.value == self.cell2.value * 2
-                or self.cell2.value == self.cell1.value * 2
-            )
-
         return (
             self.cell1.value is None
             or self.cell2.value is None
-            or self.cell1.value == self.cell2.value + 1
-            or self.cell1.value == self.cell2.value - 1
+            or self._is_kropki_valid(self.cell1.value, self.cell2.value)
         )
 
     def eliminate(self, board: Board) -> bool:  # noqa: ARG002
@@ -110,64 +115,23 @@ class KropkiConstraint(BaseConstraint):
         )
         eliminated = False
 
-        if self.is_black_dot:
-            if self.cell1.value is None and self.cell2.value is None:
-                for v1 in set(self.cell1.candidates):
-                    possible = False
-                    for v2 in self.cell2.candidates:
-                        if v1 == v2 * 2 or v2 == v1 * 2:
-                            possible = True
-                    if not possible:
-                        eliminated |= self.cell1.eliminate(v1)
+        cell1_candidates: set[int] = set(self.cell1.candidates)
+        cell2_candidates: set[int] = set(self.cell2.candidates)
 
-                for v2 in set(self.cell2.candidates):
-                    possible = False
-                    for v1 in self.cell1.candidates:
-                        if v1 == v2 * 2 or v2 == v1 * 2:
-                            possible = True
-                    if not possible:
-                        eliminated |= self.cell2.eliminate(v2)
+        for v1 in cell1_candidates:
+            possible = False
+            for v2 in cell2_candidates:
+                possible |= self._is_kropki_valid(v1, v2)
+            if not possible:
+                eliminated |= self.cell1.eliminate(v1)
 
-            elif self.cell1.value is not None and self.cell2.value is None:
-                v1 = self.cell1.value
-                for v2 in set(self.cell2.candidates):
-                    if v1 != v2 * 2 and v2 != v1 * 2:
-                        eliminated |= self.cell2.eliminate(v2)
+        for v2 in cell2_candidates:
+            possible = False
+            for v1 in cell1_candidates:
+                possible |= self._is_kropki_valid(v1, v2)
+            if not possible:
+                eliminated |= self.cell2.eliminate(v2)
 
-            elif self.cell1.value is None and self.cell2.value is not None:
-                v2 = self.cell2.value
-                for v1 in set(self.cell1.candidates):
-                    if v1 != v2 * 2 and v2 != v1 * 2:
-                        eliminated |= self.cell1.eliminate(v1)
-
-        elif not self.is_black_dot:
-            if self.cell1.value is None and self.cell2.value is None:
-                for v1 in set(self.cell1.candidates):
-                    possible = False
-                    for v2 in self.cell2.candidates:
-                        if v1 == v2 + 1 or v2 == v1 + 1:
-                            possible = True
-                    if not possible:
-                        eliminated |= self.cell1.eliminate(v1)
-                for v2 in set(self.cell2.candidates):
-                    possible = False
-                    for v1 in self.cell1.candidates:
-                        if v1 == v2 + 1 or v2 == v1 + 1:
-                            possible = True
-                    if not possible:
-                        eliminated |= self.cell2.eliminate(v2)
-
-            elif self.cell1.value is not None and self.cell2.value is None:
-                v1 = self.cell1.value
-                for v2 in set(self.cell2.candidates):
-                    if v1 != v2 + 1 and v2 != v1 + 1:
-                        eliminated |= self.cell2.eliminate(v2)
-
-            elif self.cell1.value is None and self.cell2.value is not None:
-                v2 = self.cell2.value
-                for v1 in set(self.cell1.candidates):
-                    if v1 != v2 + 1 and v2 != v1 + 1:
-                        eliminated |= self.cell1.eliminate(v1)
         return eliminated
 
     def draw(self, gui: SudokuGUI) -> None:
@@ -194,6 +158,4 @@ class KropkiConstraint(BaseConstraint):
 
 # TODO: implement logique quand plusieurs kropki à la suite
 
-# TODO: code plus intelligent mixte par couleur. pas de test de value is None or not en
-# amont juste pour chaque boucle soit on fixe la valeur soit on fait une boucle pour
-# chaque candidat
+# QUESTION: init par set ou deux cells
