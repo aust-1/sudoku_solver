@@ -14,8 +14,8 @@ from sudoku.solver.strategies import (
     HiddenTripleStrategy,
     NakedPairStrategy,
     NakedQuadStrategy,
-    NakedSingleStrategy,
     NakedTripleStrategy,
+    WWingStrategy,
     XWingStrategy,
 )
 
@@ -40,15 +40,15 @@ class CompositeSolver(Solver):
         self.strategies = strategies or [
             EliminationStrategy(),
             HiddenSingleStrategy(),
-            NakedSingleStrategy(),
-            HiddenPairStrategy(),
             NakedPairStrategy(),
-            HiddenTripleStrategy(),
-            NakedTripleStrategy(),
-            HiddenQuadStrategy(),
-            NakedQuadStrategy(),
-            XWingStrategy(),
+            HiddenPairStrategy(),
             ConstraintStrategy(),
+            NakedTripleStrategy(),
+            HiddenTripleStrategy(),
+            NakedQuadStrategy(),
+            HiddenQuadStrategy(),
+            XWingStrategy(),
+            WWingStrategy(),
             ChainViolationGuardStrategy(),
         ]
 

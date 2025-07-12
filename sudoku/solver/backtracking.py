@@ -24,7 +24,6 @@ class BacktrackingSolver(Solver):
             HiddenTripleStrategy,
             NakedPairStrategy,
             NakedQuadStrategy,
-            NakedSingleStrategy,
             NakedTripleStrategy,
             XWingStrategy,
         )
@@ -32,13 +31,12 @@ class BacktrackingSolver(Solver):
         self.strategies: list[Solver] = [
             EliminationStrategy(),
             HiddenSingleStrategy(),
-            NakedSingleStrategy(),
-            HiddenPairStrategy(),
             NakedPairStrategy(),
-            HiddenTripleStrategy(),
+            HiddenPairStrategy(),
             NakedTripleStrategy(),
-            HiddenQuadStrategy(),
+            HiddenTripleStrategy(),
             NakedQuadStrategy(),
+            HiddenQuadStrategy(),
             XWingStrategy(),
             ConstraintStrategy(),
         ]

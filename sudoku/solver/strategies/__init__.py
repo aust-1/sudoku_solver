@@ -29,6 +29,7 @@ __all__ = [
     "NakedQuadStrategy",
     "NakedSingleStrategy",
     "NakedTripleStrategy",
+    "WWingStrategy",
     "XWingStrategy",
 ]
 
@@ -47,7 +48,6 @@ __all__ = [
 # TODO: 3D Medusa
 # TODO: Two-String-Kite
 # TODO: Unique Rectangle
-# TODO: W-Wing
 # TODO: WXYZ Wing
 # TODO: X-Cycles
 # TODO: XY-Chain

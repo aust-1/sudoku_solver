@@ -58,6 +58,7 @@ __all__ = [
     "ParityConstraint",
     "Solver",
     "UniversalConstraint",
+    "WWingStrategy",
     "XVConstraint",
     "XWingStrategy",
 ]
