@@ -143,6 +143,28 @@ class SudokuGUI:
             ),
         )
 
+    def write_text_between_cells(
+        self,
+        cell1: Cell,
+        cell2: Cell,
+        text: str,
+    ) -> None:
+        """Write a text between `cell1` and `cell2`.
+
+        Args:
+            cell1 (Cell): The first cell.
+            cell2 (Cell): The second cell.
+            text (str): The text to write.
+        """
+        text_to_render = pygame.font.SysFont(None, 40).render(text, 1, [0, 0, 0])
+        self.screen.blit(
+            text_to_render,
+            (
+                (cell1.col * self.size + cell2.col * self.size) / 2,
+                (cell1.row * self.size + cell2.row * self.size) / 2,
+            ),
+        )
+
     def draw_square(
         self,
         cell: Cell,
@@ -453,3 +475,6 @@ class SudokuGUI:
 
 
 # TODO: add list des cellules en higlligth qui sont cochées décochées
+# TODO: affichage des codes de chaque ligne et collones
+# HACK: lignes de bishop qui vont jusqu'au bord
+# HACK: couleur différente en fonction de déduction ou don
