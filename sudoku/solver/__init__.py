@@ -27,8 +27,8 @@ from sudoku.solver.strategies import (
     HiddenTripleStrategy,
     NakedPairStrategy,
     NakedQuadStrategy,
-    NakedSingleStrategy,
     NakedTripleStrategy,
+    WWingStrategy,
     XWingStrategy,
 )
 
@@ -52,7 +52,6 @@ __all__ = [
     "KropkiConstraint",
     "NakedPairStrategy",
     "NakedQuadStrategy",
-    "NakedSingleStrategy",
     "NakedTripleStrategy",
     "PalindromeConstraint",
     "ParityConstraint",

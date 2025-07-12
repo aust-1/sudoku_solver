@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from loggerplusplus import Logger  # type: ignore[import-untyped]
+from loggerplusplus import Logger
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -58,6 +58,8 @@ class Cell:
         self.candidates.clear()
         self.candidates.add(v)
         self.logger.info(f"Set value {v}")
+        for cell in self.reachable_cells:
+            cell.eliminate(v)
 
     def eliminate(self, v: int) -> bool:
         """Remove a value from the candidate set.
@@ -72,7 +74,23 @@ class Cell:
             return False
         self.candidates.remove(v)
         self.logger.info(f"Eliminated candidate {v}")
+        if len(self.candidates) == 1:
+            self.set_value(next(iter(self.candidates)))
+            return True
         return True
+
+    # def __eq__(self, value: object) -> bool:
+    #     """Check if this cell is equal to another cell.
+
+    #     Args:
+    #         value (object): The object to compare.
+
+    #     Returns:
+    #         bool: `True` if the objects are equal, `False` otherwise.
+    #     """
+    #     if not isinstance(value, Cell):
+    #         return False
+    #     return (self.row, self.col) == (value.row, value.col)
 
     def __str__(self) -> str:
         """Return a string representation of the cell.

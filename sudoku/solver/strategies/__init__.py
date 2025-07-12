@@ -4,7 +4,6 @@ from sudoku.solver.strategies.chain_violation_guard import ChainViolationGuardSt
 from sudoku.solver.strategies.constraint import ConstraintStrategy
 from sudoku.solver.strategies.elimination import EliminationStrategy
 from sudoku.solver.strategies.single_hidden import HiddenSingleStrategy
-from sudoku.solver.strategies.single_naked import NakedSingleStrategy
 from sudoku.solver.strategies.subset_hidden import (
     HiddenPairStrategy,
     HiddenQuadStrategy,
@@ -15,6 +14,7 @@ from sudoku.solver.strategies.subset_naked import (
     NakedQuadStrategy,
     NakedTripleStrategy,
 )
+from sudoku.solver.strategies.w_wing import WWingStrategy
 from sudoku.solver.strategies.x_wing import XWingStrategy
 
 __all__ = [
@@ -27,7 +27,6 @@ __all__ = [
     "HiddenTripleStrategy",
     "NakedPairStrategy",
     "NakedQuadStrategy",
-    "NakedSingleStrategy",
     "NakedTripleStrategy",
     "WWingStrategy",
     "XWingStrategy",
