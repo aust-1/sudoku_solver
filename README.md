@@ -12,9 +12,14 @@ python main.py
 
 ```plaintext
 sudoku_solver
+├─ demo
+│  └─ sudoku_solver.zip
 ├─ LICENSE
 ├─ main.py
+├─ Makefile
+├─ pyproject.toml
 ├─ README.md
+├─ requirements.txt
 └─ sudoku
    ├─ models
    │  ├─ board.py
@@ -23,27 +28,36 @@ sudoku_solver
    ├─ solver
    │  ├─ backtracking.py
    │  ├─ composite.py
-   │  ├─ constrainst
+   │  ├─ constraints
    │  │  ├─ base_constraint.py
-   │  │  ├─ clone_constraint.py
-   │  │  ├─ king_constraint.py
-   │  │  ├─ knight_constraint.py
-   │  │  ├─ palindrome_constraint.py
+   │  │  ├─ bishop.py
+   │  │  ├─ clone.py
+   │  │  ├─ clone_zone_constraint.py
+   │  │  ├─ even_odd.py
+   │  │  ├─ killer.py
+   │  │  ├─ king.py
+   │  │  ├─ knight.py
+   │  │  ├─ kropki.py
+   │  │  ├─ palindrome.py
+   │  │  ├─ universal.py
+   │  │  ├─ xv.py
    │  │  └─ __init__.py
    │  ├─ solver.py
    │  ├─ strategies
+   │  │  ├─ chain_violation_guard.py
+   │  │  ├─ constraint.py
    │  │  ├─ elimination.py
-   │  │  ├─ only_choice.py
-   │  │  ├─ single_candidate.py
+   │  │  ├─ single_hidden.py
+   │  │  ├─ subset_hidden.py
+   │  │  ├─ subset_naked.py
+   │  │  ├─ w_wing.py
+   │  │  ├─ x_wing.py
    │  │  └─ __init__.py
    │  └─ __init__.py
    ├─ utils
    │  ├─ exceptions.py
-   │  ├─ io.py
-   │  ├─ printer.py
+   │  ├─ gui.py
    │  └─ __init__.py
    └─ __init__.py
 
 ```
-
-<https://www.sudokuwiki.org/Almost_Locked_Sets>
