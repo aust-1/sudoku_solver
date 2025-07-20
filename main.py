@@ -1,7 +1,7 @@
 """Example script showcasing the Sudoku solver."""
 
+import sudoku.solver
 from sudoku.models import Board
-from sudoku.solver import CompositeSolver, PalindromeConstraint
 from sudoku.utils import SudokuGUI
 
 
@@ -21,7 +21,7 @@ def main() -> None:
     )
     board.load_from(puzzle)
     board.add_constraints(
-        PalindromeConstraint([
+        sudoku.solver.PalindromeConstraint([
             board.get_cell(0, 1),
             board.get_cell(1, 1),
             board.get_cell(1, 2),
@@ -32,42 +32,36 @@ def main() -> None:
             board.get_cell(4, 0),
             board.get_cell(5, 0),
         ]),
-        PalindromeConstraint([
-            board.get_cell(0, 3),
-            board.get_cell(0, 4),
-            board.get_cell(1, 4),
-            board.get_cell(1, 5),
-            board.get_cell(2, 5),
-            board.get_cell(2, 6),
-            board.get_cell(2, 7),
-            board.get_cell(1, 7),
-            board.get_cell(1, 8),
-        ]),
-        PalindromeConstraint([
-            board.get_cell(7, 0),
-            board.get_cell(7, 1),
-            board.get_cell(6, 1),
-            board.get_cell(6, 2),
-            board.get_cell(6, 3),
-            board.get_cell(7, 3),
-            board.get_cell(7, 4),
-            board.get_cell(8, 4),
-            board.get_cell(8, 5),
-        ]),
-        PalindromeConstraint([
-            board.get_cell(3, 8),
-            board.get_cell(4, 8),
-            board.get_cell(4, 7),
-            board.get_cell(5, 7),
-            board.get_cell(5, 6),
-            board.get_cell(6, 6),
-            board.get_cell(7, 6),
+        sudoku.solver.KropkiConstraint.black({
+            board.get_cell(0, 0),
+            board.get_cell(0, 1),
+        }),
+        sudoku.solver.KillerConstraint(
+            {
+                board.get_cell(0, 0),
+                board.get_cell(0, 1),
+                board.get_cell(1, 0),
+                board.get_cell(1, 1),
+            },
+            total_sum=20,
+            board_size=9,
+        ),
+        sudoku.solver.ParityConstraint.odd(board.get_cell(4, 5)),
+        sudoku.solver.ParityConstraint.even(board.get_cell(5, 5)),
+        sudoku.solver.BishopConstraint({
+            board.get_cell(8, 8),
             board.get_cell(7, 7),
-            board.get_cell(8, 7),
-        ]),
+            board.get_cell(6, 6),
+            board.get_cell(5, 5),
+            board.get_cell(4, 4),
+            board.get_cell(5, 3),
+            board.get_cell(6, 2),
+            board.get_cell(7, 1),
+            board.get_cell(8, 0),
+        }),
     )
 
-    solver = CompositeSolver()
+    solver = sudoku.solver.CompositeSolver()
 
     gui = SudokuGUI(board)
     gui.run_stepwise(solver)
@@ -77,3 +71,4 @@ if __name__ == "__main__":
     main()
 
 # TODO: implémenter uv
+
