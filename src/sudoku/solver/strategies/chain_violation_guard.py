@@ -39,18 +39,20 @@ class ChainViolationGuardStrategy(Solver):
 
         copy = board.deep_copy()
         copy.get_cell(cell.row, cell.col).set_value(value)
-        solver = CompositeSolver([
-            EliminationStrategy(),
-            HiddenSingleStrategy(),
-            HiddenPairStrategy(),
-            NakedPairStrategy(),
-            HiddenTripleStrategy(),
-            NakedTripleStrategy(),
-            HiddenQuadStrategy(),
-            NakedQuadStrategy(),
-            XWingStrategy(),
-            ConstraintStrategy(),
-        ])
+        solver = CompositeSolver(
+            [
+                EliminationStrategy(),
+                HiddenSingleStrategy(),
+                HiddenPairStrategy(),
+                NakedPairStrategy(),
+                HiddenTripleStrategy(),
+                NakedTripleStrategy(),
+                HiddenQuadStrategy(),
+                NakedQuadStrategy(),
+                XWingStrategy(),
+                ConstraintStrategy(),
+            ],
+        )
         solved = solver.solve(copy)
         return solved or copy.is_valid()
 
