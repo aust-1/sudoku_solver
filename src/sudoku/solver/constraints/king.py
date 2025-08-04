@@ -19,6 +19,7 @@ class KingConstraint(BaseConstraint):
 
         Returns:
             bool: `True` if the king's movement is valid, `False` otherwise.
+
         """
         for i in range(board.size):
             for j in range(board.size):
@@ -45,6 +46,7 @@ class KingConstraint(BaseConstraint):
             bool:
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
+
         """
         return False
 
@@ -57,6 +59,7 @@ class KingConstraint(BaseConstraint):
 
         Returns:
             set[Cell]: A set of reachable cells.
+
         """
         reachable: set[Cell] = set()
         for x in range(-1, 2):
@@ -74,5 +77,6 @@ class KingConstraint(BaseConstraint):
 
         Returns:
             BaseConstraint: A deep copy of the constraint.
+
         """
         return KingConstraint()

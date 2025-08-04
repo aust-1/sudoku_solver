@@ -19,6 +19,7 @@ class _BaseNakedSubsetStrategy(Solver):
 
         Args:
             size (int): The size of the subset.
+
         """
         self.size = size
         super().__init__()
@@ -44,6 +45,7 @@ class _BaseNakedSubsetStrategy(Solver):
 
         Returns:
             bool: True if any candidates were eliminated, False otherwise.
+
         """
         self.logger.debug(f"{self.__class__.__name__} running")
         moved = False

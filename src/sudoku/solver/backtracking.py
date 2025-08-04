@@ -56,6 +56,7 @@ class BacktrackingSolver(Solver):
 
         Returns:
             bool: `True` if the board is solved, `False` otherwise.
+
         """
         if not board.is_valid():
             return False

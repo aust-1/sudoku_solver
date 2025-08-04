@@ -18,6 +18,7 @@ class PalindromeConstraint(BaseConstraint):
 
         Args:
             palindrome_cells (list[Cell]): The list of cells to apply constraints to.
+
         """
         super().__init__()
         self.palindrome_cells: list[Cell] = palindrome_cells
@@ -35,6 +36,7 @@ class PalindromeConstraint(BaseConstraint):
 
         Returns:
             bool: `True` if the constraint is satisfied, `False` otherwise.
+
         """
         return all(constraint.check(board) for constraint in self.clone_constraints)
 
@@ -48,6 +50,7 @@ class PalindromeConstraint(BaseConstraint):
             bool:
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
+
         """
         self.logger.debug(
             f"Eliminating candidates for {self.__class__.__name__} constraint",
@@ -66,6 +69,7 @@ class PalindromeConstraint(BaseConstraint):
 
         Returns:
             set[Cell]: A set of reachable cells.
+
         """
         reachable_cells: set[Cell] = set()
         for constraint in self.clone_constraints:
@@ -77,6 +81,7 @@ class PalindromeConstraint(BaseConstraint):
 
         Args:
             gui (SudokuGUI): The GUI to draw on.
+
         """
         gui.draw_line(self.palindrome_cells, (0, 140, 255, 120), 5)
 
@@ -85,5 +90,6 @@ class PalindromeConstraint(BaseConstraint):
 
         Returns:
             BaseConstraint: A deep copy of the constraint.
+
         """
         return PalindromeConstraint(self.palindrome_cells.copy())

@@ -19,6 +19,7 @@ class EliminationStrategy(Solver):
 
         Returns:
             bool: `True` if any candidates were eliminated, `False` otherwise.
+
         """
         self.logger.debug("EliminationStrategy running")
         moved = False

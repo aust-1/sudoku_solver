@@ -22,6 +22,7 @@ class KropkiConstraint(BaseConstraint):
         Raises:
             ValueError: If the cells are not adjacent.
             ValueError: If the color is not 'black' or 'white'.
+
         """
         super().__init__()
         self.cell1, self.cell2 = kropki_cells
@@ -55,6 +56,7 @@ class KropkiConstraint(BaseConstraint):
 
         Returns:
             KropkiConstraint: The created Kropki constraint.
+
         """
         return cls(kropki_cells, color="black")
 
@@ -67,6 +69,7 @@ class KropkiConstraint(BaseConstraint):
 
         Returns:
             KropkiConstraint: The created Kropki constraint.
+
         """
         return cls(kropki_cells, color="white")
 
@@ -79,6 +82,7 @@ class KropkiConstraint(BaseConstraint):
 
         Returns:
             bool: True if the Kropki constraint is satisfied, False otherwise.
+
         """
         if self.is_black_dot:
             return v1 == v2 * 2 or v2 == v1 * 2
@@ -92,6 +96,7 @@ class KropkiConstraint(BaseConstraint):
 
         Returns:
             bool: `True` if the Kropki constraint is satisfied, `False` otherwise.
+
         """
         return (
             self.cell1.value is None
@@ -109,6 +114,7 @@ class KropkiConstraint(BaseConstraint):
             bool:
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
+
         """
         eliminated = False
 
@@ -140,6 +146,7 @@ class KropkiConstraint(BaseConstraint):
 
         Args:
             gui (SudokuGUI): The GUI to draw on.
+
         """
         color = (0, 0, 0, 255) if self.is_black_dot else (255, 255, 255, 255)
 
@@ -150,6 +157,7 @@ class KropkiConstraint(BaseConstraint):
 
         Returns:
             BaseConstraint: A deep copy of the constraint.
+
         """
         return KropkiConstraint(
             {self.cell1, self.cell2},

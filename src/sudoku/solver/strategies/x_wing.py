@@ -19,6 +19,7 @@ class XWingStrategy(Solver):
 
         Returns:
             `True` if any candidates were eliminated, `False` otherwise.
+
         """
         self.logger.debug("XWingStrategy running")
         moved = False

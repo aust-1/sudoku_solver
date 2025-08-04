@@ -19,6 +19,7 @@ class WWingStrategy(Solver):
 
         Returns:
             `True` if any candidates were eliminated, `False` otherwise.
+
         """
         self.logger.debug("WWingStrategy running")
         moved = False

@@ -35,6 +35,7 @@ class CompositeSolver(Solver):
         Args:
             strategies (List[Solver] | None, optional):
                 The list of strategies to apply. Defaults to None.
+
         """
         super().__init__()
         self.strategies = strategies or [
@@ -62,6 +63,7 @@ class CompositeSolver(Solver):
             bool:
                 `True` if one of the strategies made a change to the board,
                 `False` otherwise.
+
         """
         for strat in self.strategies:
             self.logger.info(f"Trying {strat.__class__.__name__}")
@@ -81,6 +83,7 @@ class CompositeSolver(Solver):
 
         Returns:
             bool: `True` if the board is solved, `False` otherwise.
+
         """
         progress = True
         while progress:

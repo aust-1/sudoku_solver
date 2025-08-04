@@ -16,6 +16,7 @@ class CloneConstraint(BaseConstraint):
 
         Args:
             clone_cells (set[Cell]): The list of cells to apply constraints to.
+
         """
         super().__init__()
         self.clone_cells = clone_cells
@@ -28,6 +29,7 @@ class CloneConstraint(BaseConstraint):
 
         Returns:
             bool: `True` if the constraint is satisfied, `False` otherwise.
+
         """
         values: set[int] = set()
         for cell in self.clone_cells:
@@ -49,6 +51,7 @@ class CloneConstraint(BaseConstraint):
             bool:
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
+
         """
         eliminated = False
         values = set(range(1, board.size + 1))
@@ -74,6 +77,7 @@ class CloneConstraint(BaseConstraint):
 
         Returns:
             set[Cell]: A set of reachable cells.
+
         """
         if cell not in self.clone_cells:
             return set()
@@ -90,5 +94,6 @@ class CloneConstraint(BaseConstraint):
 
         Returns:
             BaseConstraint: A deep copy of the constraint.
+
         """
         return CloneConstraint(self.clone_cells.copy())

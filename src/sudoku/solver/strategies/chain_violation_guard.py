@@ -22,6 +22,7 @@ class ChainViolationGuardStrategy(Solver):
 
         Returns:
             `True` if the resulting board can be solved, `False` otherwise.
+
         """
         from sudoku.solver.composite import CompositeSolver
         from sudoku.solver.strategies import (
@@ -64,6 +65,7 @@ class ChainViolationGuardStrategy(Solver):
 
         Returns:
             `True` if any candidates were eliminated, `False` otherwise.
+
         """
         self.logger.debug("ChainViolationGuardStrategy running")
         moved = False

@@ -25,6 +25,7 @@ class BishopConstraint(BaseConstraint):
 
         Returns:
             bool: `True` if the bishop's movement is valid, `False` otherwise.
+
         """
         values: set[int] = set()
         for cell in self.bishop_cells:
@@ -48,6 +49,7 @@ class BishopConstraint(BaseConstraint):
             bool:
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
+
         """
         return False
 
@@ -60,6 +62,7 @@ class BishopConstraint(BaseConstraint):
 
         Returns:
             set[Cell]: A set of reachable cells.
+
         """
         if cell not in self.bishop_cells:
             return set()
@@ -78,6 +81,7 @@ class BishopConstraint(BaseConstraint):
 
         Returns:
             dict[str,set[Cell]]: A dictionary of sets of cells representing the regions.
+
         """
         idx = 1
         while f"bishop_{idx}" in board.regions:
@@ -89,6 +93,7 @@ class BishopConstraint(BaseConstraint):
 
         Args:
             gui (SudokuGUI): The GUI to draw on.
+
         """
         gui.draw_line(
             gui.order_diagonal(self.bishop_cells),
@@ -101,5 +106,6 @@ class BishopConstraint(BaseConstraint):
 
         Returns:
             BaseConstraint: A deep copy of the constraint.
+
         """
         return BishopConstraint(self.bishop_cells.copy())

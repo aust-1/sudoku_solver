@@ -20,6 +20,7 @@ class Board:
 
         Args:
             size (int): The size of the Sudoku board (e.g., 9 for a 9x9 board).
+
         """
         self.size = size
         self.grid: list[list[Cell]] = [
@@ -65,6 +66,7 @@ class Board:
 
         Returns:
             set[Cell]: All cells in the specified row.
+
         """
         return set(self.grid[r])
 
@@ -76,6 +78,7 @@ class Board:
 
         Returns:
             set[Cell]: All cells in the specified column.
+
         """
         return {self.grid[r][c] for r in range(self.size)}
 
@@ -87,6 +90,7 @@ class Board:
 
         Returns:
             set[Cell]: All cells in the specified box.
+
         """
         start_r = (box_index // 3) * 3
         start_c = (box_index % 3) * 3
@@ -101,6 +105,7 @@ class Board:
 
         Args:
             *constraints (BaseConstraint): The constraints to add.
+
         """
         for c in constraints:
             self.logger.debug(f"Adding constraint {c.__class__.__name__}")
@@ -132,6 +137,7 @@ class Board:
 
         Returns:
             Cell: The cell at the specified row and column.
+
         """
         return self.grid[row][col]
 
@@ -153,6 +159,7 @@ class Board:
             bool:
                 `True` if all rows, columns and boxes contain no duplicates,
                 `False` otherwise.
+
         """
 
         def region_valid(cells: Iterable[Cell]) -> bool:
@@ -163,6 +170,7 @@ class Board:
 
             Returns:
                 bool: `True` if the region has no duplicates, `False` otherwise.
+
             """
             values = [c.value for c in cells if c.is_filled()]
             return len(values) == len(set(values))
@@ -179,6 +187,7 @@ class Board:
 
         Returns:
             bool: `True` if every cell has a value, `False` otherwise.
+
         """
         return (
             all(cell.is_filled() for cell in self.get_all_cells()) and self.is_valid()
@@ -189,6 +198,7 @@ class Board:
 
         Args:
             input_str (str): A string representation of the Sudoku board.
+
         """
         self.logger.debug("Loading board from string")
         digits = [d for d in input_str if d.isdigit()]
@@ -204,6 +214,7 @@ class Board:
 
         Returns:
             str: A string representation of the Sudoku board.
+
         """
         lines: list[str] = []
         for r in range(self.size):
@@ -216,6 +227,7 @@ class Board:
 
         Returns:
             Board: A deep copy of the board.
+
         """
         board = Board(self.size)
         for r in range(self.size):
@@ -235,6 +247,7 @@ class Board:
 
         Args:
             other (Board): The board to copy values from.
+
         """
         for r in range(self.size):
             for c in range(self.size):

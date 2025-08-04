@@ -28,6 +28,7 @@ class Solver(ABC):
 
         Returns:
             bool: `True` if the board was modified, `False` otherwise.
+
         """
 
     def solve(self, board: Board) -> bool:
@@ -38,6 +39,7 @@ class Solver(ABC):
 
         Returns:
             bool: `True` if the board is solved, `False` otherwise.
+
         """
         self.logger.info("Starting solve loop")
         while self.apply(board):

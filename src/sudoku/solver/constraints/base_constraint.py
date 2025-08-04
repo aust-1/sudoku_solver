@@ -21,6 +21,7 @@ class BaseConstraint(ABC):
         Args:
             logger (Logger | None): An optional logger instance for logging.
             Defaults to None.
+
         """
         self.logger = logger or Logger(
             identifier=self.__class__.__name__,
@@ -38,6 +39,7 @@ class BaseConstraint(ABC):
             bool:
                 `True` if the constraint is satisfied,
                 `False` otherwise.
+
         """
         raise NotImplementedError(self.msg)
 
@@ -52,6 +54,7 @@ class BaseConstraint(ABC):
             bool:
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
+
         """
         raise NotImplementedError(self.msg)
 
@@ -68,6 +71,7 @@ class BaseConstraint(ABC):
 
         Returns:
             set[Cell]: A set of reachable cells.
+
         """
         return set()
 
@@ -79,6 +83,7 @@ class BaseConstraint(ABC):
 
         Returns:
             dict[str,set[Cell]]: A dictionary mapping region names to sets of cells.
+
         """
         return {}
 
@@ -87,6 +92,7 @@ class BaseConstraint(ABC):
 
         Args:
             _gui (SudokuGUI): The GUI to draw on.
+
         """
         return
 
@@ -96,5 +102,6 @@ class BaseConstraint(ABC):
 
         Returns:
             BaseConstraint: A deep copy of the constraint.
+
         """
         raise NotImplementedError(self.msg)

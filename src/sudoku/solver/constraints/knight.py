@@ -19,6 +19,7 @@ class KnightConstraint(BaseConstraint):
 
         Returns:
             bool: `True` if the knight's movement is valid, `False` otherwise.
+
         """
         for i in range(board.size):
             for j in range(board.size):
@@ -46,6 +47,7 @@ class KnightConstraint(BaseConstraint):
             bool:
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
+
         """
         return False
 
@@ -58,6 +60,7 @@ class KnightConstraint(BaseConstraint):
 
         Returns:
             set[Cell]: A set of reachable cells.
+
         """
         reachable: set[Cell] = set()
         knight_moves = [(2, 1), (1, 2)]
@@ -76,5 +79,6 @@ class KnightConstraint(BaseConstraint):
 
         Returns:
             BaseConstraint: A deep copy of the constraint.
+
         """
         return KnightConstraint()

@@ -24,6 +24,7 @@ class KillerConstraint(BaseConstraint):
 
         Returns:
             tuple[int, int, int, int]: The RGBA color for the next killer cage.
+
         """
         hue = (cls._killer_cage_index * 0.15) % 1.0
         cls._killer_cage_index += 1
@@ -44,6 +45,7 @@ class KillerConstraint(BaseConstraint):
             total_sum (int): The sum of the cell values.
             board_size (int): The size of the board.
             color (tuple[int, int, int, int] | None): The color of the cage.
+
         """
         super().__init__(
             Logger(
@@ -65,6 +67,7 @@ class KillerConstraint(BaseConstraint):
 
         Returns:
             bool: `True` if the killer constraint is satisfied, `False` otherwise.
+
         """
         return any(cell.value is None for cell in self.killer_cells) or (
             sum(cell.value for cell in self.killer_cells if cell.value is not None)
@@ -116,6 +119,7 @@ class KillerConstraint(BaseConstraint):
 
         Returns:
             bool: `True` if any candidates were eliminated, `False` otherwise.
+
         """
         eliminated = False
 
@@ -167,6 +171,7 @@ class KillerConstraint(BaseConstraint):
             bool:
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
+
         """
         eliminated = False
 
@@ -188,6 +193,7 @@ class KillerConstraint(BaseConstraint):
 
         Returns:
             dict[str,set[Cell]]: A dictionary of sets of cells representing the regions.
+
         """
         idx = 1
         while f"killer_{idx}" in board.regions:
@@ -199,6 +205,7 @@ class KillerConstraint(BaseConstraint):
 
         Args:
             gui (SudokuGUI): The GUI to draw on.
+
         """
         gui.draw_killer_cage(self.killer_cells, self.sum, self.color)
 
@@ -207,6 +214,7 @@ class KillerConstraint(BaseConstraint):
 
         Returns:
             BaseConstraint: A deep copy of the constraint.
+
         """
         return KillerConstraint(
             self.killer_cells.copy(),
@@ -217,4 +225,4 @@ class KillerConstraint(BaseConstraint):
 
 
 # TODO: centralisation des killer constraints pour faire toutes les sous cages
-# TODO: si une combinaison supprime tous les candidats d'une cellule, on supprime la combinaison
+# TODO: si comb supprime tous les candidats d'une cell, on supprime la comb

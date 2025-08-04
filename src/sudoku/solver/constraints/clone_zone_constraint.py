@@ -19,6 +19,7 @@ class CloneZoneConstraint(BaseConstraint):
 
         Args:
             *clone_zones (list[Cell]): The lists of cells to apply constraints to.
+
         """
         super().__init__()
         self.zones: list[list[Cell]] = []
@@ -38,6 +39,7 @@ class CloneZoneConstraint(BaseConstraint):
 
         Returns:
             bool: `True` if the constraint is satisfied, `False` otherwise.
+
         """
         return all(constraint.check(board) for constraint in self.clone_constraints)
 
@@ -51,6 +53,7 @@ class CloneZoneConstraint(BaseConstraint):
             bool:
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
+
         """
         self.logger.debug(
             f"Eliminating candidates for {self.__class__.__name__} constraint",
@@ -69,6 +72,7 @@ class CloneZoneConstraint(BaseConstraint):
 
         Returns:
             set[Cell]: A set of reachable cells.
+
         """
         reachable_cells: set[Cell] = set()
         for constraint in self.clone_constraints:
@@ -80,5 +84,6 @@ class CloneZoneConstraint(BaseConstraint):
 
         Returns:
             BaseConstraint: A deep copy of the constraint.
+
         """
         return CloneZoneConstraint(*[zone.copy() for zone in self.zones])

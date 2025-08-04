@@ -46,6 +46,7 @@ class XVConstraint(BaseConstraint):
 
         Returns:
             XVConstraint: The created XV constraint.
+
         """
         return cls(x_cells, total_sum=10)
 
@@ -58,6 +59,7 @@ class XVConstraint(BaseConstraint):
 
         Returns:
             XVConstraint: The created XV constraint.
+
         """
         return cls(v_cells, total_sum=5)
 
@@ -69,6 +71,7 @@ class XVConstraint(BaseConstraint):
 
         Returns:
             bool: `True` if the XV constraint is satisfied, `False` otherwise.
+
         """
         return self.killer_constraint.check(board)
 
@@ -82,6 +85,7 @@ class XVConstraint(BaseConstraint):
             bool:
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
+
         """
         return self.killer_constraint.eliminate(board)
 
@@ -90,6 +94,7 @@ class XVConstraint(BaseConstraint):
 
         Args:
             gui (SudokuGUI): The GUI to draw on.
+
         """
         gui.write_text_between_cells(
             self.cell1,
@@ -102,7 +107,8 @@ class XVConstraint(BaseConstraint):
         """Create a deep copy of the constraint.
 
         Returns:
-            BaseConstraint: A deep copy of the constraint.
+            XVConstraint: A deep copy of the constraint.
+
         """
         return XVConstraint(
             {self.cell1, self.cell2},

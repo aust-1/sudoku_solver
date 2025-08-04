@@ -18,6 +18,7 @@ class Cell:
             row (int): The row index of the cell.
             col (int): The column index of the cell.
             size (int): The size of the Sudoku grid.
+
         """
         self.row = row
         self.col = col
@@ -34,6 +35,7 @@ class Cell:
 
         Args:
             cells (Iterable[Cell]): The cells to add.
+
         """
         for cell in cells:
             if cell is not self:
@@ -45,6 +47,7 @@ class Cell:
 
         Returns:
             bool: `True` if the cell has a value, `False` otherwise.
+
         """
         return self.value is not None
 
@@ -53,6 +56,7 @@ class Cell:
 
         Args:
             v (int): The value to set.
+
         """
         self.value = v
         self.candidates.clear()
@@ -69,6 +73,7 @@ class Cell:
 
         Returns:
             bool: `True` if the value was removed, `False` if it was not a candidate.
+
         """
         if v not in self.candidates:
             return False
@@ -97,6 +102,7 @@ class Cell:
 
         Returns:
             str: A string representation of the cell.
+
         """
         return str(self.value) if self.value is not None else "."
 
@@ -105,6 +111,7 @@ class Cell:
 
         Returns:
             str: A string representation of the cell.
+
         """
         return f"C{self.row}.{self.col}"
 

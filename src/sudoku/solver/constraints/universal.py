@@ -16,6 +16,7 @@ class UniversalConstraint(BaseConstraint):
 
         Returns:
             bool: `True` if the universal constraint is satisfied, `False` otherwise.
+
         """
         return True
 
@@ -29,6 +30,7 @@ class UniversalConstraint(BaseConstraint):
             bool:
                 `True` if at least one candidate was eliminated,
                 `False` otherwise.
+
         """
         return False
 
@@ -45,6 +47,7 @@ class UniversalConstraint(BaseConstraint):
 
         Returns:
             set[Cell]: A set of reachable cells.
+
         """
         x = cell.row % 3
         y = cell.col % 3
@@ -66,6 +69,7 @@ class UniversalConstraint(BaseConstraint):
 
         Returns:
             dict[str,set[Cell]]: A dictionary of sets of cells representing the regions.
+
         """
         regions: dict[str, set[Cell]] = {}
 
@@ -85,5 +89,6 @@ class UniversalConstraint(BaseConstraint):
 
         Returns:
             BaseConstraint: A deep copy of the constraint.
+
         """
         return UniversalConstraint()
