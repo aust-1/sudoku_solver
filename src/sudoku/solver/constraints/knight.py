@@ -78,7 +78,7 @@ class KnightConstraint(BaseConstraint):
         """Create a deep copy of the constraint.
 
         Returns:
-            BaseConstraint: A deep copy of the constraint.
+            KnightConstraint: A deep copy of the constraint.
 
         """
         return KnightConstraint()

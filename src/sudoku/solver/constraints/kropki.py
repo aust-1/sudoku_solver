@@ -20,8 +20,9 @@ class KropkiConstraint(BaseConstraint):
             color (str): The color of the Kropki constraint (black or white).
 
         Raises:
-            ValueError: If the cells are not adjacent.
-            ValueError: If the color is not 'black' or 'white'.
+            ValueError:
+                If the cells are not adjacent or if the color is invalid
+                (not ``black`` or ``white``).
 
         """
         super().__init__()
@@ -156,7 +157,7 @@ class KropkiConstraint(BaseConstraint):
         """Create a deep copy of the constraint.
 
         Returns:
-            BaseConstraint: A deep copy of the constraint.
+            KropkiConstraint: A deep copy of the constraint.
 
         """
         return KropkiConstraint(

@@ -14,8 +14,12 @@ class UniversalConstraint(BaseConstraint):
     def check(self, board: Board) -> bool:  # noqa: ARG002, PLR6301
         """Check if the universal constraint is satisfied.
 
+        Args:
+            board (Board): The Sudoku board to check.
+
         Returns:
-            bool: `True` if the universal constraint is satisfied, `False` otherwise.
+            bool:
+                ``True`` if the universal constraint is satisfied, ``False`` otherwise.
 
         """
         return True
@@ -88,7 +92,7 @@ class UniversalConstraint(BaseConstraint):
         """Create a deep copy of the constraint.
 
         Returns:
-            BaseConstraint: A deep copy of the constraint.
+            UniversalConstraint: A deep copy of the constraint.
 
         """
         return UniversalConstraint()

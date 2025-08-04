@@ -89,7 +89,7 @@ class PalindromeConstraint(BaseConstraint):
         """Create a deep copy of the constraint.
 
         Returns:
-            BaseConstraint: A deep copy of the constraint.
+            PalindromeConstraint: A deep copy of the constraint.
 
         """
         return PalindromeConstraint(self.palindrome_cells.copy())

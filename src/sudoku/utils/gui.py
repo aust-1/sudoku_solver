@@ -35,7 +35,15 @@ class SudokuGUI:
         self.running = True
 
     def _get_cell_at_pos(self, pos: tuple[int, int]) -> Cell | None:
-        """Return the cell at the given screen position, if any."""
+        """Return the cell at the given screen position, if any.
+
+        Args:
+            pos (tuple[int, int]): The screen position (x, y).
+
+        Returns:
+            Cell | None: The cell at the position, or None if out of bounds.
+
+        """
         x, y = pos
         if x >= self.size * self.board.size or y >= self.size * self.board.size:
             return None
@@ -408,14 +416,24 @@ class SudokuGUI:
         self._draw_highlights()
 
     def _draw_step_button(self, rect: pygame.Rect) -> None:
-        """Draw the step button."""
+        """Draw the step button.
+
+        Args:
+            rect (pygame.Rect): The rectangle where the button will be drawn.
+
+        """
         pygame.draw.rect(self.screen, (200, 200, 200), rect)
         pygame.draw.rect(self.screen, (0, 0, 0), rect, 2)
         text = self.button_font.render("Step", 1, (0, 0, 0))
         self.screen.blit(text, text.get_rect(center=rect.center))
 
     def _draw_run_button(self, rect: pygame.Rect) -> None:
-        """Draw the run button."""
+        """Draw the run button.
+
+        Args:
+            rect (pygame.Rect): The rectangle where the button will be drawn.
+
+        """
         pygame.draw.rect(self.screen, (200, 200, 200), rect)
         pygame.draw.rect(self.screen, (0, 0, 0), rect, 2)
         text = self.button_font.render("Run", 1, (0, 0, 0))

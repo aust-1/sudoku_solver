@@ -15,10 +15,10 @@ class XWingStrategy(Solver):
         """Apply the X-Wing strategy to the board.
 
         Args:
-            board: The Sudoku board.
+            board (Board): The Sudoku board.
 
         Returns:
-            `True` if any candidates were eliminated, `False` otherwise.
+            bool: ``True`` if any candidates were eliminated, ``False`` otherwise.
 
         """
         self.logger.debug("XWingStrategy running")

@@ -53,6 +53,9 @@ class ParityConstraint(BaseConstraint):
     def check(self, board: Board) -> bool:  # noqa: ARG002
         """Check if the parity constraint is satisfied.
 
+        Args:
+            board (Board): The Sudoku board to check.
+
         Returns:
             bool: `True` if the parity constraint is satisfied, `False` otherwise.
 
@@ -101,7 +104,7 @@ class ParityConstraint(BaseConstraint):
         """Create a deep copy of the constraint.
 
         Returns:
-            BaseConstraint: A deep copy of the constraint.
+            ParityConstraint: A deep copy of the constraint.
 
         """
         return ParityConstraint(self.parity_cell, self.rest)

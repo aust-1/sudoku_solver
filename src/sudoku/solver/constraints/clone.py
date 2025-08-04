@@ -93,7 +93,7 @@ class CloneConstraint(BaseConstraint):
         """Create a deep copy of the constraint.
 
         Returns:
-            BaseConstraint: A deep copy of the constraint.
+            CloneConstraint: A deep copy of the constraint.
 
         """
         return CloneConstraint(self.clone_cells.copy())

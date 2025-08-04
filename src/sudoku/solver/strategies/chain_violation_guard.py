@@ -16,12 +16,12 @@ class ChainViolationGuardStrategy(Solver):
         """Check if placing `value` in `cell` can lead to a valid solution.
 
         Args:
-            board: The Sudoku board to test against.
-            cell: The cell to try the value in.
-            value: The value to test.
+            board (Board): The Sudoku board to test against.
+            cell (Cell): The cell to try the value in.
+            value (int): The value to test.
 
         Returns:
-            `True` if the resulting board can be solved, `False` otherwise.
+            bool: `True` if the resulting board can be solved, `False` otherwise.
 
         """
         from sudoku.solver.composite import CompositeSolver
@@ -61,10 +61,10 @@ class ChainViolationGuardStrategy(Solver):
         """Try each candidate and remove those that lead to contradictions.
 
         Args:
-            board: The Sudoku board to solve.
+            board (Board): The Sudoku board to solve.
 
         Returns:
-            `True` if any candidates were eliminated, `False` otherwise.
+            bool: ``True`` if any candidates were eliminated, ``False`` otherwise.
 
         """
         self.logger.debug("ChainViolationGuardStrategy running")

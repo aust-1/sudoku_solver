@@ -83,7 +83,7 @@ class CloneZoneConstraint(BaseConstraint):
         """Create a deep copy of the constraint.
 
         Returns:
-            BaseConstraint: A deep copy of the constraint.
+            CloneZoneConstraint: A deep copy of the constraint.
 
         """
         return CloneZoneConstraint(*[zone.copy() for zone in self.zones])

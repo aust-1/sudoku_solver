@@ -76,7 +76,7 @@ class KingConstraint(BaseConstraint):
         """Create a deep copy of the constraint.
 
         Returns:
-            BaseConstraint: A deep copy of the constraint.
+            KingConstraint: A deep copy of the constraint.
 
         """
         return KingConstraint()

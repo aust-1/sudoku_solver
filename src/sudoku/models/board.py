@@ -145,9 +145,8 @@ class Board:
         """Yield all cells in the board row by row.
 
         Yields:
-            Iterator[Iterable[Cell]]:
-                An iterator over the rows of the board,
-                each yielding the cells in that row.
+            Cell: A cell in the board.
+
         """
         for row in self.grid:
             yield from row

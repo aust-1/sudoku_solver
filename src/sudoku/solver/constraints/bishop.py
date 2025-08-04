@@ -13,7 +13,12 @@ class BishopConstraint(BaseConstraint):
     """A class representing a bishop's movement constraint."""
 
     def __init__(self, bishop_cells: set[Cell]) -> None:
-        """Initialize the bishop's movement constraint."""
+        """Initialize the bishop's movement constraint.
+
+        Args:
+            bishop_cells (set[Cell]): The cells that the bishop can move to.
+
+        """
         super().__init__()
         self.bishop_cells = bishop_cells
 
@@ -105,7 +110,7 @@ class BishopConstraint(BaseConstraint):
         """Create a deep copy of the constraint.
 
         Returns:
-            BaseConstraint: A deep copy of the constraint.
+            BishopConstraint: A deep copy of the constraint.
 
         """
         return BishopConstraint(self.bishop_cells.copy())

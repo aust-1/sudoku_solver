@@ -33,7 +33,7 @@ class CompositeSolver(Solver):
         """Initialise the composite solver with a list of strategies.
 
         Args:
-            strategies (List[Solver] | None, optional):
+            strategies (list[Solver] | None, optional):
                 The list of strategies to apply. Defaults to None.
 
         """

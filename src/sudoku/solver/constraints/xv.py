@@ -21,8 +21,9 @@ class XVConstraint(BaseConstraint):
             total_sum (int): The sum to constrain the cells to.
 
         Raises:
-            ValueError: If the cells are not adjacent.
-            ValueError: If the sum is not a valid Sudoku value.
+            ValueError:
+                If the cells are not adjacent or if the sum is not a valid Sudoku value.
+
         """
         super().__init__()
         self.cell1, self.cell2 = xv_cells

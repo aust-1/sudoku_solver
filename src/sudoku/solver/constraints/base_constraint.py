@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from loggerplusplus import Logger  # type: ignore[import-untyped]
+from loggerplusplus import Logger
 
 if TYPE_CHECKING:
     from sudoku.models import Board, Cell
@@ -11,16 +11,21 @@ if TYPE_CHECKING:
 
 
 class BaseConstraint(ABC):
-    """A class representing a base constraint for the Sudoku board."""
+    """A class representing a base constraint for the Sudoku board.
 
-    msg = "Subclasses should implement this method."
+    Attributes:
+        msg (str): A message indicating that subclasses should implement the methods.
+
+    """
+
+    msg: str = "Subclasses should implement this method."
 
     def __init__(self, logger: Logger | None = None) -> None:
         """Initialize the base constraint.
 
         Args:
-            logger (Logger | None): An optional logger instance for logging.
-            Defaults to None.
+            logger (Logger | None):
+                An optional logger instance for logging. Defaults to None.
 
         """
         self.logger = logger or Logger(
@@ -37,8 +42,10 @@ class BaseConstraint(ABC):
 
         Returns:
             bool:
-                `True` if the constraint is satisfied,
-                `False` otherwise.
+                ``True`` if the constraint is satisfied, ``False`` otherwise.
+
+        Raises:
+            NotImplementedError: If the method is not implemented in a subclass.
 
         """
         raise NotImplementedError(self.msg)
@@ -52,8 +59,10 @@ class BaseConstraint(ABC):
 
         Returns:
             bool:
-                `True` if at least one candidate was eliminated,
-                `False` otherwise.
+                ``True`` if at least one candidate was eliminated, ``False`` otherwise.
+
+        Raises:
+            NotImplementedError: If the method is not implemented in a subclass.
 
         """
         raise NotImplementedError(self.msg)
@@ -66,8 +75,8 @@ class BaseConstraint(ABC):
         """Get the reachable cells based on the constraint.
 
         Args:
-            board (Board): The Sudoku board.
-            cell (Cell): The cell.
+            _board (Board): The Sudoku board.
+            _cell (Cell): The cell.
 
         Returns:
             set[Cell]: A set of reachable cells.
@@ -102,6 +111,9 @@ class BaseConstraint(ABC):
 
         Returns:
             BaseConstraint: A deep copy of the constraint.
+
+        Raises:
+            NotImplementedError: If the method is not implemented in a subclass.
 
         """
         raise NotImplementedError(self.msg)
