@@ -1,10 +1,10 @@
-.PHONY: format lint typecheck check all
+.PHONY: format lint typecheck check auto all
 
 format:
 	@echo "▶ Formatage avec Ruff, puis Black et isort..."
 	isort .
-	ruff format
 	black .
+	ruff format
 
 lint:
 	@echo "▶ Linting avec Ruff..."
@@ -17,5 +17,9 @@ typecheck:
 	-mypy .
 
 check: lint format typecheck
+
+auto:
+	make all
+	make auto
 
 all: check
