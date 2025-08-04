@@ -6,11 +6,11 @@ from typing import TYPE_CHECKING, ClassVar
 
 from loggerplusplus import Logger  # type: ignore[import-untyped]
 
-from sudoku.solver.constraints.base_constraint import BaseConstraint
+from src.sudoku.solver.constraints.base_constraint import BaseConstraint
 
 if TYPE_CHECKING:
-    from sudoku.models import Board, Cell
-    from sudoku.utils.gui import SudokuGUI
+    from src.sudoku.models import Board, Cell
+    from src.sudoku.utils.gui import SudokuGUI
 
 
 class KillerConstraint(BaseConstraint):

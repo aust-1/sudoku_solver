@@ -1,8 +1,8 @@
 """Solving strategies for Sudoku puzzles."""
 
-from sudoku.solver.backtracking import BacktrackingSolver
-from sudoku.solver.composite import CompositeSolver
-from sudoku.solver.constraints import (
+from src.sudoku.solver.backtracking import BacktrackingSolver
+from src.sudoku.solver.composite import CompositeSolver
+from src.sudoku.solver.constraints import (
     BaseConstraint,
     BishopConstraint,
     CloneConstraint,
@@ -16,8 +16,8 @@ from sudoku.solver.constraints import (
     UniversalConstraint,
     XVConstraint,
 )
-from sudoku.solver.solver import Solver
-from sudoku.solver.strategies import (
+from src.sudoku.solver.solver import Solver
+from src.sudoku.solver.strategies import (
     ChainViolationGuardStrategy,
     ConstraintStrategy,
     EliminationStrategy,

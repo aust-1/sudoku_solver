@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from sudoku.solver.solver import Solver
+from src.sudoku.solver.solver import Solver
 
 if TYPE_CHECKING:
-    from sudoku.models import Board, Cell
+    from src.sudoku.models import Board, Cell
 
 
 class WWingStrategy(Solver):

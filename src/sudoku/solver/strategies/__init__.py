@@ -1,21 +1,23 @@
 """Solving strategies for Sudoku puzzles."""
 
-from sudoku.solver.strategies.chain_violation_guard import ChainViolationGuardStrategy
-from sudoku.solver.strategies.constraint import ConstraintStrategy
-from sudoku.solver.strategies.elimination import EliminationStrategy
-from sudoku.solver.strategies.single_hidden import HiddenSingleStrategy
-from sudoku.solver.strategies.subset_hidden import (
+from src.sudoku.solver.strategies.chain_violation_guard import (
+    ChainViolationGuardStrategy,
+)
+from src.sudoku.solver.strategies.constraint import ConstraintStrategy
+from src.sudoku.solver.strategies.elimination import EliminationStrategy
+from src.sudoku.solver.strategies.single_hidden import HiddenSingleStrategy
+from src.sudoku.solver.strategies.subset_hidden import (
     HiddenPairStrategy,
     HiddenQuadStrategy,
     HiddenTripleStrategy,
 )
-from sudoku.solver.strategies.subset_naked import (
+from src.sudoku.solver.strategies.subset_naked import (
     NakedPairStrategy,
     NakedQuadStrategy,
     NakedTripleStrategy,
 )
-from sudoku.solver.strategies.w_wing import WWingStrategy
-from sudoku.solver.strategies.x_wing import XWingStrategy
+from src.sudoku.solver.strategies.w_wing import WWingStrategy
+from src.sudoku.solver.strategies.x_wing import XWingStrategy
 
 __all__ = [
     "ChainViolationGuardStrategy",

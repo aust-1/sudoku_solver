@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from sudoku.solver.backtracking import BacktrackingSolver
-from sudoku.solver.solver import Solver
-from sudoku.solver.strategies import (
+from src.sudoku.solver.backtracking import BacktrackingSolver
+from src.sudoku.solver.solver import Solver
+from src.sudoku.solver.strategies import (
     ChainViolationGuardStrategy,
     ConstraintStrategy,
     EliminationStrategy,
@@ -20,7 +20,7 @@ from sudoku.solver.strategies import (
 )
 
 if TYPE_CHECKING:
-    from sudoku.models import Board
+    from src.sudoku.models import Board
 
 
 class CompositeSolver(Solver):

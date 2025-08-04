@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from sudoku.solver.solver import Solver
+from src.sudoku.solver.solver import Solver
 
 if TYPE_CHECKING:
-    from sudoku.models import Board, Cell
+    from src.sudoku.models import Board, Cell
 
 
 class ChainViolationGuardStrategy(Solver):
@@ -24,8 +24,8 @@ class ChainViolationGuardStrategy(Solver):
             bool: ``True`` if the resulting board can be solved, ``False`` otherwise.
 
         """
-        from sudoku.solver.composite import CompositeSolver
-        from sudoku.solver.strategies import (
+        from src.sudoku.solver.composite import CompositeSolver
+        from src.sudoku.solver.strategies import (
             ConstraintStrategy,
             EliminationStrategy,
             HiddenPairStrategy,

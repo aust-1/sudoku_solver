@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from sudoku.solver.constraints.base_constraint import BaseConstraint
-from sudoku.solver.constraints.clone import CloneConstraint
+from src.sudoku.solver.constraints.base_constraint import BaseConstraint
+from src.sudoku.solver.constraints.clone import CloneConstraint
 
 if TYPE_CHECKING:
-    from sudoku.models import Board, Cell
-    from sudoku.utils.gui import SudokuGUI
+    from src.sudoku.models import Board, Cell
+    from src.sudoku.utils.gui import SudokuGUI
 
 
 class PalindromeConstraint(BaseConstraint):

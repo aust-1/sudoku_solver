@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from sudoku.solver.solver import Solver
+from src.sudoku.solver.solver import Solver
 
 if TYPE_CHECKING:
-    from sudoku.models import Board
+    from src.sudoku.models import Board
 
 
 class BacktrackingSolver(Solver):
@@ -15,7 +15,7 @@ class BacktrackingSolver(Solver):
         """Initialise the backtracking solver and its helper strategies."""
         super().__init__()
 
-        from sudoku.solver.strategies import (
+        from src.sudoku.solver.strategies import (
             ConstraintStrategy,
             EliminationStrategy,
             HiddenPairStrategy,

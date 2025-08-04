@@ -3,10 +3,10 @@ from __future__ import annotations
 from itertools import combinations
 from typing import TYPE_CHECKING
 
-from sudoku.solver.solver import Solver
+from src.sudoku.solver.solver import Solver
 
 if TYPE_CHECKING:
-    from sudoku.models import Board, Cell
+    from src.sudoku.models import Board, Cell
 
 
 class _BaseHiddenSubsetStrategy(Solver):

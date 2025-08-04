@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING
 from loggerplusplus import Logger
 
 if TYPE_CHECKING:
-    from sudoku.models import Board, Cell
-    from sudoku.utils.gui import SudokuGUI
+    from src.sudoku.models import Board, Cell
+    from src.sudoku.utils.gui import SudokuGUI
 
 
 class BaseConstraint(ABC):

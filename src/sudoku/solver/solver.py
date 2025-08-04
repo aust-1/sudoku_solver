@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from loggerplusplus import Logger  # type: ignore[import-untyped]
 
 if TYPE_CHECKING:
-    from sudoku.models import Board
+    from src.sudoku.models import Board
 
 
 class Solver(ABC):

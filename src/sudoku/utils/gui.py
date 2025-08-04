@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING
 import pygame
 
 if TYPE_CHECKING:
-    from sudoku.models import Board, Cell
-    from sudoku.solver import Solver
+    from src.sudoku.models import Board, Cell
+    from src.sudoku.solver import Solver
 
 
 class SudokuGUI:

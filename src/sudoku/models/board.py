@@ -4,12 +4,12 @@ from typing import TYPE_CHECKING
 
 from loggerplusplus import Logger  # type: ignore[import-untyped]
 
-from sudoku.models import Cell
+from src.sudoku.models import Cell
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from sudoku.solver.constraints.base_constraint import BaseConstraint
+    from src.sudoku.solver.constraints.base_constraint import BaseConstraint
 
 
 class Board:
