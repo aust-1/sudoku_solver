@@ -215,7 +215,6 @@ class SudokuGUI:
             color (tuple[int, int, int, int]): The color of the line.
 
         """
-        width = 1
         dash_length = 5
         x1, y1 = start
         x2, y2 = end
@@ -231,7 +230,7 @@ class SudokuGUI:
                 x1 + dx * min(i + dash_length, distance) // distance,
                 y1 + dy * min(i + dash_length, distance) // distance,
             )
-            pygame.draw.line(surf, color, start_pos, end_pos, width)
+            pygame.draw.line(surf, color, start_pos, end_pos)
 
     def draw_killer_cage(
         self,

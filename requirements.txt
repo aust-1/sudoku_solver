@@ -1,2 +1,4 @@
 loggerplusplus
+pydoclint
 pygame
+ruff

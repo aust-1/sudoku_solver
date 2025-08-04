@@ -85,18 +85,27 @@ class Cell:
             return True
         return True
 
-    # def __eq__(self, value: object) -> bool:
-    #     """Check if this cell is equal to another cell.
+    def __eq__(self, value: object) -> bool:
+        """Check if this cell is equal to another cell.
 
-    #     Args:
-    #         value (object): The object to compare.
+        Args:
+            value (object): The object to compare.
 
-    #     Returns:
-    #         bool: `True` if the objects are equal, `False` otherwise.
-    #     """
-    #     if not isinstance(value, Cell):
-    #         return False
-    #     return (self.row, self.col) == (value.row, value.col)
+        Returns:
+            bool: ``True`` if the objects are equal, ``False`` otherwise.
+        """
+        if not isinstance(value, Cell):
+            return False
+        return (self.row, self.col) == (value.row, value.col)
+
+    def __hash__(self) -> int:
+        """Return a hash of the cell.
+
+        Returns:
+            int: The hash of the cell.
+
+        """
+        return hash((self.row, self.col))
 
     def __str__(self) -> str:
         """Return a string representation of the cell.

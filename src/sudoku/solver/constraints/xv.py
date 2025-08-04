@@ -9,6 +9,9 @@ if TYPE_CHECKING:
     from sudoku.models import Board, Cell
     from sudoku.utils.gui import SudokuGUI
 
+X_SUM = 10
+V_SUM = 5
+
 
 class XVConstraint(BaseConstraint):
     """A class representing a XV constraint."""
@@ -49,7 +52,7 @@ class XVConstraint(BaseConstraint):
             XVConstraint: The created XV constraint.
 
         """
-        return cls(x_cells, total_sum=10)
+        return cls(x_cells, total_sum=X_SUM)
 
     @classmethod
     def v(cls, v_cells: set[Cell]) -> XVConstraint:
@@ -62,7 +65,7 @@ class XVConstraint(BaseConstraint):
             XVConstraint: The created XV constraint.
 
         """
-        return cls(v_cells, total_sum=5)
+        return cls(v_cells, total_sum=V_SUM)
 
     def check(self, board: Board) -> bool:
         """Check if the XV constraint is satisfied.
@@ -99,7 +102,7 @@ class XVConstraint(BaseConstraint):
         gui.write_text_between_cells(
             self.cell1,
             self.cell2,
-            "X" if self.killer_constraint.sum == 10 else "V",
+            "X" if self.killer_constraint.sum == X_SUM else "V",
         )
         # FIXME: c'est dégueulasse
 

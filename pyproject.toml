@@ -37,8 +37,13 @@ skip-checking-short-docstrings = false
 style = 'google'
 
 [tool.pylint.main]
-enable = "all"
-disable = ["E0401"]
+disable = [
+    "E0401", # import-error
+    "W0511", # fixme
+    "C0114", # missing-module-docstring
+    "C0115", # missing-class-docstring
+    "R0903", # too-few-public-methods
+]
 
 [tool.ruff]
 exclude = ["*.ipynb"]
@@ -63,6 +68,7 @@ select = ["ALL"]
 ignore = [
     "CPY001", # missing-copyright-notice
     "D100",   # undocumented-public-module
+    "FIX001", # line-contains-fixme
     "FIX002", # line-contains-todo
     "FIX004", # line-contains-hack
     "G004",   # logging-f-string
@@ -70,7 +76,6 @@ ignore = [
     "TD002",  # missing-todo-author
     "TD003",  # missing-todo-link
 ]
-
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

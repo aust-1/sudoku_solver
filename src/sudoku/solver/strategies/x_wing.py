@@ -23,13 +23,10 @@ class XWingStrategy(Solver):
         """
         self.logger.debug("XWingStrategy running")
         moved = False
-        digits = range(1, board.size + 1)
 
-        regions = [r for r in board.regions.values() if len(r) == board.size]
-
-        for digit in digits:
+        for digit in range(1, board.size + 1):
             strong_links: set[tuple[Cell, Cell]] = set()
-            for region in regions:
+            for region in (r for r in board.regions.values() if len(r) == board.size):
                 cells = [
                     cell
                     for cell in region
@@ -64,7 +61,8 @@ class XWingStrategy(Solver):
                         if cell.eliminate(digit):
                             moved = True
                             self.logger.debug(
-                                f"({a1.row}, {a1.col}), ({b1.row}, {b1.col}), ({a2.row}, {a2.col}), ({b2.row}, {b2.col})",
+                                f"({a1.row}, {a1.col}), ({b1.row}, {b1.col}), "
+                                f"({a2.row}, {a2.col}), ({b2.row}, {b2.col})",
                             )
 
         return moved
