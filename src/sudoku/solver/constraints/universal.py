@@ -32,8 +32,8 @@ class UniversalConstraint(BaseConstraint):
 
         Returns:
             bool:
-                `True` if at least one candidate was eliminated,
-                `False` otherwise.
+                ``True`` if at least one candidate was eliminated,
+                ``False`` otherwise.
 
         """
         return False

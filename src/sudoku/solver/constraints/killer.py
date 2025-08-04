@@ -69,7 +69,7 @@ class KillerConstraint(BaseConstraint):
             board (Board): The Sudoku board to check.
 
         Returns:
-            bool: `True` if the killer constraint is satisfied, `False` otherwise.
+            bool: ``True`` if the killer constraint is satisfied, ``False`` otherwise.
 
         """
         return any(cell.value is None for cell in self.killer_cells) or (
@@ -121,7 +121,7 @@ class KillerConstraint(BaseConstraint):
             board (Board): The Sudoku board to check against.
 
         Returns:
-            bool: `True` if any candidates were eliminated, `False` otherwise.
+            bool: ``True`` if any candidates were eliminated, ``False`` otherwise.
 
         """
         eliminated = False
@@ -172,8 +172,8 @@ class KillerConstraint(BaseConstraint):
 
         Returns:
             bool:
-                `True` if at least one candidate was eliminated,
-                `False` otherwise.
+                ``True`` if at least one candidate was eliminated,
+                ``False`` otherwise.
 
         """
         eliminated = False
@@ -204,7 +204,7 @@ class KillerConstraint(BaseConstraint):
         return {f"killer_{idx}": self.killer_cells}
 
     def draw(self, gui: SudokuGUI) -> None:
-        """Draw this killer constraint on `gui` if supported.
+        """Draw this killer constraint on ``gui`` if supported.
 
         Args:
             gui (SudokuGUI): The GUI to draw on.

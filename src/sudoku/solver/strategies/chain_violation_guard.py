@@ -13,7 +13,7 @@ class ChainViolationGuardStrategy(Solver):
 
     @staticmethod
     def _is_candidate_valid(board: Board, cell: Cell, value: int) -> bool:
-        """Check if placing `value` in `cell` can lead to a valid solution.
+        """Check if placing ``value`` in ``cell`` can lead to a valid solution.
 
         Args:
             board (Board): The Sudoku board to test against.
@@ -21,7 +21,7 @@ class ChainViolationGuardStrategy(Solver):
             value (int): The value to test.
 
         Returns:
-            bool: `True` if the resulting board can be solved, `False` otherwise.
+            bool: ``True`` if the resulting board can be solved, ``False`` otherwise.
 
         """
         from sudoku.solver.composite import CompositeSolver

@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class Board:
-    """Represents the Sudoku board as a 9x9 grid of :class:`Cell` objects."""
+    """Represents the Sudoku board as a 9x9 grid of :class:``Cell`` objects."""
 
     def __init__(self, size: int) -> None:
         """Initialize the Sudoku board.
@@ -59,7 +59,7 @@ class Board:
             self.regions.update(constraint.get_regions(self))
 
     def _get_row(self, r: int) -> set[Cell]:
-        """Return all cells in row `r`.
+        """Return all cells in row ``r``.
 
         Args:
             r (int): The row index of the cells.
@@ -71,7 +71,7 @@ class Board:
         return set(self.grid[r])
 
     def _get_col(self, c: int) -> set[Cell]:
-        """Return all cells in column `c`.
+        """Return all cells in column ``c``.
 
         Args:
             c (int): The column index of the cells.
@@ -83,7 +83,7 @@ class Board:
         return {self.grid[r][c] for r in range(self.size)}
 
     def _get_box(self, box_index: int) -> set[Cell]:
-        """Return all cells in box `box_index` (0..8).
+        """Return all cells in box ``box_index`` (0..8).
 
         Args:
             box_index (int): The index of the box (0..8).
@@ -129,7 +129,7 @@ class Board:
                 cell.add_reachables(c.reachable_cells(self, cell))
 
     def get_cell(self, row: int, col: int) -> Cell:
-        """Return the cell at `row`, `col`.
+        """Return the cell at ``row``, ``col``.
 
         Args:
             row (int): The row index of the cell.
@@ -156,8 +156,8 @@ class Board:
 
         Returns:
             bool:
-                `True` if all rows, columns and boxes contain no duplicates,
-                `False` otherwise.
+                ``True`` if all rows, columns and boxes contain no duplicates,
+                ``False`` otherwise.
 
         """
 
@@ -168,7 +168,7 @@ class Board:
                 cells (Iterable[Cell]): The cells in the region.
 
             Returns:
-                bool: `True` if the region has no duplicates, `False` otherwise.
+                bool: ``True`` if the region has no duplicates, ``False`` otherwise.
 
             """
             values = [c.value for c in cells if c.is_filled()]
@@ -185,7 +185,7 @@ class Board:
         """Check if the board is completely filled.
 
         Returns:
-            bool: `True` if every cell has a value, `False` otherwise.
+            bool: ``True`` if every cell has a value, ``False`` otherwise.
 
         """
         return (

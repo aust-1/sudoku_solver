@@ -71,7 +71,7 @@ class XVConstraint(BaseConstraint):
             board (Board): The Sudoku board.
 
         Returns:
-            bool: `True` if the XV constraint is satisfied, `False` otherwise.
+            bool: ``True`` if the XV constraint is satisfied, ``False`` otherwise.
 
         """
         return self.killer_constraint.check(board)
@@ -84,14 +84,13 @@ class XVConstraint(BaseConstraint):
 
         Returns:
             bool:
-                `True` if at least one candidate was eliminated,
-                `False` otherwise.
+                ``True`` if at least one candidate was eliminated, ``False`` otherwise.
 
         """
         return self.killer_constraint.eliminate(board)
 
     def draw(self, gui: SudokuGUI) -> None:
-        """Draw this XV constraint on `gui` if supported.
+        """Draw this XV constraint on ``gui`` if supported.
 
         Args:
             gui (SudokuGUI): The GUI to draw on.

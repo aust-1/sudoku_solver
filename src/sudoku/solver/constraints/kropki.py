@@ -96,7 +96,7 @@ class KropkiConstraint(BaseConstraint):
             board (Board): The Sudoku board.
 
         Returns:
-            bool: `True` if the Kropki constraint is satisfied, `False` otherwise.
+            bool: ``True`` if the Kropki constraint is satisfied, ``False`` otherwise.
 
         """
         return (
@@ -113,8 +113,8 @@ class KropkiConstraint(BaseConstraint):
 
         Returns:
             bool:
-                `True` if at least one candidate was eliminated,
-                `False` otherwise.
+                ``True`` if at least one candidate was eliminated,
+                ``False`` otherwise.
 
         """
         eliminated = False
@@ -143,7 +143,7 @@ class KropkiConstraint(BaseConstraint):
         return eliminated
 
     def draw(self, gui: SudokuGUI) -> None:
-        """Draw this kropki constraint on `gui` if supported.
+        """Draw this kropki constraint on ``gui`` if supported.
 
         Args:
             gui (SudokuGUI): The GUI to draw on.

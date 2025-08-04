@@ -97,7 +97,7 @@ class BaseConstraint(ABC):
         return {}
 
     def draw(self, _gui: SudokuGUI) -> None:  # noqa: PLR6301
-        """Draw this constraint on `_gui` if supported.
+        """Draw this constraint on ``_gui`` if supported.
 
         Args:
             _gui (SudokuGUI): The GUI to draw on.

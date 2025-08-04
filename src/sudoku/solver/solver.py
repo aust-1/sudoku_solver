@@ -27,7 +27,7 @@ class Solver(ABC):
             board (Board): The Sudoku board to solve.
 
         Returns:
-            bool: `True` if the board was modified, `False` otherwise.
+            bool: ``True`` if the board was modified, ``False`` otherwise.
 
         """
 
@@ -38,7 +38,7 @@ class Solver(ABC):
             board (Board): The Sudoku board to solve.
 
         Returns:
-            bool: `True` if the board is solved, `False` otherwise.
+            bool: ``True`` if the board is solved, ``False`` otherwise.
 
         """
         self.logger.info("Starting solve loop")

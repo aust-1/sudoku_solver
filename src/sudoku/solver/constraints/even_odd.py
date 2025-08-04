@@ -57,7 +57,7 @@ class ParityConstraint(BaseConstraint):
             board (Board): The Sudoku board to check.
 
         Returns:
-            bool: `True` if the parity constraint is satisfied, `False` otherwise.
+            bool: ``True`` if the parity constraint is satisfied, ``False`` otherwise.
 
         """
         return self.parity_cell.value is None or self.parity_cell.value % 2 == self.rest
@@ -70,8 +70,8 @@ class ParityConstraint(BaseConstraint):
 
         Returns:
             bool:
-                `True` if at least one candidate was eliminated,
-                `False` otherwise.
+                ``True`` if at least one candidate was eliminated,
+                ``False`` otherwise.
 
         """
         eliminated = False
@@ -88,7 +88,7 @@ class ParityConstraint(BaseConstraint):
         return eliminated
 
     def draw(self, gui: SudokuGUI) -> None:
-        """Draw this bishop constraint on `gui` if supported.
+        """Draw this bishop constraint on ``gui`` if supported.
 
         Args:
             gui (SudokuGUI): The GUI to draw on.

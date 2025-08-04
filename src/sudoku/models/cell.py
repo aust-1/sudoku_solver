@@ -12,7 +12,7 @@ class Cell:
     """Represents a cell in the Sudoku grid."""
 
     def __init__(self, row: int, col: int, size: int) -> None:
-        """Initialise an empty cell at `row`, `col`.
+        """Initialise an empty cell at ``row``, ``col``.
 
         Args:
             row (int): The row index of the cell.
@@ -46,7 +46,7 @@ class Cell:
         """Check if the cell is filled.
 
         Returns:
-            bool: `True` if the cell has a value, `False` otherwise.
+            bool: ``True`` if the cell has a value, ``False`` otherwise.
 
         """
         return self.value is not None
@@ -72,7 +72,8 @@ class Cell:
             v (int): The value to remove.
 
         Returns:
-            bool: `True` if the value was removed, `False` if it was not a candidate.
+            bool:
+            ``True`` if the value was removed, ``False`` if it was not a candidate.
 
         """
         if v not in self.candidates:

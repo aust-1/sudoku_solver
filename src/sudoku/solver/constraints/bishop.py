@@ -29,7 +29,7 @@ class BishopConstraint(BaseConstraint):
             board (Board): The Sudoku board.
 
         Returns:
-            bool: `True` if the bishop's movement is valid, `False` otherwise.
+            bool: ``True`` if the bishop's movement is valid, ``False`` otherwise.
 
         """
         values: set[int] = set()
@@ -52,8 +52,8 @@ class BishopConstraint(BaseConstraint):
 
         Returns:
             bool:
-                `True` if at least one candidate was eliminated,
-                `False` otherwise.
+                ``True`` if at least one candidate was eliminated,
+                ``False`` otherwise.
 
         """
         return False
@@ -94,7 +94,7 @@ class BishopConstraint(BaseConstraint):
         return {f"bishop_{idx}": self.bishop_cells}
 
     def draw(self, gui: SudokuGUI) -> None:
-        """Draw this bishop constraint on `gui` if supported.
+        """Draw this bishop constraint on ``gui`` if supported.
 
         Args:
             gui (SudokuGUI): The GUI to draw on.

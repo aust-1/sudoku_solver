@@ -18,7 +18,7 @@ class KingConstraint(BaseConstraint):
             board (Board): The Sudoku board.
 
         Returns:
-            bool: `True` if the king's movement is valid, `False` otherwise.
+            bool: ``True`` if the king's movement is valid, ``False`` otherwise.
 
         """
         for i in range(board.size):
@@ -44,8 +44,8 @@ class KingConstraint(BaseConstraint):
 
         Returns:
             bool:
-                `True` if at least one candidate was eliminated,
-                `False` otherwise.
+                ``True`` if at least one candidate was eliminated,
+                ``False`` otherwise.
 
         """
         return False

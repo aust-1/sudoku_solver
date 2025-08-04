@@ -19,7 +19,7 @@ class HiddenSingleStrategy(Solver):
             board (Board): The Sudoku board to solve.
 
         Returns:
-            bool: `True` if any cells were filled, `False` otherwise.
+            bool: ``True`` if any cells were filled, ``False`` otherwise.
 
         """
         self.logger.debug("HiddenSingleStrategy running")

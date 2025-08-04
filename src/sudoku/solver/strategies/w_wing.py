@@ -18,7 +18,7 @@ class WWingStrategy(Solver):
             board (Board): The Sudoku board.
 
         Returns:
-            bool: `True` if any candidates were eliminated, `False` otherwise.
+            bool: ``True`` if any candidates were eliminated, ``False`` otherwise.
 
         """
         self.logger.debug("WWingStrategy running")

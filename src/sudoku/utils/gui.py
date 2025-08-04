@@ -104,7 +104,7 @@ class SudokuGUI:
         cell: Cell,
         color: tuple[int, int, int, int],
     ) -> None:
-        """Draw a circle centred in `cell`.
+        """Draw a circle centred in ``cell``.
 
         Args:
             cell (Cell): The cell to draw on.
@@ -126,7 +126,7 @@ class SudokuGUI:
         cell2: Cell,
         color: tuple[int, int, int, int],
     ) -> None:
-        """Draw a circle between `cell1` and `cell2`.
+        """Draw a circle between ``cell1`` and ``cell2``.
 
         Args:
             cell1 (Cell): The first cell.
@@ -161,7 +161,7 @@ class SudokuGUI:
         cell2: Cell,
         text: str,
     ) -> None:
-        """Write a text between `cell1` and `cell2`.
+        """Write a text between ``cell1`` and ``cell2``.
 
         Args:
             cell1 (Cell): The first cell.
@@ -183,7 +183,7 @@ class SudokuGUI:
         cell: Cell,
         color: tuple[int, int, int, int],
     ) -> None:
-        """Draw a square centred in `cell`.
+        """Draw a square centred in ``cell``.
 
         Args:
             cell (Cell): The cell to draw on.
@@ -206,7 +206,7 @@ class SudokuGUI:
         end: tuple[int, int],
         color: tuple[int, int, int, int],
     ) -> None:
-        """Draw a dashed line on `surf` from `start` to `end`.
+        """Draw a dashed line on ``surf`` from ``start`` to ``end``.
 
         Args:
             surf (pygame.Surface): The surface to draw on.
@@ -239,7 +239,7 @@ class SudokuGUI:
         total_sum: int,
         color: tuple[int, int, int, int],
     ) -> None:
-        """Draw a killer cage around `cells` with the sum displayed.
+        """Draw a killer cage around ``cells`` with the sum displayed.
 
         Args:
             cells (set[Cell]): The cells to draw the cage around.

@@ -18,7 +18,7 @@ class EliminationStrategy(Solver):
             board (Board): The Sudoku board to solve.
 
         Returns:
-            bool: `True` if any candidates were eliminated, `False` otherwise.
+            bool: ``True`` if any candidates were eliminated, ``False`` otherwise.
 
         """
         self.logger.debug("EliminationStrategy running")

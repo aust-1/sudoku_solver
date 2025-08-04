@@ -61,8 +61,8 @@ class CompositeSolver(Solver):
 
         Returns:
             bool:
-                `True` if one of the strategies made a change to the board,
-                `False` otherwise.
+                ``True`` if one of the strategies made a change to the board,
+                ``False`` otherwise.
 
         """
         for strat in self.strategies:
@@ -82,7 +82,7 @@ class CompositeSolver(Solver):
             board (Board): The Sudoku board to solve.
 
         Returns:
-            bool: `True` if the board is solved, `False` otherwise.
+            bool: ``True`` if the board is solved, ``False`` otherwise.
 
         """
         progress = True

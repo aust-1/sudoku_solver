@@ -35,7 +35,7 @@ class PalindromeConstraint(BaseConstraint):
             board (Board): The Sudoku board to check.
 
         Returns:
-            bool: `True` if the constraint is satisfied, `False` otherwise.
+            bool: ``True`` if the constraint is satisfied, ``False`` otherwise.
 
         """
         return all(constraint.check(board) for constraint in self.clone_constraints)
@@ -48,8 +48,8 @@ class PalindromeConstraint(BaseConstraint):
 
         Returns:
             bool:
-                `True` if at least one candidate was eliminated,
-                `False` otherwise.
+                ``True`` if at least one candidate was eliminated,
+                ``False`` otherwise.
 
         """
         self.logger.debug(
@@ -77,7 +77,7 @@ class PalindromeConstraint(BaseConstraint):
         return reachable_cells
 
     def draw(self, gui: SudokuGUI) -> None:
-        """Draw this palindrome constraint on `gui` if supported.
+        """Draw this palindrome constraint on ``gui`` if supported.
 
         Args:
             gui (SudokuGUI): The GUI to draw on.

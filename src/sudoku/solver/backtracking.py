@@ -55,7 +55,7 @@ class BacktrackingSolver(Solver):
             board (Board): The Sudoku board to solve.
 
         Returns:
-            bool: `True` if the board is solved, `False` otherwise.
+            bool: ``True`` if the board is solved, ``False`` otherwise.
 
         """
         if not board.is_valid():

@@ -28,7 +28,7 @@ class CloneConstraint(BaseConstraint):
             board (Board): The Sudoku board to check.
 
         Returns:
-            bool: `True` if the constraint is satisfied, `False` otherwise.
+            bool: ``True`` if the constraint is satisfied, ``False`` otherwise.
 
         """
         values: set[int] = set()
@@ -49,8 +49,8 @@ class CloneConstraint(BaseConstraint):
 
         Returns:
             bool:
-                `True` if at least one candidate was eliminated,
-                `False` otherwise.
+                ``True`` if at least one candidate was eliminated,
+                ``False`` otherwise.
 
         """
         eliminated = False
