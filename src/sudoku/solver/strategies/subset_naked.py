@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from src.sudoku.solver.solver import Solver
 
@@ -37,6 +37,7 @@ class _BaseNakedSubsetStrategy(Solver):
                     moved |= cell.eliminate(val)
         return moved
 
+    @override
     def apply(self, board: Board) -> bool:
         """Apply the naked subset choice strategy.
 

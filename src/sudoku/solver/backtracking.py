@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from src.sudoku.solver.solver import Solver
 
@@ -48,6 +48,7 @@ class BacktrackingSolver(Solver):
             for strat in self.strategies:
                 progress |= strat.apply(board)
 
+    @override
     def apply(self, board: Board) -> bool:
         """Attempt to solve the Sudoku board using backtracking.
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from src.sudoku.solver.solver import Solver
 
@@ -11,7 +11,8 @@ if TYPE_CHECKING:
 class ConstraintStrategy(Solver):
     """Apply additional constraints to eliminate candidates."""
 
-    def apply(self, board: Board) -> bool:  # noqa: PLR6301
+    @override
+    def apply(self, board: Board) -> bool:
         """Apply constraint strategies to the board.
 
         Args:

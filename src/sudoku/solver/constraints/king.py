@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from src.sudoku.solver.constraints.base_constraint import BaseConstraint
 
@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 class KingConstraint(BaseConstraint):
     """A class representing a king's movement constraint."""
 
+    @override
     def check(self, board: Board) -> bool:
         """Check if the king's movement is valid.
 
@@ -36,7 +37,8 @@ class KingConstraint(BaseConstraint):
                             return False
         return True
 
-    def eliminate(self, board: Board) -> bool:  # noqa: ARG002, PLR6301
+    @override
+    def eliminate(self, board: Board) -> bool:
         """Automatically complete the king's movement constraint on the given board.
 
         Args:
@@ -50,7 +52,8 @@ class KingConstraint(BaseConstraint):
         """
         return False
 
-    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:  # noqa: PLR6301
+    @override
+    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:
         """Get the reachable cells based on the constraint.
 
         Args:
@@ -67,12 +70,13 @@ class KingConstraint(BaseConstraint):
                 if (
                     0 <= cell.row + x < board.size
                     and 0 <= cell.col + y < board.size
-                    and (x != 0 or y != 0)
+                    and (x or y)
                 ):
                     reachable.add(board.get_cell(cell.row + x, cell.col + y))
         return reachable
 
-    def deep_copy(self) -> KingConstraint:  # noqa: PLR6301
+    @override
+    def deep_copy(self) -> KingConstraint:
         """Create a deep copy of the constraint.
 
         Returns:

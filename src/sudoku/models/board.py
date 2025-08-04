@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
-from loggerplusplus import Logger  # type: ignore[import-untyped]
+from loggerplusplus import Logger
 
 from src.sudoku.models import Cell
 
@@ -208,6 +208,7 @@ class Board:
 
     # TODO: Load stylé fichier, interface ?
 
+    @override
     def __str__(self) -> str:
         """Return a string representation of the board.
 

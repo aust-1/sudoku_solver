@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from src.sudoku.solver.constraints.base_constraint import BaseConstraint
 
@@ -50,7 +50,8 @@ class ParityConstraint(BaseConstraint):
         """
         return cls(cell, rest=1)
 
-    def check(self, board: Board) -> bool:  # noqa: ARG002
+    @override
+    def check(self, board: Board) -> bool:
         """Check if the parity constraint is satisfied.
 
         Args:
@@ -62,6 +63,7 @@ class ParityConstraint(BaseConstraint):
         """
         return self.parity_cell.value is None or self.parity_cell.value % 2 == self.rest
 
+    @override
     def eliminate(self, board: Board) -> bool:
         """Automatically complete the parity constraint on the given board.
 
@@ -87,6 +89,7 @@ class ParityConstraint(BaseConstraint):
             )
         return eliminated
 
+    @override
     def draw(self, gui: SudokuGUI) -> None:
         """Draw this bishop constraint on ``gui`` if supported.
 
@@ -100,6 +103,7 @@ class ParityConstraint(BaseConstraint):
         else:
             gui.draw_square(self.parity_cell, color)
 
+    @override
     def deep_copy(self) -> ParityConstraint:
         """Create a deep copy of the constraint.
 

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import colorsys
 from itertools import combinations
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, ClassVar, override
 
-from loggerplusplus import Logger  # type: ignore[import-untyped]
+from loggerplusplus import Logger
 
 from src.sudoku.solver.constraints.base_constraint import BaseConstraint
 
@@ -62,7 +62,8 @@ class KillerConstraint(BaseConstraint):
             if sum(combination) == total_sum:
                 self.possible_combinations.add(frozenset(combination))
 
-    def check(self, board: Board) -> bool:  # noqa: ARG002
+    @override
+    def check(self, board: Board) -> bool:
         """Check if the killer constraint is satisfied.
 
         Args:
@@ -76,6 +77,31 @@ class KillerConstraint(BaseConstraint):
             sum(cell.value for cell in self.killer_cells if cell.value is not None)
             == self.sum
         )
+
+    @override
+    def eliminate(self, board: Board) -> bool:
+        """Automatically complete the killer constraint on the given board.
+
+        Args:
+            board (Board): The Sudoku board to auto-complete.
+
+        Returns:
+            bool:
+                ``True`` if at least one candidate was eliminated,
+                ``False`` otherwise.
+
+        """
+        eliminated = False
+
+        self._eliminate_combinations()
+
+        if self.possible_combinations:
+            eliminated |= self._eliminate_candidates(board)
+        if eliminated:
+            self.logger.debug(
+                f"Eliminated due to killer sum: {self.sum} in {self.killer_cells}",
+            )
+        return eliminated
 
     def _eliminate_combinations(self) -> None:
         """Eliminate invalid combinations based on the current state of the board."""
@@ -164,30 +190,7 @@ class KillerConstraint(BaseConstraint):
                     eliminated |= cell.eliminate(digit)
         return eliminated
 
-    def eliminate(self, board: Board) -> bool:
-        """Automatically complete the killer constraint on the given board.
-
-        Args:
-            board (Board): The Sudoku board to auto-complete.
-
-        Returns:
-            bool:
-                ``True`` if at least one candidate was eliminated,
-                ``False`` otherwise.
-
-        """
-        eliminated = False
-
-        self._eliminate_combinations()
-
-        if self.possible_combinations:
-            eliminated |= self._eliminate_candidates(board)
-        if eliminated:
-            self.logger.debug(
-                f"Eliminated due to killer sum: {self.sum} in {self.killer_cells}",
-            )
-        return eliminated
-
+    @override
     def get_regions(self, board: Board) -> dict[str, set[Cell]]:
         """Get the regions defined by the killer constraint.
 
@@ -203,6 +206,7 @@ class KillerConstraint(BaseConstraint):
             idx += 1
         return {f"killer_{idx}": self.killer_cells}
 
+    @override
     def draw(self, gui: SudokuGUI) -> None:
         """Draw this killer constraint on ``gui`` if supported.
 
@@ -212,6 +216,7 @@ class KillerConstraint(BaseConstraint):
         """
         gui.draw_killer_cage(self.killer_cells, self.sum, self.color)
 
+    @override
     def deep_copy(self) -> KillerConstraint:
         """Create a deep copy of the constraint.
 

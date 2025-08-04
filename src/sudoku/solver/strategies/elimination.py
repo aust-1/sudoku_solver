@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from src.sudoku.solver.solver import Solver
 
@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 class EliminationStrategy(Solver):
     """For each filled cell, remove its value from peers' candidates."""
 
+    @override
     def apply(self, board: Board) -> bool:
         """Eliminate candidates using already placed values.
 

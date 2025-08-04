@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from src.sudoku.solver.backtracking import BacktrackingSolver
 from src.sudoku.solver.solver import Solver
@@ -53,6 +53,7 @@ class CompositeSolver(Solver):
             ChainViolationGuardStrategy(),
         ]
 
+    @override
     def apply(self, board: Board) -> bool:
         """Apply all strategies to the board until one succeeds.
 
@@ -75,6 +76,7 @@ class CompositeSolver(Solver):
         self.logger.info("No strategy made a change to the board.")
         return False
 
+    @override
     def solve(self, board: Board) -> bool:
         """Attempt to solve the Sudoku board using a combination of strategies.
 

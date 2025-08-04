@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from src.sudoku.solver.constraints.base_constraint import BaseConstraint
 from src.sudoku.solver.constraints.killer import KillerConstraint
@@ -67,6 +67,7 @@ class XVConstraint(BaseConstraint):
         """
         return cls(v_cells, total_sum=V_SUM)
 
+    @override
     def check(self, board: Board) -> bool:
         """Check if the XV constraint is satisfied.
 
@@ -79,6 +80,7 @@ class XVConstraint(BaseConstraint):
         """
         return self.killer_constraint.check(board)
 
+    @override
     def eliminate(self, board: Board) -> bool:
         """Automatically complete the XV constraint on the given board.
 
@@ -92,6 +94,7 @@ class XVConstraint(BaseConstraint):
         """
         return self.killer_constraint.eliminate(board)
 
+    @override
     def draw(self, gui: SudokuGUI) -> None:
         """Draw this XV constraint on ``gui`` if supported.
 
@@ -106,6 +109,7 @@ class XVConstraint(BaseConstraint):
         )
         # FIXME: c'est dégueulasse
 
+    @override
     def deep_copy(self) -> XVConstraint:
         """Create a deep copy of the constraint.
 

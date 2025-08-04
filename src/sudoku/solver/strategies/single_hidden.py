@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import Counter
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from src.sudoku.solver.solver import Solver
 
@@ -12,6 +12,7 @@ if TYPE_CHECKING:
 class HiddenSingleStrategy(Solver):
     """If a digit appears as a candidate only once in a region, fill it."""
 
+    @override
     def apply(self, board: Board) -> bool:
         """Fill cells with candidates that appear only once in their region.
 

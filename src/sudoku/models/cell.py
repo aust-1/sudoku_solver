@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from loggerplusplus import Logger
 
@@ -85,6 +85,7 @@ class Cell:
             return True
         return True
 
+    @override
     def __eq__(self, value: object) -> bool:
         """Check if this cell is equal to another cell.
 
@@ -98,6 +99,7 @@ class Cell:
             return False
         return (self.row, self.col) == (value.row, value.col)
 
+    @override
     def __hash__(self) -> int:
         """Return a hash of the cell.
 
@@ -107,6 +109,7 @@ class Cell:
         """
         return hash((self.row, self.col))
 
+    @override
     def __str__(self) -> str:
         """Return a string representation of the cell.
 
@@ -116,6 +119,7 @@ class Cell:
         """
         return str(self.value) if self.value is not None else "."
 
+    @override
     def __repr__(self) -> str:
         """Return a string representation of the cell.
 

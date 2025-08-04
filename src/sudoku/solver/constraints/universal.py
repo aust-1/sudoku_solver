@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from src.sudoku.solver.constraints.base_constraint import BaseConstraint
 
@@ -11,7 +11,8 @@ if TYPE_CHECKING:
 class UniversalConstraint(BaseConstraint):
     """A class representing a universal constraint."""
 
-    def check(self, board: Board) -> bool:  # noqa: ARG002, PLR6301
+    @override
+    def check(self, board: Board) -> bool:
         """Check if the universal constraint is satisfied.
 
         Args:
@@ -24,7 +25,8 @@ class UniversalConstraint(BaseConstraint):
         """
         return True
 
-    def eliminate(self, board: Board) -> bool:  # noqa: ARG002, PLR6301
+    @override
+    def eliminate(self, board: Board) -> bool:
         """Automatically complete the universal constraint on the given board.
 
         Args:
@@ -38,7 +40,8 @@ class UniversalConstraint(BaseConstraint):
         """
         return False
 
-    def reachable_cells(  # noqa: PLR6301
+    @override
+    def reachable_cells(
         self,
         board: Board,
         cell: Cell,
@@ -65,7 +68,8 @@ class UniversalConstraint(BaseConstraint):
 
         return reachable_cells
 
-    def get_regions(self, board: Board) -> dict[str, set[Cell]]:  # noqa: PLR6301
+    @override
+    def get_regions(self, board: Board) -> dict[str, set[Cell]]:
         """Get the regions defined by the universal constraint.
 
         Args:
@@ -88,7 +92,8 @@ class UniversalConstraint(BaseConstraint):
 
         return regions
 
-    def deep_copy(self) -> UniversalConstraint:  # noqa: PLR6301
+    @override
+    def deep_copy(self) -> UniversalConstraint:
         """Create a deep copy of the constraint.
 
         Returns:

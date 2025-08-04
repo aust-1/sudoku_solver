@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from src.sudoku.solver.constraints.base_constraint import BaseConstraint
 from src.sudoku.solver.constraints.clone import CloneConstraint
@@ -28,6 +28,7 @@ class PalindromeConstraint(BaseConstraint):
                 CloneConstraint({palindrome_cells[i], palindrome_cells[-(i + 1)]}),
             )
 
+    @override
     def check(self, board: Board) -> bool:
         """Check if the palindrome constraint is satisfied.
 
@@ -40,6 +41,7 @@ class PalindromeConstraint(BaseConstraint):
         """
         return all(constraint.check(board) for constraint in self.clone_constraints)
 
+    @override
     def eliminate(self, board: Board) -> bool:
         """Automatically complete the palindrome constraint on the given board.
 
@@ -60,6 +62,7 @@ class PalindromeConstraint(BaseConstraint):
             eliminated |= constraint.eliminate(board)
         return eliminated
 
+    @override
     def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:
         """Get the reachable cells based on the constraint.
 
@@ -76,6 +79,7 @@ class PalindromeConstraint(BaseConstraint):
             reachable_cells.update(constraint.reachable_cells(board, cell))
         return reachable_cells
 
+    @override
     def draw(self, gui: SudokuGUI) -> None:
         """Draw this palindrome constraint on ``gui`` if supported.
 
@@ -85,6 +89,7 @@ class PalindromeConstraint(BaseConstraint):
         """
         gui.draw_line(self.palindrome_cells, (0, 140, 255, 120), 5)
 
+    @override
     def deep_copy(self) -> PalindromeConstraint:
         """Create a deep copy of the constraint.
 

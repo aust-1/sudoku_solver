@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from src.sudoku.solver.constraints.base_constraint import BaseConstraint
 
@@ -22,7 +22,8 @@ class BishopConstraint(BaseConstraint):
         super().__init__()
         self.bishop_cells = bishop_cells
 
-    def check(self, board: Board) -> bool:  # noqa: ARG002
+    @override
+    def check(self, board: Board) -> bool:
         """Check if the bishop's movement is valid.
 
         Args:
@@ -44,7 +45,8 @@ class BishopConstraint(BaseConstraint):
                 values.add(cell.value)
         return True
 
-    def eliminate(self, board: Board) -> bool:  # noqa: ARG002, PLR6301
+    @override
+    def eliminate(self, board: Board) -> bool:
         """Automatically complete the bishop's movement constraint on the given board.
 
         Args:
@@ -58,7 +60,8 @@ class BishopConstraint(BaseConstraint):
         """
         return False
 
-    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:  # noqa: ARG002
+    @override
+    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:
         """Get the reachable cells based on the constraint.
 
         Args:
@@ -78,6 +81,7 @@ class BishopConstraint(BaseConstraint):
 
         return reachable
 
+    @override
     def get_regions(self, board: Board) -> dict[str, set[Cell]]:
         """Get the regions defined by the constraint.
 
@@ -93,6 +97,7 @@ class BishopConstraint(BaseConstraint):
             idx += 1
         return {f"bishop_{idx}": self.bishop_cells}
 
+    @override
     def draw(self, gui: SudokuGUI) -> None:
         """Draw this bishop constraint on ``gui`` if supported.
 
@@ -106,6 +111,7 @@ class BishopConstraint(BaseConstraint):
             2,
         )
 
+    @override
     def deep_copy(self) -> BishopConstraint:
         """Create a deep copy of the constraint.
 

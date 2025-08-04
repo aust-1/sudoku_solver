@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from src.sudoku.solver.constraints.base_constraint import BaseConstraint
 
@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 class KnightConstraint(BaseConstraint):
     """A class representing a knight's movement constraint."""
 
+    @override
     def check(self, board: Board) -> bool:
         """Check if the knight's movement is valid.
 
@@ -37,7 +38,8 @@ class KnightConstraint(BaseConstraint):
                             return False
         return True
 
-    def eliminate(self, board: Board) -> bool:  # noqa: ARG002, PLR6301
+    @override
+    def eliminate(self, board: Board) -> bool:
         """Automatically complete the knight's movement constraint on the given board.
 
         Args:
@@ -51,7 +53,8 @@ class KnightConstraint(BaseConstraint):
         """
         return False
 
-    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:  # noqa: PLR6301
+    @override
+    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:
         """Get the reachable cells based on the constraint.
 
         Args:
@@ -74,7 +77,8 @@ class KnightConstraint(BaseConstraint):
                         reachable.add(board.get_cell(x, y))
         return reachable
 
-    def deep_copy(self) -> KnightConstraint:  # noqa: PLR6301
+    @override
+    def deep_copy(self) -> KnightConstraint:
         """Create a deep copy of the constraint.
 
         Returns:

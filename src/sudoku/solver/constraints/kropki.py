@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from src.sudoku.solver.constraints.base_constraint import BaseConstraint
 
@@ -89,7 +89,8 @@ class KropkiConstraint(BaseConstraint):
             return v1 == v2 * 2 or v2 == v1 * 2
         return v1 == v2 + 1 or v2 == v1 + 1
 
-    def check(self, board: Board) -> bool:  # noqa: ARG002
+    @override
+    def check(self, board: Board) -> bool:
         """Check if the Kropki constraint is satisfied.
 
         Args:
@@ -105,7 +106,8 @@ class KropkiConstraint(BaseConstraint):
             or self._is_kropki_valid(self.cell1.value, self.cell2.value)
         )
 
-    def eliminate(self, board: Board) -> bool:  # noqa: ARG002
+    @override
+    def eliminate(self, board: Board) -> bool:
         """Automatically complete the Kropki constraint on the given board.
 
         Args:
@@ -142,6 +144,7 @@ class KropkiConstraint(BaseConstraint):
             )
         return eliminated
 
+    @override
     def draw(self, gui: SudokuGUI) -> None:
         """Draw this kropki constraint on ``gui`` if supported.
 
@@ -153,6 +156,7 @@ class KropkiConstraint(BaseConstraint):
 
         gui.draw_circle_between_cells(self.cell1, self.cell2, color)
 
+    @override
     def deep_copy(self) -> KropkiConstraint:
         """Create a deep copy of the constraint.
 

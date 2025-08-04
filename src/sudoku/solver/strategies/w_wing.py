@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from src.sudoku.solver.solver import Solver
 
@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 class WWingStrategy(Solver):
     """Eliminate candidates using the W-Wing technique."""
 
+    @override
     def apply(self, board: Board) -> bool:
         """Apply the W-Wing strategy to the board.
 

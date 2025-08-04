@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from src.sudoku.solver.constraints.base_constraint import BaseConstraint
 
@@ -21,7 +21,8 @@ class CloneConstraint(BaseConstraint):
         super().__init__()
         self.clone_cells = clone_cells
 
-    def check(self, board: Board) -> bool:  # noqa: ARG002
+    @override
+    def check(self, board: Board) -> bool:
         """Check if the clone constraint is satisfied.
 
         Args:
@@ -41,6 +42,7 @@ class CloneConstraint(BaseConstraint):
             )
         return len(values) <= 1
 
+    @override
     def eliminate(self, board: Board) -> bool:
         """Automatically complete the clone constraint on the given board.
 
@@ -68,7 +70,8 @@ class CloneConstraint(BaseConstraint):
             )
         return eliminated
 
-    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:  # noqa: ARG002
+    @override
+    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:
         """Get the reachable cells based on the constraint.
 
         Args:
@@ -89,6 +92,7 @@ class CloneConstraint(BaseConstraint):
 
         return reachable
 
+    @override
     def deep_copy(self) -> CloneConstraint:
         """Create a deep copy of the constraint.
 

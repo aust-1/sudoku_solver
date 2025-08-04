@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from src.sudoku.solver.solver import Solver
 
@@ -10,6 +10,27 @@ if TYPE_CHECKING:
 
 class ChainViolationGuardStrategy(Solver):
     """Eliminate candidates that lead to contradictions using backtracking."""
+
+    @override
+    def apply(self, board: Board) -> bool:
+        """Try each candidate and remove those that lead to contradictions.
+
+        Args:
+            board (Board): The Sudoku board to solve.
+
+        Returns:
+            bool: ``True`` if any candidates were eliminated, ``False`` otherwise.
+
+        """
+        self.logger.debug("ChainViolationGuardStrategy running")
+        moved = False
+        for cell in board.get_all_cells():
+            if cell.is_filled():
+                continue
+            for cand in set(cell.candidates):
+                if not self._is_candidate_valid(board, cell, cand):
+                    return cell.eliminate(cand)
+        return moved
 
     @staticmethod
     def _is_candidate_valid(board: Board, cell: Cell, value: int) -> bool:
@@ -56,23 +77,3 @@ class ChainViolationGuardStrategy(Solver):
         )
         solved = solver.solve(copy)
         return solved or copy.is_valid()
-
-    def apply(self, board: Board) -> bool:
-        """Try each candidate and remove those that lead to contradictions.
-
-        Args:
-            board (Board): The Sudoku board to solve.
-
-        Returns:
-            bool: ``True`` if any candidates were eliminated, ``False`` otherwise.
-
-        """
-        self.logger.debug("ChainViolationGuardStrategy running")
-        moved = False
-        for cell in board.get_all_cells():
-            if cell.is_filled():
-                continue
-            for cand in set(cell.candidates):
-                if not self._is_candidate_valid(board, cell, cand):
-                    return cell.eliminate(cand)
-        return moved

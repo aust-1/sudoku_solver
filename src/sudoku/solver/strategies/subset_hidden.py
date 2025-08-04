@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from itertools import combinations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from src.sudoku.solver.solver import Solver
 
@@ -37,6 +37,7 @@ class _BaseHiddenSubsetStrategy(Solver):
                     moved |= cell.eliminate(val)
         return moved
 
+    @override
     def apply(self, board: Board) -> bool:
         """Apply the hidden subset strategy.
 

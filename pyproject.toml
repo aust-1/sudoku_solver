@@ -37,13 +37,18 @@ skip-checking-short-docstrings = false
 style = 'google'
 
 [tool.pylint.main]
+enable = "all"
 disable = [
     "E0401", # import-error
-    "W0511", # fixme
-    "C0114", # missing-module-docstring
-    "C0115", # missing-class-docstring
+    "R0902", # too-many-instance-attributes
     "R0903", # too-few-public-methods
+    "W0212", # protected-access -> Best management with ruff
+    "W0511", # fixme
+    "W0613", # unused-argument -> Best management with ruff
+    "W1113", # keyword-arg-before-vararg -> Best management with ruff
 ]
+msg-template = "{line}:{column}: {msg_id}: {msg} ({symbol})"
+output-format = "text"
 
 [tool.ruff]
 exclude = ["*.ipynb"]
