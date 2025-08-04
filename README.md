@@ -20,6 +20,13 @@ sudoku_solver
 ├─ README.md
 ├─ requirements.txt
 ├─ ruff-baseline.txt
+├─ site
+│  ├─ css
+│  │  └─ style.css
+│  ├─ index.html
+│  └─ js
+│     ├─ app.js
+│     └─ constraint.js
 └─ src
    ├─ main.py
    ├─ models
@@ -55,6 +62,12 @@ sudoku_solver
    │  │  ├─ x_wing.py
    │  │  └─ __init__.py
    │  └─ __init__.py
+   ├─ sudoku
+   │  ├─ models
+   │  ├─ solver
+   │  │  ├─ constraints
+   │  │  └─ strategies
+   │  └─ utils
    └─ utils
       ├─ exceptions.py
       ├─ gui.py
