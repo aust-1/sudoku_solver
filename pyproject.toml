@@ -40,10 +40,15 @@ style = 'google'
 enable = "all"
 disable = [
     "E0401", # import-error
+    "R0902", # too-many-instance-attributes
+    "R0903", # too-few-public-methods
     "W0212", # protected-access -> Best management with ruff
+    "W0511", # fixme
     "W0613", # unused-argument -> Best management with ruff
     "W1113", # keyword-arg-before-vararg -> Best management with ruff
 ]
+msg-template = "{line}:{column}: {msg_id}: {msg} ({symbol})"
+output-format = "text"
 
 [tool.ruff]
 exclude = ["*.ipynb"]
@@ -67,6 +72,7 @@ known-first-party = ["sudoku"]
 select = ["ALL"]
 ignore = [
     "CPY001", # missing-copyright-notice
+    "FIX001", # line-contains-fixme
     "FIX002", # line-contains-todo
     "FIX004", # line-contains-hack
     "G004",   # logging-f-string
@@ -74,7 +80,6 @@ ignore = [
     "TD002",  # missing-todo-author
     "TD003",  # missing-todo-link
 ]
-
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

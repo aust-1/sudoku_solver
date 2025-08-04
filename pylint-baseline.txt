@@ -1,0 +1,123 @@
+************* Module src.sudoku.utils.gui
+src\sudoku\utils\gui.py:12:0: R0902: Too many instance attributes (9/7) (too-many-instance-attributes)
+************* Module src.sudoku.utils.__init__
+src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
+==src.sudoku.solver.constraints.clone_zone_constraint:[43:88]
+==src.sudoku.solver.constraints.palindrome:[40:85]
+        return all(constraint.check(board) for constraint in self.clone_constraints)
+
+    def eliminate(self, board: Board) -> bool:
+        """Automatically complete the clones constraint on the given board.
+
+        Args:
+            board (Board): The Sudoku board to auto-complete.
+
+        Returns:
+            bool:
+                ``True`` if at least one candidate was eliminated,
+                ``False`` otherwise.
+
+        """
+        self.logger.debug(
+            f"Eliminating candidates for {self.__class__.__name__} constraint",
+        )
+        eliminated = False
+        for constraint in self.clone_constraints:
+            eliminated |= constraint.eliminate(board)
+        return eliminated
+
+    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:
+        """Get the reachable cells based on the constraint.
+
+        Args:
+            board (Board): The Sudoku board.
+            cell (Cell): The cell.
+
+        Returns:
+            set[Cell]: A set of reachable cells.
+
+        """
+        reachable_cells: set[Cell] = set()
+        for constraint in self.clone_constraints:
+            reachable_cells.update(constraint.reachable_cells(board, cell))
+        return reachable_cells
+
+    def deep_copy(self) -> CloneZoneConstraint:
+        """Create a deep copy of the constraint.
+
+        Returns:
+            CloneZoneConstraint: A deep copy of the constraint.
+
+        """ (duplicate-code)
+src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
+==src.sudoku.solver.strategies.w_wing:[24:37]
+==src.sudoku.solver.strategies.x_wing:[25:38]
+        moved = False
+
+        for digit in range(1, board.size + 1):
+            strong_links: set[tuple[Cell, Cell]] = set()
+            for region in (r for r in board.regions.values() if len(r) == board.size):
+                cells = [
+                    cell
+                    for cell in region
+                    if not cell.is_filled() and digit in cell.candidates
+                ]
+                if len(cells) == 2:  # noqa: PLR2004
+                    strong_links.add((cells[0], cells[1]))
+ (duplicate-code)
+src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
+==src.sudoku.solver.constraints.king:[32:64]
+==src.sudoku.solver.constraints.knight:[33:65]
+                                f" and neighbor cell ({cell.row}, {cell.col})"
+                                f" with value {value}",
+                            )
+                            return False
+        return True
+
+    def eliminate(self, board: Board) -> bool:  # noqa: ARG002, PLR6301
+        """Automatically complete the knight's movement constraint on the given board.
+
+        Args:
+            board (Board): The Sudoku board to auto-complete.
+
+        Returns:
+            bool:
+                ``True`` if at least one candidate was eliminated,
+                ``False`` otherwise.
+
+        """
+        return False
+
+    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:  # noqa: PLR6301
+        """Get the reachable cells based on the constraint.
+
+        Args:
+            board (Board): The Sudoku board.
+            cell (Cell): The cell.
+
+        Returns:
+            set[Cell]: A set of reachable cells.
+
+        """
+        reachable: set[Cell] = set() (duplicate-code)
+src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
+==src.sudoku.solver.__init__:[42:48]
+==src.sudoku.solver.strategies.__init__:[21:27]
+    "ConstraintStrategy",
+    "EliminationStrategy",
+    "HiddenPairStrategy",
+    "HiddenQuadStrategy",
+    "HiddenSingleStrategy",
+    "HiddenTripleStrategy", (duplicate-code)
+src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
+==src.sudoku.solver.backtracking:[35:40]
+==src.sudoku.solver.composite:[46:51]
+            NakedTripleStrategy(),
+            HiddenTripleStrategy(),
+            NakedQuadStrategy(),
+            HiddenQuadStrategy(),
+            XWingStrategy(), (duplicate-code)
+
+------------------------------------------------------------------
+Your code has been rated at 9.14/10 (previous run: 9.01/10, +0.13)
+
