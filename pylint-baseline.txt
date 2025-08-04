@@ -1,9 +1,9 @@
-************* Module src.sudoku.utils.gui
+************* Module sudoku.utils.gui
 src\sudoku\utils\gui.py:12:0: R0902: Too many instance attributes (9/7) (too-many-instance-attributes)
-************* Module src.sudoku.utils.__init__
+************* Module sudoku.utils.__init__
 src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
-==src.sudoku.solver.constraints.clone_zone_constraint:[43:88]
-==src.sudoku.solver.constraints.palindrome:[40:85]
+==sudoku.solver.constraints.clone_zone_constraint:[43:88]
+==sudoku.solver.constraints.palindrome:[40:85]
         return all(constraint.check(board) for constraint in self.clone_constraints)
 
     def eliminate(self, board: Board) -> bool:
@@ -50,8 +50,8 @@ src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
 
         """ (duplicate-code)
 src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
-==src.sudoku.solver.strategies.w_wing:[24:37]
-==src.sudoku.solver.strategies.x_wing:[25:38]
+==sudoku.solver.strategies.w_wing:[24:37]
+==sudoku.solver.strategies.x_wing:[25:38]
         moved = False
 
         for digit in range(1, board.size + 1):
@@ -66,8 +66,8 @@ src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
                     strong_links.add((cells[0], cells[1]))
  (duplicate-code)
 src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
-==src.sudoku.solver.constraints.king:[32:64]
-==src.sudoku.solver.constraints.knight:[33:65]
+==sudoku.solver.constraints.king:[32:64]
+==sudoku.solver.constraints.knight:[33:65]
                                 f" and neighbor cell ({cell.row}, {cell.col})"
                                 f" with value {value}",
                             )
@@ -101,8 +101,8 @@ src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
         """
         reachable: set[Cell] = set() (duplicate-code)
 src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
-==src.sudoku.solver.__init__:[42:48]
-==src.sudoku.solver.strategies.__init__:[21:27]
+==sudoku.solver.__init__:[42:48]
+==sudoku.solver.strategies.__init__:[21:27]
     "ConstraintStrategy",
     "EliminationStrategy",
     "HiddenPairStrategy",
@@ -110,8 +110,8 @@ src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
     "HiddenSingleStrategy",
     "HiddenTripleStrategy", (duplicate-code)
 src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
-==src.sudoku.solver.backtracking:[35:40]
-==src.sudoku.solver.composite:[46:51]
+==sudoku.solver.backtracking:[35:40]
+==sudoku.solver.composite:[46:51]
             NakedTripleStrategy(),
             HiddenTripleStrategy(),
             NakedQuadStrategy(),

@@ -1,0 +1,85 @@
+src\models\board.py:
+  1:1 D100 Missing docstring in public module
+
+src\models\cell.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\backtracking.py:
+   1:1 D100 Missing docstring in public module
+  18:9 PLC0415 `import` should be at the top-level of a file
+
+src\solver\composite.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\constraints\base_constraint.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\constraints\bishop.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\constraints\clone.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\constraints\clone_zone_constraint.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\constraints\even_odd.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\constraints\killer.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\constraints\king.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\constraints\knight.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\constraints\kropki.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\constraints\palindrome.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\constraints\universal.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\constraints\xv.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\solver.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\strategies\chain_violation_guard.py:
+   1:1 D100 Missing docstring in public module
+  48:9 PLC0415 `import` should be at the top-level of a file
+  49:9 PLC0415 `import` should be at the top-level of a file
+
+src\solver\strategies\constraint.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\strategies\elimination.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\strategies\single_hidden.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\strategies\subset_hidden.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\strategies\subset_naked.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\strategies\w_wing.py:
+  1:1 D100 Missing docstring in public module
+
+src\solver\strategies\x_wing.py:
+  1:1 D100 Missing docstring in public module
+
+src\utils\exceptions.py:
+  1:1 D100 Missing docstring in public module
+
+src\utils\gui.py:
+  1:1 D100 Missing docstring in public module
+
+Found 30 errors.
