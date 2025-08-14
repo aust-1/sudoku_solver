@@ -1,4 +1,0 @@
-loggerplusplus
-pydoclint
-pygame
-ruff
