@@ -37,9 +37,9 @@ class Board:
         for cell in self.get_all_cells():
             cell.reachable_cells.clear()
 
-        for r in self.regions.values():
-            for cell in r:
-                cell.add_reachables(r)
+        for region in self.regions.values():
+            for cell in region:
+                cell.add_reachables(region)
 
         for constraint in self.constraints:
             for cell in self.get_all_cells():
