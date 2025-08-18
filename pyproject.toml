@@ -20,6 +20,7 @@ dev = [
     "pydoclint>=0.6.8",
     "pylint>=3.3.8",
     "pytest>=8.4.1",
+    "pytest-cov>=6.2.1",
     "ruff>=0.12.8",
 ]
 
@@ -70,6 +71,11 @@ disable = [
 ]
 msg-template = "{line}:{column}: {msg_id}: {msg} ({symbol})"
 output-format = "text"
+
+[tool.pytest.ini_options]
+addopts = "--cov=src/models --cov-report=term-missing"
+pythonpath = "src"
+testpaths = "tests"
 
 [tool.ruff]
 exclude = ["*.ipynb"]
