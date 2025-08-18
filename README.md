@@ -2,10 +2,16 @@
 
 This project provides a simple Sudoku solver implemented in Python. The code is organised in a clean object-oriented architecture.
 
+Install the dependencies using [uv](https://github.com/astral-sh/uv):
+
+```bash
+uv sync --group dev
+```
+
 Run the demo with:
 
 ```bash
-python main.py
+uv run python src/main.py
 ```
 
 ## Project Structure
@@ -18,7 +24,6 @@ sudoku_solver
 ├─ pylint-baseline.txt
 ├─ pyproject.toml
 ├─ README.md
-├─ requirements.txt
 ├─ ruff-baseline.txt
 ├─ site
 │  ├─ css
