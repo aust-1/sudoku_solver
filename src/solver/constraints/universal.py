@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from solver.constraints.base_constraint import BaseConstraint
+from solver.constraints.structs import ConstraintType
 
 if TYPE_CHECKING:
     from models import Board, Cell
@@ -10,6 +11,10 @@ if TYPE_CHECKING:
 
 class UniversalConstraint(BaseConstraint):
     """A class representing a universal constraint."""
+
+    def __init__(self) -> None:
+        """Initialize the universal constraint."""
+        super().__init__(ConstraintType.UNIVERSAL)
 
     @override
     def check(self, board: Board) -> bool:

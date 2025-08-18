@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from solver.constraints.base_constraint import BaseConstraint
+from solver.constraints.structs import ConstraintType
 
 if TYPE_CHECKING:
     from models import Board, Cell
@@ -20,7 +21,7 @@ class ParityConstraint(BaseConstraint):
             rest (int): The remainder when the cell value is divided by 2.
 
         """
-        super().__init__()
+        super().__init__(ConstraintType.EVEN_ODD)
         self.parity_cell = cell
         self.rest = rest
 

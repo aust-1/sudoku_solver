@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from solver.constraints.base_constraint import BaseConstraint
+from solver.constraints.structs import ConstraintType
 
 if TYPE_CHECKING:
     from models import Board, Cell
@@ -19,7 +20,7 @@ class BishopConstraint(BaseConstraint):
             bishop_cells (set[Cell]): The cells that the bishop can move to.
 
         """
-        super().__init__()
+        super().__init__(ConstraintType.BISHOP)
         self.bishop_cells = bishop_cells
 
     @override

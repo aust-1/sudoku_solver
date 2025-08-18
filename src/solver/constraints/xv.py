@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from solver.constraints.base_constraint import BaseConstraint
 from solver.constraints.killer import KillerConstraint
+from solver.constraints.structs import ConstraintType
 
 if TYPE_CHECKING:
     from models import Board, Cell
@@ -28,7 +29,7 @@ class XVConstraint(BaseConstraint):
                 If the cells are not adjacent or if the sum is not a valid Sudoku value.
 
         """
-        super().__init__()
+        super().__init__(ConstraintType.X_V)
         self.cell1, self.cell2 = xv_cells
         if (abs(self.cell1.row - self.cell2.row) == 1) == (
             abs(self.cell1.col - self.cell2.col) == 1
