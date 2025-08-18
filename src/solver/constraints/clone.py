@@ -20,6 +20,8 @@ class CloneConstraint(BaseConstraint):
         """
         super().__init__()
         self.clone_cells = clone_cells
+        for cell in clone_cells:
+            cell.clones.update(self.clone_cells)
 
     @override
     def check(self, board: Board) -> bool:

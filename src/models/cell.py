@@ -25,6 +25,7 @@ class Cell:
         self.value: int | None = None
         self.candidates: set[int] = set(range(1, size + 1))
         self.reachable_cells: set[Cell] = set()
+        self.clones: set[Cell] = {self}
         self.logger = Logger(
             identifier=f"Cell {row}, {col}",
             follow_logger_manager_rules=True,
@@ -39,8 +40,7 @@ class Cell:
         """
         for cell in cells:
             if cell is not self:
-                self.reachable_cells.add(cell)
-        # TODO: si tu vois un clone, tu vois aussi l'autre
+                self.reachable_cells.update(cell.clones)
 
     def is_filled(self) -> bool:
         """Check if the cell is filled.
