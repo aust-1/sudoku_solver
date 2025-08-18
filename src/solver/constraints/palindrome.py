@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from solver.constraints.base_constraint import BaseConstraint
 from solver.constraints.clone import CloneConstraint
+from solver.constraints.structs import ConstraintType
 
 if TYPE_CHECKING:
     from models import Board, Cell
@@ -20,7 +21,7 @@ class PalindromeConstraint(BaseConstraint):
             palindrome_cells (list[Cell]): The list of cells to apply constraints to.
 
         """
-        super().__init__()
+        super().__init__(ConstraintType.PALINDROME)
         self.palindrome_cells: list[Cell] = palindrome_cells
         self.clone_constraints: list[CloneConstraint] = []
         for i in range(len(palindrome_cells) // 2):

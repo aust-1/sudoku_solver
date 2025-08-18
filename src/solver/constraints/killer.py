@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, ClassVar, override
 from loggerplusplus import Logger
 
 from solver.constraints.base_constraint import BaseConstraint
+from solver.constraints.structs import ConstraintType
 
 if TYPE_CHECKING:
     from models import Board, Cell
@@ -48,6 +49,7 @@ class KillerConstraint(BaseConstraint):
 
         """
         super().__init__(
+            ConstraintType.KILLER,
             Logger(
                 identifier=f"{total_sum},{self.__class__.__name__}",
                 follow_logger_manager_rules=True,

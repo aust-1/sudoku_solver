@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from solver.constraints.base_constraint import BaseConstraint
+from solver.constraints.structs import ConstraintType
 
 if TYPE_CHECKING:
     from models import Board, Cell
@@ -10,6 +11,10 @@ if TYPE_CHECKING:
 
 class KingConstraint(BaseConstraint):
     """A class representing a king's movement constraint."""
+
+    def __init__(self) -> None:
+        """Initialize the king's movement constraint."""
+        super().__init__(ConstraintType.KING)
 
     @override
     def check(self, board: Board) -> bool:

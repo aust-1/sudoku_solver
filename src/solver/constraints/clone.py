@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from solver.constraints.base_constraint import BaseConstraint
+from solver.constraints.structs import ConstraintType
 
 if TYPE_CHECKING:
     from models import Board, Cell
@@ -18,7 +19,7 @@ class CloneConstraint(BaseConstraint):
             clone_cells (set[Cell]): The list of cells to apply constraints to.
 
         """
-        super().__init__()
+        super().__init__(ConstraintType.CLONE)
         self.clone_cells = clone_cells
         for cell in clone_cells:
             cell.clones.update(self.clone_cells)

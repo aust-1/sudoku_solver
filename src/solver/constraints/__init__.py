@@ -10,6 +10,7 @@ from solver.constraints.king import KingConstraint
 from solver.constraints.knight import KnightConstraint
 from solver.constraints.kropki import KropkiConstraint
 from solver.constraints.palindrome import PalindromeConstraint
+from solver.constraints.structs import ConstraintType
 from solver.constraints.universal import UniversalConstraint
 from solver.constraints.xv import XVConstraint
 
@@ -18,6 +19,7 @@ __all__ = [
     "BishopConstraint",
     "CloneConstraint",
     "CloneZoneConstraint",
+    "ConstraintType",
     "KillerConstraint",
     "KingConstraint",
     "KnightConstraint",

@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from solver.constraints.base_constraint import BaseConstraint
+from solver.constraints.structs import ConstraintType
 
 if TYPE_CHECKING:
     from models import Board, Cell
@@ -25,7 +26,7 @@ class KropkiConstraint(BaseConstraint):
                 (not ``black`` or ``white``).
 
         """
-        super().__init__()
+        super().__init__(ConstraintType.KROPKI)
         self.cell1, self.cell2 = kropki_cells
 
         if (abs(self.cell1.row - self.cell2.row) == 1) == (

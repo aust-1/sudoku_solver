@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING
 
 from loggerplusplus import Logger
 
+from solver.constraints.structs import ConstraintType
+
 if TYPE_CHECKING:
     from models import Board, Cell
     from utils.gui import SudokuGUI
@@ -14,16 +16,22 @@ class BaseConstraint(ABC):
     """A class representing a base constraint for the Sudoku board.
 
     Attributes:
-        msg (str): A message indicating that subclasses should implement the methods.
+        _msg (str): A message indicating that subclasses should implement the methods.
 
     """
 
-    msg: str = "Subclasses should implement this method."
+    _msg: str = "Subclasses should implement this method."
 
-    def __init__(self, logger: Logger | None = None) -> None:
+    def __init__(
+        self,
+        constraint_type: ConstraintType | None = None,
+        logger: Logger | None = None,
+    ) -> None:
         """Initialize the base constraint.
 
         Args:
+            constraint_type (ConstraintType | None):
+                The type of the constraint. Defaults to None.
             logger (Logger | None):
                 An optional logger instance for logging. Defaults to None.
 
@@ -32,6 +40,7 @@ class BaseConstraint(ABC):
             identifier=self.__class__.__name__,
             follow_logger_manager_rules=True,
         )
+        self.type: ConstraintType = constraint_type or ConstraintType.UNDEFINED
 
     @abstractmethod
     def check(self, board: Board) -> bool:
@@ -48,7 +57,7 @@ class BaseConstraint(ABC):
             NotImplementedError: If the method is not implemented in a subclass.
 
         """
-        raise NotImplementedError(self.msg)
+        raise NotImplementedError(self._msg)
 
     @abstractmethod
     def eliminate(self, board: Board) -> bool:
@@ -65,7 +74,7 @@ class BaseConstraint(ABC):
             NotImplementedError: If the method is not implemented in a subclass.
 
         """
-        raise NotImplementedError(self.msg)
+        raise NotImplementedError(self._msg)
 
     def reachable_cells(  # noqa: PLR6301
         self,
@@ -116,4 +125,4 @@ class BaseConstraint(ABC):
             NotImplementedError: If the method is not implemented in a subclass.
 
         """
-        raise NotImplementedError(self.msg)
+        raise NotImplementedError(self._msg)
