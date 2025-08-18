@@ -6,7 +6,9 @@ class ConstraintType(Enum):
 
     BISHOP = auto()
     CLONE = auto()
+    DUTCH = auto()
     EVEN_ODD = auto()
+    GERMAN = auto()
     KILLER = auto()
     KING = auto()
     KNIGHT = auto()

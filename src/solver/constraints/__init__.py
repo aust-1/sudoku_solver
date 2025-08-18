@@ -12,6 +12,7 @@ from solver.constraints.kropki import KropkiConstraint
 from solver.constraints.palindrome import PalindromeConstraint
 from solver.constraints.structs import ConstraintType
 from solver.constraints.universal import UniversalConstraint
+from solver.constraints.whispers import DutchConstraint, GermanConstraint
 from solver.constraints.xv import XVConstraint
 
 __all__ = [
@@ -20,6 +21,8 @@ __all__ = [
     "CloneConstraint",
     "CloneZoneConstraint",
     "ConstraintType",
+    "DutchConstraint",
+    "GermanConstraint",
     "KillerConstraint",
     "KingConstraint",
     "KnightConstraint",
@@ -36,8 +39,6 @@ __all__ = [
 # TODO: Consecutive
 # TODO: Couples
 # TODO: Diagonal
-# TODO: Dutch
-# TODO: German
 # TODO: Greater Than
 # TODO: Jigsaw
 # TODO: Little Unique Killer
