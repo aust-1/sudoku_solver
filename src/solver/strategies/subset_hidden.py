@@ -64,7 +64,7 @@ class _BaseHiddenSubsetStrategy(Solver):
             for combo in combinations(digits, self.size):
                 cells_union: set[Cell] = set()
                 for d in combo:
-                    cells_union.update(digit_cells[d])
+                    cells_union |= digit_cells[d]
                 if len(cells_union) != self.size:
                     continue
                 if all(

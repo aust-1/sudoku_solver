@@ -40,7 +40,7 @@ class Cell:
         """
         for cell in cells:
             if cell is not self:
-                self.reachable_cells.update(cell.clones)
+                self.reachable_cells |= cell.clones
 
     def is_filled(self) -> bool:
         """Check if the cell is filled.

@@ -32,16 +32,17 @@ class _BaseDiffConstraint(BaseConstraint):
         self.diff: int = diff
 
     @override
-    def check(self, board: Board) -> bool:
+    def check(self, board: Board) -> set[Cell]:
         """Check if the German constraint is satisfied.
 
         Args:
             board (Board): The Sudoku board to check.
 
         Returns:
-            bool: ``True`` if the constraint is satisfied, ``False`` otherwise.
+            set[Cell]: A set of cells that do not satisfy the German constraint.
 
         """
+        invalid_cells: set[Cell] = set()
         for i in range(len(self.cells) - 1):
             value = self.cells[i].value
             next_value = self.cells[i + 1].value
@@ -50,8 +51,8 @@ class _BaseDiffConstraint(BaseConstraint):
                 and next_value is not None
                 and abs(value - next_value) < self.diff
             ):
-                return False
-        return True
+                invalid_cells |= {self.cells[i], self.cells[i + 1]}
+        return invalid_cells
 
     @override
     def eliminate(self, board: Board) -> bool:

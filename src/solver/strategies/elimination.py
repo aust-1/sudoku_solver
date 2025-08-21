@@ -34,11 +34,11 @@ class EliminationStrategy(Solver):
                     for cell in region
                     if not cell.is_filled() and digit in cell.candidates
                 ]
-                if len(cells) == 0:
+                if not cells:
                     continue
                 reachable_cells = set(board.get_all_cells())
                 for cell in cells:
-                    reachable_cells.intersection_update(cell.reachable_cells)
+                    reachable_cells &= cell.reachable_cells
 
                 eliminated = False
                 for peer in reachable_cells:

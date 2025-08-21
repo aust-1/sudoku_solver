@@ -69,14 +69,14 @@ class XVConstraint(BaseConstraint):
         return cls(v_cells, total_sum=V_SUM)
 
     @override
-    def check(self, board: Board) -> bool:
+    def check(self, board: Board) -> set[Cell]:
         """Check if the XV constraint is satisfied.
 
         Args:
             board (Board): The Sudoku board.
 
         Returns:
-            bool: ``True`` if the XV constraint is satisfied, ``False`` otherwise.
+            set[Cell]: A set of cells that do not satisfy the XV constraint.
 
         """
         return self.killer_constraint.check(board)

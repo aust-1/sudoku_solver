@@ -22,17 +22,17 @@ class CloneConstraint(BaseConstraint):
         super().__init__(ConstraintType.CLONE)
         self.clone_cells = clone_cells
         for cell in clone_cells:
-            cell.clones.update(self.clone_cells)
+            cell.clones |= self.clone_cells
 
     @override
-    def check(self, board: Board) -> bool:
+    def check(self, board: Board) -> set[Cell]:
         """Check if the clone constraint is satisfied.
 
         Args:
             board (Board): The Sudoku board to check.
 
         Returns:
-            bool: ``True`` if the constraint is satisfied, ``False`` otherwise.
+            set[Cell]: A set of cells that do not satisfy the clone constraint.
 
         """
         values: set[int] = set()
@@ -43,7 +43,7 @@ class CloneConstraint(BaseConstraint):
             self.logger.debug(
                 f"Clone constraint violated in cells {self.clone_cells}",
             )
-        return len(values) <= 1
+        return self.clone_cells if len(values) > 1 else set()
 
     @override
     def eliminate(self, board: Board) -> bool:
@@ -61,7 +61,7 @@ class CloneConstraint(BaseConstraint):
         eliminated = False
         values = set(range(1, board.size + 1))
         for cell in self.clone_cells:
-            values.intersection_update(cell.candidates)
+            values &= cell.candidates
         for i in range(1, board.size + 1):
             if i not in values:
                 for cell in self.clone_cells:
@@ -90,8 +90,8 @@ class CloneConstraint(BaseConstraint):
 
         reachable: set[Cell] = set()
         for clone_cell in self.clone_cells:
-            reachable.update(clone_cell.reachable_cells)
-        reachable.difference_update(self.clone_cells)
+            reachable |= clone_cell.reachable_cells
+        reachable -= self.clone_cells
 
         return reachable
 

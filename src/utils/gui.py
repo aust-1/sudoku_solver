@@ -58,13 +58,37 @@ class SudokuGUI:
         highlight = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
         highlight.fill((255, 255, 0, 80))
         for cell in self.highlighted_cells:
-            rect = pygame.Rect(
-                cell.col * self.size,
-                cell.row * self.size,
-                self.size,
-                self.size,
-            )
-            self.screen.blit(highlight, rect)
+            self._draw_cell_background(cell, (255, 255, 0, 80))
+
+    def _draw_errors(self) -> None:
+        """Highlight cells that have errors."""
+        error_cells: set[Cell] = set()
+        for constraint in self.board.constraints:
+            error_cells |= constraint.check(self.board)
+
+        for cell in error_cells:
+            self._draw_cell_background(cell, (255, 0, 0, 80))
+
+    def _draw_cell_background(
+        self,
+        cell: Cell,
+        color: tuple[int, int, int, int],
+    ) -> None:
+        """Draw the background of a cell.
+
+        Args:
+            cell (Cell): The cell to draw on.
+            color (tuple[int, int, int, int]): The color of the background.
+        """
+        highlight = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
+        highlight.fill(color)
+        rect = pygame.Rect(
+            cell.col * self.size,
+            cell.row * self.size,
+            self.size,
+            self.size,
+        )
+        self.screen.blit(highlight, rect)
 
     def draw_line(
         self,
@@ -413,6 +437,7 @@ class SudokuGUI:
         self._draw_constraints()
         self._draw_values()
         self._draw_highlights()
+        self._draw_errors()
 
     def _draw_step_button(self, rect: pygame.Rect) -> None:
         """Draw the step button.

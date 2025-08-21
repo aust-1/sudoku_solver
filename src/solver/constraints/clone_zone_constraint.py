@@ -32,17 +32,21 @@ class CloneZoneConstraint(BaseConstraint):
             self.clone_constraints.append(CloneConstraint(column_cells))
 
     @override
-    def check(self, board: Board) -> bool:
+    def check(self, board: Board) -> set[Cell]:
         """Check if the clones constraint is satisfied.
 
         Args:
             board (Board): The Sudoku board to check.
 
         Returns:
-            bool: ``True`` if the constraint is satisfied, ``False`` otherwise.
+            set[Cell]: A set of cells that do not satisfy the clones constraint.
 
         """
-        return all(constraint.check(board) for constraint in self.clone_constraints)
+        return {
+            cell
+            for constraint in self.clone_constraints
+            for cell in constraint.check(board)
+        }
 
     @override
     def eliminate(self, board: Board) -> bool:
@@ -79,7 +83,7 @@ class CloneZoneConstraint(BaseConstraint):
         """
         reachable_cells: set[Cell] = set()
         for constraint in self.clone_constraints:
-            reachable_cells.update(constraint.reachable_cells(board, cell))
+            reachable_cells |= constraint.reachable_cells(board, cell)
         return reachable_cells
 
     @override

@@ -17,18 +17,32 @@ class UniversalConstraint(BaseConstraint):
         super().__init__(ConstraintType.UNIVERSAL)
 
     @override
-    def check(self, board: Board) -> bool:
+    def check(self, board: Board) -> set[Cell]:
         """Check if the universal constraint is satisfied.
 
         Args:
             board (Board): The Sudoku board to check.
 
         Returns:
-            bool:
-                ``True`` if the universal constraint is satisfied, ``False`` otherwise.
+            set[Cell]: A set of cells that do not satisfy the universal constraint.
 
         """
-        return True
+        invalid_cells: set[Cell] = set()
+        for i in range(board.size):
+            for j in range(board.size):
+                current_cell = board.get_cell(i, j)
+                value = current_cell.value
+                if value is not None:
+                    neighbor_cells = self.reachable_cells(board, current_cell)
+                    for cell in neighbor_cells:
+                        if cell.value is not None and cell.value != value:
+                            self.logger.debug(
+                                f"Universal constraint violated at cell ({i}, {j})"
+                                f" and cell ({cell.row}, {cell.col})"
+                                f" with value {value}",
+                            )
+                            invalid_cells |= {current_cell, cell}
+        return invalid_cells
 
     @override
     def eliminate(self, board: Board) -> bool:

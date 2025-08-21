@@ -17,21 +17,24 @@ class KingConstraint(BaseConstraint):
         super().__init__(ConstraintType.KING)
 
     @override
-    def check(self, board: Board) -> bool:
+    def check(self, board: Board) -> set[Cell]:
         """Check if the king's movement is valid.
 
         Args:
             board (Board): The Sudoku board.
 
         Returns:
-            bool: ``True`` if the king's movement is valid, ``False`` otherwise.
+            set[Cell]:
+                A set of cells that do not satisfy the king's movement constraint.
 
         """
+        invalid_cells: set[Cell] = set()
         for i in range(board.size):
             for j in range(board.size):
-                value = board.get_cell(i, j).value
+                current_cell = board.get_cell(i, j)
+                value = current_cell.value
                 if value is not None:
-                    neighbor_cells = self.reachable_cells(board, board.get_cell(i, j))
+                    neighbor_cells = self.reachable_cells(board, current_cell)
                     for cell in neighbor_cells:
                         if cell.value is not None and cell.value != value:
                             self.logger.debug(
@@ -39,8 +42,8 @@ class KingConstraint(BaseConstraint):
                                 f" and neighbor cell ({cell.row}, {cell.col})"
                                 f" with value {value}",
                             )
-                            return False
-        return True
+                            invalid_cells |= {current_cell, cell}
+        return invalid_cells
 
     @override
     def eliminate(self, board: Board) -> bool:

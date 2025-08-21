@@ -42,11 +42,11 @@ class XWingStrategy(Solver):
                     targets2 = b1.reachable_cells.copy()
 
                     if a2 in a1.reachable_cells and b2 in b1.reachable_cells:
-                        targets1.intersection_update(a2.reachable_cells)
-                        targets2.intersection_update(b2.reachable_cells)
+                        targets1 &= a2.reachable_cells
+                        targets2 &= b2.reachable_cells
                     elif a2 in b1.reachable_cells and b2 in a1.reachable_cells:
-                        targets1.intersection_update(b2.reachable_cells)
-                        targets2.intersection_update(a2.reachable_cells)
+                        targets1 &= b2.reachable_cells
+                        targets2 &= a2.reachable_cells
                     else:
                         continue
 

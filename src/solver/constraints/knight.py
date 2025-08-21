@@ -17,21 +17,24 @@ class KnightConstraint(BaseConstraint):
         super().__init__(ConstraintType.KNIGHT)
 
     @override
-    def check(self, board: Board) -> bool:
+    def check(self, board: Board) -> set[Cell]:
         """Check if the knight's movement is valid.
 
         Args:
             board (Board): The Sudoku board.
 
         Returns:
-            bool: ``True`` if the knight's movement is valid, ``False`` otherwise.
+            set[Cell]:
+                A set of cells that do not satisfy the knight's movement constraint.
 
         """
+        invalid_cells: set[Cell] = set()
         for i in range(board.size):
             for j in range(board.size):
-                value = board.get_cell(i, j).value
+                current_cell = board.get_cell(i, j)
+                value = current_cell.value
                 if value is not None:
-                    reachable_cells = self.reachable_cells(board, board.get_cell(i, j))
+                    reachable_cells = self.reachable_cells(board, current_cell)
                     for cell in reachable_cells:
                         neighbor_value = cell.value
                         if neighbor_value is not None and neighbor_value == value:
@@ -40,8 +43,8 @@ class KnightConstraint(BaseConstraint):
                                 f" and neighbor cell ({cell.row}, {cell.col})"
                                 f" with value {value}",
                             )
-                            return False
-        return True
+                            invalid_cells |= {current_cell, cell}
+        return invalid_cells
 
     @override
     def eliminate(self, board: Board) -> bool:

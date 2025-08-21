@@ -24,27 +24,31 @@ class BishopConstraint(BaseConstraint):
         self.bishop_cells = bishop_cells
 
     @override
-    def check(self, board: Board) -> bool:
+    def check(self, board: Board) -> set[Cell]:
         """Check if the bishop's movement is valid.
 
         Args:
             board (Board): The Sudoku board.
 
         Returns:
-            bool: ``True`` if the bishop's movement is valid, ``False`` otherwise.
-
+            set[Cell]:
+                A set of cells that do not satisfy the bishop's movement constraint.
         """
-        values: set[int] = set()
+        cells_by_value: dict[int, set[Cell]] = {}
         for cell in self.bishop_cells:
             if cell.value is not None:
-                if cell.value in values:
-                    self.logger.debug(
-                        f"Bishop constraint violated at cell ({cell.row}, {cell.col})"
-                        f" with value {cell.value}",
-                    )
-                    return False
-                values.add(cell.value)
-        return True
+                cells_by_value.setdefault(cell.value, set()).add(cell)
+
+        invalid_cells: set[Cell] = set()
+        for value, cells in cells_by_value.items():
+            if len(cells) > 1:
+                self.logger.debug(
+                    f"Bishop constraint violated for value {value} "
+                    f"in cells: {[(c.row, c.col) for c in cells]}",
+                )
+                invalid_cells |= cells
+
+        return invalid_cells
 
     @override
     def eliminate(self, board: Board) -> bool:
@@ -77,7 +81,7 @@ class BishopConstraint(BaseConstraint):
             return set()
 
         reachable: set[Cell] = set()
-        reachable.update(self.bishop_cells)
+        reachable |= self.bishop_cells
         reachable.discard(cell)
 
         return reachable

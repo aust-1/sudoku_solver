@@ -52,17 +52,23 @@ class ParityConstraint(BaseConstraint):
         return cls(cell, rest=1)
 
     @override
-    def check(self, board: Board) -> bool:
+    def check(self, board: Board) -> set[Cell]:
         """Check if the parity constraint is satisfied.
 
         Args:
             board (Board): The Sudoku board to check.
 
         Returns:
-            bool: ``True`` if the parity constraint is satisfied, ``False`` otherwise.
+            set[Cell]:
+                A set of cells that do not satisfy the parity constraint.
 
         """
-        return self.parity_cell.value is None or self.parity_cell.value % 2 == self.rest
+        if (
+            self.parity_cell.value is not None
+            and self.parity_cell.value % 2 != self.rest
+        ):
+            return {self.parity_cell}
+        return set()
 
     @override
     def eliminate(self, board: Board) -> bool:

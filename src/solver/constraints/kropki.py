@@ -91,21 +91,23 @@ class KropkiConstraint(BaseConstraint):
         return v1 == v2 + 1 or v2 == v1 + 1
 
     @override
-    def check(self, board: Board) -> bool:
+    def check(self, board: Board) -> set[Cell]:
         """Check if the Kropki constraint is satisfied.
 
         Args:
             board (Board): The Sudoku board.
 
         Returns:
-            bool: ``True`` if the Kropki constraint is satisfied, ``False`` otherwise.
+            set[Cell]: A set of cells that do not satisfy the Kropki constraint.
 
         """
-        return (
-            self.cell1.value is None
-            or self.cell2.value is None
-            or self._is_kropki_valid(self.cell1.value, self.cell2.value)
-        )
+        if (
+            self.cell1.value is not None
+            and self.cell2.value is not None
+            and not self._is_kropki_valid(self.cell1.value, self.cell2.value)
+        ):
+            return {self.cell1, self.cell2}
+        return set()
 
     @override
     def eliminate(self, board: Board) -> bool:

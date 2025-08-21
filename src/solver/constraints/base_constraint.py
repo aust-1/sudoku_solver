@@ -43,15 +43,16 @@ class BaseConstraint(ABC):
         self.type: ConstraintType = constraint_type or ConstraintType.UNDEFINED
 
     @abstractmethod
-    def check(self, board: Board) -> bool:
+    def check(self, board: Board) -> set[Cell]:
         """Check if the constraint is satisfied on the given board.
 
         Args:
             board (Board): The Sudoku board to check.
 
         Returns:
-            bool:
-                ``True`` if the constraint is satisfied, ``False`` otherwise.
+            set[Cell]:
+                A set of cells that do not satisfy the constraint.
+                Empty if the constraint is satisfied.
 
         Raises:
             NotImplementedError: If the method is not implemented in a subclass.

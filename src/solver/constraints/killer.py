@@ -65,20 +65,44 @@ class KillerConstraint(BaseConstraint):
                 self.possible_combinations.add(frozenset(combination))
 
     @override
-    def check(self, board: Board) -> bool:
+    def check(self, board: Board) -> set[Cell]:
         """Check if the killer constraint is satisfied.
 
         Args:
             board (Board): The Sudoku board to check.
 
         Returns:
-            bool: ``True`` if the killer constraint is satisfied, ``False`` otherwise.
+            set[Cell]:
+                A set of cells that do not satisfy the killer constraint.
 
         """
-        return any(cell.value is None for cell in self.killer_cells) or (
-            sum(cell.value for cell in self.killer_cells if cell.value is not None)
-            == self.sum
+        invalid_cells: set[Cell] = set()
+        current_sum = sum(
+            cell.value for cell in self.killer_cells if cell.value is not None
         )
+
+        if all(cell.is_filled() for cell in self.killer_cells):
+            if current_sum != self.sum:
+                invalid_cells |= self.killer_cells
+        elif current_sum >= self.sum:
+            invalid_cells |= self.killer_cells
+
+        cells_by_value: dict[int, set[Cell]] = {}
+        for cell in self.killer_cells:
+            if cell.value is not None:
+                cells_by_value.setdefault(cell.value, set()).add(cell)
+
+        for value, cells in cells_by_value.items():
+            if len(cells) > 1:
+                self.logger.debug(
+                    f"Killer constraint violated for value {value} "
+                    f"in cells: {[(c.row, c.col) for c in cells]}",
+                )
+                invalid_cells |= cells
+
+        return invalid_cells
+
+    # TODO: Region logic not in each constraint
 
     @override
     def eliminate(self, board: Board) -> bool:
@@ -159,20 +183,20 @@ class KillerConstraint(BaseConstraint):
         # TODO: translate this comment
         digits = set(range(1, board.size + 1))
         for comb in self.possible_combinations:
-            digits.intersection_update(comb)
+            digits &= comb
 
         for digit in digits:
-            possible_cells = [
+            possible_cells = {
                 cell
                 for cell in self.killer_cells
                 if (not cell.is_filled() and digit in cell.candidates)
                 or cell.value == digit
-            ]
+            }
 
             reachable_cells: set[Cell] = set(board.get_all_cells())
             for cell in possible_cells:
-                reachable_cells.intersection_update(cell.reachable_cells)
-            reachable_cells.difference_update(possible_cells)
+                reachable_cells &= cell.reachable_cells
+            reachable_cells -= possible_cells
 
             for cell in reachable_cells:
                 eliminated |= cell.eliminate(digit)
