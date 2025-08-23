@@ -51,13 +51,13 @@ class TestCell:
         assert c1.is_filled()
         assert c1.candidates == {5}
         assert 5 not in c2.candidates
-        assert not c2.eliminate(5)
-        assert c2.eliminate(value)
+        assert not c2.eliminate_candidate(5)
+        assert c2.eliminate_candidate(value)
 
     def test_final_value_after_eliminations(self, cell_pair: tuple[Cell, Cell]) -> None:
         c1, c2 = cell_pair
         c1.set_value(5)
         for v in [1, 2, 3, 4, 6, 7, 8]:
-            c2.eliminate(v)
+            c2.eliminate_candidate(v)
         assert c2.value == 9
         assert c2.candidates == {9}

@@ -42,7 +42,7 @@ class BishopConstraint(BaseConstraint):
         invalid_cells: set[Cell] = set()
         for value, cells in cells_by_value.items():
             if len(cells) > 1:
-                self.logger.debug(
+                self._logger.debug(
                     f"Bishop constraint violated for value {value} "
                     f"in cells: {[(c.row, c.col) for c in cells]}",
                 )

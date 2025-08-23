@@ -20,13 +20,13 @@ class Cell:
             size (int): The size of the Sudoku grid.
 
         """
-        self.row = row
-        self.col = col
-        self.value: int | None = None
-        self.candidates: set[int] = set(range(1, size + 1))
-        self.reachable_cells: set[Cell] = set()
-        self.clones: set[Cell] = {self}
-        self.logger = Logger(
+        self._row = row
+        self._col = col
+        self._value: int | None = None
+        self._candidates: set[int] = set(range(1, size + 1))
+        self._reachable_cells: set[Cell] = set()
+        self._clone_cells: set[Cell] = {self}
+        self._logger = Logger(
             identifier=f"Cell {row}, {col}",
             follow_logger_manager_rules=True,
         )
@@ -40,7 +40,17 @@ class Cell:
         """
         for cell in cells:
             if cell is not self:
-                self.reachable_cells |= cell.clones
+                self._reachable_cells |= cell.clone_cells
+
+    def add_clones(self, cells: Iterable[Cell]) -> None:
+        """Add clone cells to this cell's set.
+
+        Args:
+            cells (Iterable[Cell]): The cells to add.
+
+        """
+        for cell in cells:
+            self._clone_cells |= cell.clone_cells
 
     def is_filled(self) -> bool:
         """Check if the cell is filled.
@@ -49,23 +59,61 @@ class Cell:
             bool: ``True`` if the cell has a value, ``False`` otherwise.
 
         """
-        return self.value is not None
+        return self._value is not None
 
-    def set_value(self, v: int) -> None:
+    @property
+    def row(self) -> int:
+        return self._row
+
+    @property
+    def col(self) -> int:
+        return self._col
+
+    @property
+    def value(self) -> int | None:
+        return self._value
+
+    @value.setter
+    def value(self, v: int | None) -> None:
         """Set the value of the cell.
 
         Args:
-            v (int): The value to set.
+            v (int | None): The value to set.
 
         """
-        self.value = v
-        self.candidates.clear()
-        self.candidates.add(v)
-        self.logger.info(f"Set value {v}")
-        for cell in self.reachable_cells:
-            cell.eliminate(v)
+        self._logger.info(f"Set value {v}")
+        self._value = v
+        if v is None:
+            return
+        self._candidates.clear()
+        self._candidates.add(v)
+        for cell in self._reachable_cells:
+            cell.eliminate_candidate(v)
 
-    def eliminate(self, v: int) -> bool:
+    @property
+    def candidates(self) -> set[int]:
+        return self._candidates
+
+    @candidates.setter
+    def candidates(self, c: set[int]) -> None:
+        """Set the candidates of the cell.
+
+        Args:
+            c (set[int]): The candidates to set.
+
+        """
+        self._candidates = c
+        self._logger.info(f"Set candidates {c}")
+
+    @property
+    def reachable_cells(self) -> set[Cell]:
+        return self._reachable_cells
+
+    @property
+    def clone_cells(self) -> set[Cell]:
+        return self._reachable_cells
+
+    def eliminate_candidate(self, v: int) -> bool:
         """Remove a value from the candidate set.
 
         Args:
@@ -76,12 +124,12 @@ class Cell:
             ``True`` if the value was removed, ``False`` if it was not a candidate.
 
         """
-        if v not in self.candidates:
+        if v not in self._candidates:
             return False
-        self.candidates.remove(v)
-        self.logger.info(f"Eliminated candidate {v}")
-        if len(self.candidates) == 1:
-            self.set_value(next(iter(self.candidates)))
+        self._candidates.remove(v)
+        self._logger.info(f"Eliminated candidate {v}")
+        if len(self._candidates) == 1:
+            self.value = next(iter(self._candidates))
             return True
         return True
 
@@ -97,7 +145,7 @@ class Cell:
         """
         if not isinstance(value, Cell):
             return False
-        return (self.row, self.col) == (value.row, value.col)
+        return (self._row, self._col) == (value.row, value.col)
 
     @override
     def __hash__(self) -> int:
@@ -107,7 +155,7 @@ class Cell:
             int: The hash of the cell.
 
         """
-        return hash((self.row, self.col))
+        return hash((self._row, self._col))
 
     @override
     def __str__(self) -> str:
@@ -117,7 +165,7 @@ class Cell:
             str: A string representation of the cell.
 
         """
-        return str(self.value) if self.value is not None else "."
+        return str(self._value) if self._value is not None else "."
 
     @override
     def __repr__(self) -> str:
@@ -127,7 +175,7 @@ class Cell:
             str: A string representation of the cell.
 
         """
-        return f"C{self.row}.{self.col}"
+        return f"C{self._row}.{self._col}"
 
 
 # TODO: row and col en +1

@@ -67,7 +67,7 @@ class _BaseDiffConstraint(BaseConstraint):
                 ``False`` otherwise.
 
         """
-        self.logger.debug(
+        self._logger.debug(
             f"Eliminating candidates for {self.__class__.__name__} constraint",
         )
         eliminated: bool = False
@@ -115,7 +115,7 @@ class _BaseDiffConstraint(BaseConstraint):
                     if abs(cand1 - cand2) > self.diff:
                         break
                 else:
-                    eliminated |= cell1.eliminate(cand1)
+                    eliminated |= cell1.eliminate_candidate(cand1)
 
         else:
             for cand1 in cell1.candidates.copy():
@@ -130,7 +130,7 @@ class _BaseDiffConstraint(BaseConstraint):
                     else:
                         break
                 else:
-                    eliminated |= cell1.eliminate(cand1)
+                    eliminated |= cell1.eliminate_candidate(cand1)
 
         return eliminated
 

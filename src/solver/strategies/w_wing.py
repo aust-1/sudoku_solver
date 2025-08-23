@@ -22,7 +22,7 @@ class WWingStrategy(Solver):
             bool: ``True`` if any candidates were eliminated, ``False`` otherwise.
 
         """
-        self.logger.debug("WWingStrategy running")
+        self._logger.debug("WWingStrategy running")
         moved = False
 
         for digit in range(1, board.size + 1):
@@ -77,10 +77,10 @@ class WWingStrategy(Solver):
                     value = (j.candidates - {digit}).pop()
                     eliminated = False
                     for cell in targets:
-                        eliminated |= cell.eliminate(value)
+                        eliminated |= cell.eliminate_candidate(value)
                     if eliminated:
                         moved = True
-                        self.logger.debug(
+                        self._logger.debug(
                             f"Eliminated due to W-Wing with {j}, {k}, {a}, {b}",
                         )
 

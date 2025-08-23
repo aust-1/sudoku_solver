@@ -89,9 +89,9 @@ class ParityConstraint(BaseConstraint):
         for digit in digits:
             if digit % 2 == self.rest:
                 continue
-            eliminated |= self.parity_cell.eliminate(digit)
+            eliminated |= self.parity_cell.eliminate_candidate(digit)
         if eliminated:
-            self.logger.debug(
+            self._logger.debug(
                 "Eliminated due to parity constraint",
             )
         return eliminated

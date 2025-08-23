@@ -22,14 +22,14 @@ class ChainViolationGuardStrategy(Solver):
             bool: ``True`` if any candidates were eliminated, ``False`` otherwise.
 
         """
-        self.logger.debug("ChainViolationGuardStrategy running")
+        self._logger.debug("ChainViolationGuardStrategy running")
         moved = False
         for cell in board.get_all_cells():
             if cell.is_filled():
                 continue
             for cand in set(cell.candidates):
                 if not self._is_candidate_valid(board, cell, cand):
-                    return cell.eliminate(cand)
+                    return cell.eliminate_candidate(cand)
         return moved
 
     @staticmethod
@@ -60,7 +60,7 @@ class ChainViolationGuardStrategy(Solver):
         )
 
         copy = board.deep_copy()
-        copy.get_cell(cell.row, cell.col).set_value(value)
+        copy.get_cell(r=cell.row, c=cell.col).value = value
         solver = CompositeSolver(
             [
                 EliminationStrategy(),

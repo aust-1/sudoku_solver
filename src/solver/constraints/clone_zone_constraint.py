@@ -61,7 +61,7 @@ class CloneZoneConstraint(BaseConstraint):
                 ``False`` otherwise.
 
         """
-        self.logger.debug(
+        self._logger.debug(
             f"Eliminating candidates for {self.__class__.__name__} constraint",
         )
         eliminated = False

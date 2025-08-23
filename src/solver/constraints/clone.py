@@ -21,8 +21,8 @@ class CloneConstraint(BaseConstraint):
         """
         super().__init__(ConstraintType.CLONE)
         self.clone_cells = clone_cells
-        for cell in clone_cells:
-            cell.clones |= self.clone_cells
+        for cell in self.clone_cells:
+            cell.add_clones(self.clone_cells)
 
     @override
     def check(self, board: Board) -> set[Cell]:
@@ -40,7 +40,7 @@ class CloneConstraint(BaseConstraint):
             if cell.value is not None:
                 values.add(cell.value)
         if len(values) > 1:
-            self.logger.debug(
+            self._logger.debug(
                 f"Clone constraint violated in cells {self.clone_cells}",
             )
         return self.clone_cells if len(values) > 1 else set()
@@ -65,10 +65,10 @@ class CloneConstraint(BaseConstraint):
         for i in range(1, board.size + 1):
             if i not in values:
                 for cell in self.clone_cells:
-                    eliminated |= cell.eliminate(i)
+                    eliminated |= cell.eliminate_candidate(i)
                     # HACK: gestion de la mémoire de ouf avec des pointeurs
         if eliminated:
-            self.logger.debug(
+            self._logger.debug(
                 f"Eliminated due to clone cells {self.clone_cells}",
             )
         return eliminated

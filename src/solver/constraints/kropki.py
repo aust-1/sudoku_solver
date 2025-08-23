@@ -37,12 +37,12 @@ class KropkiConstraint(BaseConstraint):
 
         if color == "black":
             self.is_black_dot = True
-            self.cell1.eliminate(5)
-            self.cell2.eliminate(5)
-            self.cell1.eliminate(7)
-            self.cell2.eliminate(7)
-            self.cell1.eliminate(9)
-            self.cell2.eliminate(9)
+            self.cell1.eliminate_candidate(5)
+            self.cell2.eliminate_candidate(5)
+            self.cell1.eliminate_candidate(7)
+            self.cell2.eliminate_candidate(7)
+            self.cell1.eliminate_candidate(9)
+            self.cell2.eliminate_candidate(9)
         elif color == "white":
             self.is_black_dot = False
         else:
@@ -132,16 +132,16 @@ class KropkiConstraint(BaseConstraint):
             for v2 in cell2_candidates:
                 possible |= self._is_kropki_valid(v1, v2)
             if not possible:
-                eliminated |= self.cell1.eliminate(v1)
+                eliminated |= self.cell1.eliminate_candidate(v1)
 
         for v2 in cell2_candidates:
             possible = False
             for v1 in cell1_candidates:
                 possible |= self._is_kropki_valid(v1, v2)
             if not possible:
-                eliminated |= self.cell2.eliminate(v2)
+                eliminated |= self.cell2.eliminate_candidate(v2)
         if eliminated:
-            self.logger.debug(
+            self._logger.debug(
                 f"Eliminated due to Kropki {'black' if self.is_black_dot else 'white'}"
                 f" in {self.cell1} and {self.cell2}",
             )

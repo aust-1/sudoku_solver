@@ -94,7 +94,7 @@ class KillerConstraint(BaseConstraint):
 
         for value, cells in cells_by_value.items():
             if len(cells) > 1:
-                self.logger.debug(
+                self._logger.debug(
                     f"Killer constraint violated for value {value} "
                     f"in cells: {[(c.row, c.col) for c in cells]}",
                 )
@@ -124,7 +124,7 @@ class KillerConstraint(BaseConstraint):
         if self.possible_combinations:
             eliminated |= self._eliminate_candidates(board)
         if eliminated:
-            self.logger.debug(
+            self._logger.debug(
                 f"Eliminated due to killer sum: {self.sum} in {self.killer_cells}",
             )
         return eliminated
@@ -148,7 +148,7 @@ class KillerConstraint(BaseConstraint):
                 )
                 for digit in comb
             ):
-                self.logger.debug(
+                self._logger.debug(
                     f"Invalid comb: {comb}, not all digits present in candidates",
                 )
                 continue
@@ -158,7 +158,7 @@ class KillerConstraint(BaseConstraint):
                 not cell.is_filled() and not any(d in cell.candidates for d in comb)
                 for cell in self.killer_cells
             ):
-                self.logger.debug(
+                self._logger.debug(
                     f"Invalid comb: {comb}, not all cells can take a digit",
                 )
                 continue
@@ -199,7 +199,7 @@ class KillerConstraint(BaseConstraint):
             reachable_cells -= possible_cells
 
             for cell in reachable_cells:
-                eliminated |= cell.eliminate(digit)
+                eliminated |= cell.eliminate_candidate(digit)
 
         # Eliminate candidates that are not in any remaining combination
         for cell in self.killer_cells:
@@ -213,7 +213,7 @@ class KillerConstraint(BaseConstraint):
             }
             for digit in set(cell.candidates):
                 if digit not in allowed_digits:
-                    eliminated |= cell.eliminate(digit)
+                    eliminated |= cell.eliminate_candidate(digit)
         return eliminated
 
     @override

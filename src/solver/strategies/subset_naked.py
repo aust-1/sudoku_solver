@@ -34,7 +34,7 @@ class _BaseNakedSubsetStrategy(Solver):
         for cell in region:
             if cell not in cells and not cell.is_filled():
                 for val in cand_set:
-                    moved |= cell.eliminate(val)
+                    moved |= cell.eliminate_candidate(val)
         return moved
 
     @override
@@ -48,7 +48,7 @@ class _BaseNakedSubsetStrategy(Solver):
             bool: True if any candidates were eliminated, False otherwise.
 
         """
-        self.logger.debug(f"{self.__class__.__name__} running")
+        self._logger.debug(f"{self.__class__.__name__} running")
         moved = False
         for name, region in board.regions.items():
             groups: dict[frozenset[int], list[Cell]] = {}
@@ -63,7 +63,7 @@ class _BaseNakedSubsetStrategy(Solver):
                     cand_set,
                 ):
                     moved = True
-                    self.logger.debug(
+                    self._logger.debug(
                         f"Eliminated due to naked subset {cand_set} in {name}",
                     )
         return moved

@@ -23,7 +23,7 @@ class HiddenSingleStrategy(Solver):
             bool: ``True`` if any cells were filled, ``False`` otherwise.
 
         """
-        self.logger.debug("HiddenSingleStrategy running")
+        self._logger.debug("HiddenSingleStrategy running")
         moved = False
         for name, region in board.regions.items():
             if len(region) != board.size:
@@ -33,9 +33,9 @@ class HiddenSingleStrategy(Solver):
                 if not cell.is_filled():
                     unique = [c for c in cell.candidates if counter[c] == 1]
                     if len(unique) == 1:
-                        cell.set_value(unique[0])
+                        cell.value = unique[0]
                         moved = True
-                        self.logger.debug(
+                        self._logger.debug(
                             f"Filled due to hidden single in {name}",
                         )
         return moved

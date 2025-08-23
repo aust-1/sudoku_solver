@@ -34,7 +34,7 @@ class _BaseHiddenSubsetStrategy(Solver):
         for cell in cells:
             for val in set(cell.candidates):
                 if val not in combo:
-                    moved |= cell.eliminate(val)
+                    moved |= cell.eliminate_candidate(val)
         return moved
 
     @override
@@ -48,7 +48,7 @@ class _BaseHiddenSubsetStrategy(Solver):
             bool: True if any candidates were eliminated, False otherwise.
 
         """
-        self.logger.debug(f"{self.__class__.__name__} running")
+        self._logger.debug(f"{self.__class__.__name__} running")
         moved = False
         digits: list[int] = list(range(1, board.size + 1))
         for name, region in board.regions.items():
@@ -73,7 +73,7 @@ class _BaseHiddenSubsetStrategy(Solver):
                     for d in combo
                 ) and self._eliminate_candidates(cells_union, combo):
                     moved = True
-                    self.logger.debug(
+                    self._logger.debug(
                         f"Eliminated due to combination {combo} in {name}",
                     )
         return moved

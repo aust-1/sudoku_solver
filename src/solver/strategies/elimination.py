@@ -22,7 +22,7 @@ class EliminationStrategy(Solver):
             bool: ``True`` if any candidates were eliminated, ``False`` otherwise.
 
         """
-        self.logger.debug("EliminationStrategy running")
+        self._logger.debug("EliminationStrategy running")
         moved = False
 
         for name, region in board.regions.items():
@@ -42,10 +42,10 @@ class EliminationStrategy(Solver):
 
                 eliminated = False
                 for peer in reachable_cells:
-                    eliminated |= peer.eliminate(digit)
+                    eliminated |= peer.eliminate_candidate(digit)
                 if eliminated:
                     moved = True
-                    self.logger.debug(
+                    self._logger.debug(
                         f"Eliminated due to intersection of {cells} in {name}",
                     )
 

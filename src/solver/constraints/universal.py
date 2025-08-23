@@ -30,13 +30,13 @@ class UniversalConstraint(BaseConstraint):
         invalid_cells: set[Cell] = set()
         for i in range(board.size):
             for j in range(board.size):
-                current_cell = board.get_cell(i, j)
+                current_cell = board.get_cell(r=i, c=j)
                 value = current_cell.value
                 if value is not None:
                     neighbor_cells = self.reachable_cells(board, current_cell)
                     for cell in neighbor_cells:
                         if cell.value is not None and cell.value != value:
-                            self.logger.debug(
+                            self._logger.debug(
                                 f"Universal constraint violated at cell ({i}, {j})"
                                 f" and cell ({cell.row}, {cell.col})"
                                 f" with value {value}",
@@ -79,7 +79,7 @@ class UniversalConstraint(BaseConstraint):
         y = cell.col % 3
 
         reachable_cells = {
-            board.get_cell(i, j)
+            board.get_cell(r=i, c=j)
             for i in range(x, board.size, 3)
             for j in range(y, board.size, 3)
         }
@@ -103,7 +103,7 @@ class UniversalConstraint(BaseConstraint):
         for i in range(3):
             for j in range(3):
                 region: set[Cell] = {
-                    board.get_cell(x, y)
+                    board.get_cell(r=x, c=y)
                     for x in range(i, board.size, 3)
                     for y in range(j, board.size, 3)
                 }

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, Any, overload, override
 
 from loggerplusplus import Logger
 
@@ -22,13 +22,14 @@ class Board:
             size (int): The size of the Sudoku board (e.g., 9 for a 9x9 board).
 
         """
-        self.size = size
-        self.grid: list[list[Cell]] = [
-            [Cell(r, c, self.size) for c in range(self.size)] for r in range(self.size)
+        self._size = size
+        self._grid: list[list[Cell]] = [
+            [Cell(r, c, self._size) for c in range(self._size)]
+            for r in range(self._size)
         ]
-        self.constraints: set[BaseConstraint] = set()
-        self.regions: dict[str, set[Cell]] = {}
-        self.logger = Logger(identifier="Board", follow_logger_manager_rules=True)
+        self._constraints: set[BaseConstraint] = set()
+        self._regions: dict[str, set[Cell]] = {}
+        self._logger = Logger(identifier="Board", follow_logger_manager_rules=True)
         self._init_regions()
         self._init_reachability()
 
@@ -37,26 +38,26 @@ class Board:
         for cell in self.get_all_cells():
             cell.reachable_cells.clear()
 
-        for region in self.regions.values():
+        for region in self._regions.values():
             for cell in region:
                 cell.add_reachables(region)
 
-        for constraint in self.constraints:
+        for constraint in self._constraints:
             for cell in self.get_all_cells():
                 cell.add_reachables(constraint.reachable_cells(self, cell))
-        for constraint in self.constraints:
+        for constraint in self._constraints:
             for cell in self.get_all_cells():
                 cell.add_reachables(constraint.reachable_cells(self, cell))
 
     def _init_regions(self) -> None:
         """Initialise the regions of the board."""
-        for i in range(self.size):
-            self.regions[f"row{i}"] = self._get_row(i)
-            self.regions[f"col{i}"] = self._get_col(i)
-            self.regions[f"box{i}"] = self._get_box(i)
+        for i in range(self._size):
+            self._regions[f"row{i}"] = self._get_row(i)
+            self._regions[f"col{i}"] = self._get_col(i)
+            self._regions[f"box{i}"] = self._get_box(i)
 
-        for constraint in self.constraints:
-            self.regions |= constraint.get_regions(self)
+        for constraint in self._constraints:
+            self._regions |= constraint.get_regions(self)
 
     def _get_row(self, r: int) -> set[Cell]:
         """Return all cells in row ``r``.
@@ -68,7 +69,7 @@ class Board:
             set[Cell]: All cells in the specified row.
 
         """
-        return set(self.grid[r])
+        return set(self._grid[r])
 
     def _get_col(self, c: int) -> set[Cell]:
         """Return all cells in column ``c``.
@@ -80,7 +81,7 @@ class Board:
             set[Cell]: All cells in the specified column.
 
         """
-        return {self.grid[r][c] for r in range(self.size)}
+        return {self._grid[r][c] for r in range(self._size)}
 
     def _get_box(self, box_index: int) -> set[Cell]:
         """Return all cells in box ``box_index`` (0..8).
@@ -95,10 +96,22 @@ class Board:
         start_r = (box_index // 3) * 3
         start_c = (box_index % 3) * 3
         return {
-            self.grid[r][c]
+            self._grid[r][c]
             for r in range(start_r, start_r + 3)
             for c in range(start_c, start_c + 3)
         }
+
+    @property
+    def size(self) -> int:
+        return self._size
+
+    @property
+    def constraints(self) -> set[BaseConstraint]:
+        return self._constraints
+
+    @property
+    def regions(self) -> dict[str, set[Cell]]:
+        return self._regions
 
     def add_constraints(self, *constraints: BaseConstraint) -> None:
         """Add constraints to the board and update reachability.
@@ -108,9 +121,9 @@ class Board:
 
         """
         for c in constraints:
-            self.logger.debug(f"Adding constraint {c.__class__.__name__}")
-            self.constraints.add(c)
-            self.regions |= c.get_regions(self)
+            self._logger.debug(f"Adding constraint {c.__class__.__name__}")
+            self._constraints.add(c)
+            self._regions |= c.get_regions(self)
             for cell in self.get_all_cells():
                 cell.add_reachables(c.reachable_cells(self, cell))
             for cell in self.get_all_cells():
@@ -128,18 +141,47 @@ class Board:
             for cell in self.get_all_cells():
                 cell.add_reachables(c.reachable_cells(self, cell))
 
-    def get_cell(self, row: int, col: int) -> Cell:
-        """Return the cell at ``row``, ``col``.
+    @overload
+    def get_cell(self, *, r: int, c: int) -> Cell: ...
+    @overload
+    def get_cell(self, *, pos: str) -> Cell: ...
+
+    def get_cell(
+        self,
+        *,
+        r: int | None = None,
+        c: int | None = None,
+        pos: str | None = None,
+    ) -> Cell:
+        """Return the cell at ``row``, ``col`` or ``pos``.
 
         Args:
-            row (int): The row index of the cell.
-            col (int): The column index of the cell.
+            row (int | None): The row index of the cell.
+            col (int | None): The column index of the cell.
+            pos (str | None): The pos formated like ``a2`` for row 1, column 2.
 
         Returns:
             Cell: The cell at the specified row and column.
 
         """
-        return self.grid[row][col]
+        # TODO: refaire docstring
+        if pos is not None:
+            if (
+                len(pos) != 2
+                or not 65 <= ord(pos[0]) < 65 + self._size
+                or not 1 <= int(pos[1]) <= self._size
+            ):
+                self._logger.error("Mauvais format")
+                raise ValueError
+                # TODO: rewrite msg
+            return self._grid[ord(pos[0]) - 65][int(pos[1]) - 1]
+        if r is not None and c is not None:
+            if not 0 <= r < self._size or not 0 <= c < self._size:
+                self._logger.error("Index inapprorioé")
+                raise ValueError
+            return self._grid[r][c]
+        self._logger.error("Aucun argument de fourni")
+        raise ValueError
 
     def get_all_cells(self) -> Iterable[Cell]:
         """Yield all cells in the board row by row.
@@ -148,7 +190,7 @@ class Board:
             Cell: A cell in the board.
 
         """
-        for row in self.grid:
+        for row in self._grid:
             yield from row
 
     def is_valid(self) -> bool:
@@ -174,12 +216,12 @@ class Board:
             values = [c.value for c in cells if c.is_filled()]
             return len(values) == len(set(values))
 
-        basic_valid = all(region_valid(r) for r in self.regions.values())
+        basic_valid = all(region_valid(r) for r in self._regions.values())
         if not basic_valid:
-            self.logger.debug("Basic validity check failed")
+            self._logger.debug("Basic validity check failed")
             return False
-        self.logger.debug("Basic validity check passed")
-        return all(constraint.check(self) for constraint in self.constraints)
+        self._logger.debug("Basic validity check passed")
+        return all(constraint.check(self) for constraint in self._constraints)
 
     def is_solved(self) -> bool:
         """Check if the board is completely filled.
@@ -192,19 +234,19 @@ class Board:
             all(cell.is_filled() for cell in self.get_all_cells()) and self.is_valid()
         )
 
-    def load_from(self, input_str: str) -> None:
+    def load_from_string(self, input_str: str) -> None:
         """Load digits into the board from a string (0 for empty).
 
         Args:
             input_str (str): A string representation of the Sudoku board.
 
         """
-        self.logger.debug("Loading board from string")
+        self._logger.debug("Loading board from string")
         digits = [d for d in input_str if d.isdigit()]
-        for idx, d in enumerate(digits[: self.size * self.size]):
+        for idx, d in enumerate(digits[: self._size * self._size]):
             if d != "0":
-                r, c = divmod(idx, self.size)
-                self.grid[r][c].set_value(int(d))
+                r, c = divmod(idx, self._size)
+                self._grid[r][c].value = int(d)
 
     # TODO: Load stylé fichier, interface ?
 
@@ -217,8 +259,8 @@ class Board:
 
         """
         lines: list[str] = []
-        for r in range(self.size):
-            row = " ".join(str(self.grid[r][c]) for c in range(self.size))
+        for r in range(self._size):
+            row = " ".join(str(self._grid[r][c]) for c in range(self._size))
             lines.append(row)
         return "\n".join(lines)
 
@@ -229,16 +271,16 @@ class Board:
             Board: A deep copy of the board.
 
         """
-        board = Board(self.size)
-        for r in range(self.size):
-            for c in range(self.size):
-                cell = self.grid[r][c]
-                copy_cell = board.grid[r][c]
+        board = Board(self._size)
+        for r in range(self._size):
+            for c in range(self._size):
+                cell = self._grid[r][c]
+                copy_cell = board._grid[r][c]
                 copy_cell.value = cell.value
                 copy_cell.candidates = set(cell.candidates)
 
-        board.constraints = set()
-        for constraint in self.constraints:
+        board._constraints = set()
+        for constraint in self._constraints:
             board.add_constraints(constraint.deep_copy())
         return board
 
@@ -249,7 +291,7 @@ class Board:
             other (Board): The board to copy values from.
 
         """
-        for r in range(self.size):
-            for c in range(self.size):
-                self.grid[r][c].value = other.grid[r][c].value
-                self.grid[r][c].candidates = set(other.grid[r][c].candidates)
+        for r in range(self._size):
+            for c in range(self._size):
+                self._grid[r][c].value = other._grid[r][c].value
+                self._grid[r][c].candidates = set(other._grid[r][c].candidates)

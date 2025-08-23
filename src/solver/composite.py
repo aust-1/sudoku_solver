@@ -67,13 +67,13 @@ class CompositeSolver(Solver):
 
         """
         for strat in self.strategies:
-            self.logger.info(f"Trying {strat.__class__.__name__}")
+            self._logger.info(f"Trying {strat.__class__.__name__}")
             if strat.apply(board):
-                self.logger.info(
+                self._logger.info(
                     f"Strategy {strat.__class__.__name__} made a change to the board.",
                 )
                 return True
-        self.logger.info("No strategy made a change to the board.")
+        self._logger.info("No strategy made a change to the board.")
         return False
 
     @override

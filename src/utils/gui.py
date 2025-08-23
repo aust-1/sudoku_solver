@@ -49,7 +49,7 @@ class SudokuGUI:
             return None
         row = y // self.size
         col = x // self.size
-        return self.board.get_cell(row, col)
+        return self.board.get_cell(r=row, c=col)
 
     def _draw_highlights(self) -> None:
         """Highlight currently selected cells."""
@@ -278,22 +278,22 @@ class SudokuGUI:
             rect = pygame.Rect(x, y, self.size, self.size)
             neighbors = {
                 "top": (
-                    self.board.get_cell(cell.row - 1, cell.col)
+                    self.board.get_cell(r=cell.row - 1, c=cell.col)
                     if cell.row > 0
                     else None
                 ),
                 "bottom": (
-                    self.board.get_cell(cell.row + 1, cell.col)
+                    self.board.get_cell(r=cell.row + 1, c=cell.col)
                     if cell.row < self.board.size - 1
                     else None
                 ),
                 "left": (
-                    self.board.get_cell(cell.row, cell.col - 1)
+                    self.board.get_cell(r=cell.row, c=cell.col - 1)
                     if cell.col > 0
                     else None
                 ),
                 "right": (
-                    self.board.get_cell(cell.row, cell.col + 1)
+                    self.board.get_cell(r=cell.row, c=cell.col + 1)
                     if cell.col < self.board.size - 1
                     else None
                 ),
@@ -379,7 +379,7 @@ class SudokuGUI:
 
     def _draw_constraints(self) -> None:
         """Draw the constraints on the board."""
-        for constraint in self.board.constraints:
+        for constraint in self.board._constraints:
             constraint.draw(self)
 
     def _draw_grid(self) -> None:
@@ -405,7 +405,7 @@ class SudokuGUI:
         """Draw the values in the Sudoku grid."""
         for r in range(self.board.size):
             for c in range(self.board.size):
-                cell = self.board.get_cell(r, c)
+                cell = self.board.get_cell(r=r, c=c)
                 x = c * self.size
                 y = r * self.size
                 if cell.value is not None:

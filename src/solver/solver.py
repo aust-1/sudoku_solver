@@ -14,7 +14,7 @@ class Solver(ABC):
 
     def __init__(self) -> None:
         """Initialize the solver."""
-        self.logger = Logger(
+        self._logger = Logger(
             identifier=self.__class__.__name__,
             follow_logger_manager_rules=True,
         )
@@ -41,8 +41,8 @@ class Solver(ABC):
             bool: ``True`` if the board is solved, ``False`` otherwise.
 
         """
-        self.logger.info("Starting solve loop")
+        self._logger.info("Starting solve loop")
         while self.apply(board):
-            self.logger.info("Board changed, continuing solve loop")
-        self.logger.info("Solve loop finished")
+            self._logger.info("Board changed, continuing solve loop")
+        self._logger.info("Solve loop finished")
         return board.is_solved()

@@ -80,7 +80,7 @@ class DummyConstraint(BaseConstraint):
             dict[str,set[Cell]]: A dictionary mapping region names to sets of cells.
 
         """
-        return {"dummy": {board.get_cell(0, 0)}}
+        return {"dummy": {board.get_cell(r=0, c=0)}}
 
     @override
     def deep_copy(self) -> DummyConstraint:
@@ -129,14 +129,14 @@ class TestBoard:
     @pytest.fixture
     def solved_board(self, sample_solved: str) -> Board:
         b = Board(9)
-        b.load_from(sample_solved)
+        b.load_from_string(sample_solved)
         return b
 
     @pytest.fixture
     def invalid_board(self) -> Board:
         b = Board(9)
-        b.get_cell(0, 0).set_value(1)
-        b.get_cell(0, 1).set_value(1)
+        b.get_cell(r=0, c=0).value = 1
+        b.get_cell(r=0, c=1).value = 1
         return b
 
     @pytest.mark.parametrize("getter", ["_get_row", "_get_col", "_get_box"])
@@ -145,7 +145,7 @@ class TestBoard:
         assert len(region) == empty_board.size
 
     def test_get_cell_and_all_cells(self, empty_board: Board) -> None:
-        assert empty_board.get_cell(0, 0) in empty_board._get_row(0)
+        assert empty_board.get_cell(r=0, c=0) in empty_board._get_row(0)
         assert len(list(empty_board.get_all_cells())) == empty_board.size**2
 
     def test_add_constraint_and_reachability(self, empty_board: Board) -> None:
@@ -153,14 +153,14 @@ class TestBoard:
         empty_board.add_constraints(constraint)
         empty_board._init_regions()
         empty_board._init_reachability()
-        cell = empty_board.get_cell(0, 0)
-        next_cell = empty_board.get_cell(0, 1)
+        cell = empty_board.get_cell(r=0, c=0)
+        next_cell = empty_board.get_cell(r=0, c=1)
         assert next_cell in cell.reachable_cells
         assert "dummy" in empty_board.regions
 
     def test_load_and_str(self, empty_board: Board, sample_puzzle: str) -> None:
-        empty_board.load_from(sample_puzzle)
-        assert empty_board.get_cell(0, 0).value == 5
+        empty_board.load_from_string(sample_puzzle)
+        assert empty_board.get_cell(r=0, c=0).value == 5
         board_str = str(empty_board)
         assert board_str.splitlines()[0].startswith("5 3")
 
@@ -180,22 +180,22 @@ class TestBoard:
         self, sample_solved: str, check_result: bool
     ) -> None:
         board = Board(9)
-        board.load_from(sample_solved)
+        board.load_from_string(sample_solved)
         board.add_constraints(DummyConstraint(check_result))
         assert board.is_valid() is check_result
 
     def test_deep_copy_and_copy_values(self, sample_puzzle: str) -> None:
         board = Board(9)
-        board.load_from(sample_puzzle)
+        board.load_from_string(sample_puzzle)
         board.add_constraints(DummyConstraint())
         clone = board.deep_copy()
         assert clone is not board
-        assert clone.get_cell(0, 0).value == board.get_cell(0, 0).value
+        assert clone.get_cell(r=0, c=0).value == board.get_cell(r=0, c=0).value
         assert len(clone.constraints) == len(board.constraints)
-        clone.get_cell(0, 0).set_value(9)
-        assert board.get_cell(0, 0).value != clone.get_cell(0, 0).value
-        board.get_cell(0, 2).candidates = {1, 2}
+        clone.get_cell(r=0, c=0).value = 9
+        assert board.get_cell(r=0, c=0).value != clone.get_cell(r=0, c=0).value
+        board.get_cell(r=0, c=2).candidates = {1, 2}
         board2 = Board(9)
         board2.copy_values_from(board)
-        assert board2.get_cell(0, 0).value == board.get_cell(0, 0).value
-        assert board2.get_cell(0, 2).candidates == {1, 2}
+        assert board2.get_cell(r=0, c=0).value == board.get_cell(r=0, c=0).value
+        assert board2.get_cell(r=0, c=2).candidates == {1, 2}

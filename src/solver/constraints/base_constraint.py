@@ -36,7 +36,7 @@ class BaseConstraint(ABC):
                 An optional logger instance for logging. Defaults to None.
 
         """
-        self.logger = logger or Logger(
+        self._logger = logger or Logger(
             identifier=self.__class__.__name__,
             follow_logger_manager_rules=True,
         )

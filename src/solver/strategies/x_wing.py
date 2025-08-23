@@ -22,7 +22,7 @@ class XWingStrategy(Solver):
             bool: ``True`` if any candidates were eliminated, ``False`` otherwise.
 
         """
-        self.logger.debug("XWingStrategy running")
+        self._logger.debug("XWingStrategy running")
         moved = False
 
         for digit in range(1, board.size + 1):
@@ -59,9 +59,9 @@ class XWingStrategy(Solver):
                         },
                     )
                     for cell in targets:
-                        if cell.eliminate(digit):
+                        if cell.eliminate_candidate(digit):
                             moved = True
-                            self.logger.debug(
+                            self._logger.debug(
                                 f"({a1.row}, {a1.col}), ({b1.row}, {b1.col}), "
                                 f"({a2.row}, {a2.col}), ({b2.row}, {b2.col})",
                             )
