@@ -248,6 +248,22 @@ class Board:
                 r, c = divmod(idx, self._size)
                 self._grid[r][c].value = int(d)
 
+    def load_from_dict(self, input_dict: dict[str, dict[str, Any]]) -> None:
+        self._logger.debug("Loading board from dict")
+        self.load_cells_from_dict(input_dict["cells"])
+        self.load_constraint_from_dict(input_dict["constraint"])
+
+    def load_cells_from_dict(self, cells_dict: dict[str, list[int]]) -> None:
+        for c, values in cells_dict.items():
+            cell = self.get_cell(pos=c)
+            cell.candidates = set(values)
+
+    def load_constraint_from_dict(
+        self, constraint_dict: dict[str, dict[str, Any]]
+    ) -> None:
+        # TODO: en gros on récup universal, palindrome, etc. On upper, grace à structs on retrouve la contrainte et ça appelle la méthode de classe en question init_from_json
+        pass
+
     # TODO: Load stylé fichier, interface ?
 
     @override

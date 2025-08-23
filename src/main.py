@@ -3,11 +3,7 @@
 from models import Board
 from solver import CompositeSolver
 from solver.constraints import (
-    BishopConstraint,
-    KillerConstraint,
-    KropkiConstraint,
     PalindromeConstraint,
-    ParityConstraint,
 )
 from utils import SudokuGUI
 
@@ -26,51 +22,20 @@ def main() -> None:
         "409001002"
         "010204309"
     )
-    board.load_from(puzzle)
+    board.load_from_string(puzzle)
     board.add_constraints(
         PalindromeConstraint(
             [
-                board.get_cell(0, 1),
-                board.get_cell(1, 1),
-                board.get_cell(1, 2),
-                board.get_cell(2, 2),
-                board.get_cell(3, 2),
-                board.get_cell(3, 1),
-                board.get_cell(4, 1),
-                board.get_cell(4, 0),
-                board.get_cell(5, 0),
+                board.get_cell(r=0, c=1),
+                board.get_cell(r=1, c=1),
+                board.get_cell(r=1, c=2),
+                board.get_cell(r=2, c=2),
+                board.get_cell(r=3, c=2),
+                board.get_cell(r=3, c=1),
+                board.get_cell(r=4, c=1),
+                board.get_cell(r=4, c=0),
+                board.get_cell(r=5, c=0),
             ],
-        ),
-        KropkiConstraint.black(
-            {
-                board.get_cell(0, 0),
-                board.get_cell(0, 1),
-            },
-        ),
-        KillerConstraint(
-            {
-                board.get_cell(0, 0),
-                board.get_cell(0, 1),
-                board.get_cell(1, 0),
-                board.get_cell(1, 1),
-            },
-            total_sum=20,
-            board_size=9,
-        ),
-        ParityConstraint.odd(board.get_cell(4, 5)),
-        ParityConstraint.even(board.get_cell(5, 5)),
-        BishopConstraint(
-            {
-                board.get_cell(8, 8),
-                board.get_cell(7, 7),
-                board.get_cell(6, 6),
-                board.get_cell(5, 5),
-                board.get_cell(4, 4),
-                board.get_cell(5, 3),
-                board.get_cell(6, 2),
-                board.get_cell(7, 1),
-                board.get_cell(8, 0),
-            },
         ),
     )
 
