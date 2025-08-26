@@ -86,7 +86,7 @@ class PalindromeConstraint(BaseConstraint):
 
     @override
     def draw(self, gui: SudokuGUI) -> None:
-        """Draw this palindrome constraint on ``gui`` if supported.
+        """Draw this palindrome constraint on ``gui``.
 
         Args:
             gui (SudokuGUI): The GUI to draw on.

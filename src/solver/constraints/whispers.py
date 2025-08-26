@@ -183,7 +183,7 @@ class GermanConstraint(_BaseDiffConstraint):
 
     @override
     def draw(self, gui: SudokuGUI) -> None:
-        """Draw this german constraint on ``gui`` if supported.
+        """Draw this german constraint on ``gui``.
 
         Args:
             gui (SudokuGUI): The GUI to draw on.
@@ -231,7 +231,7 @@ class DutchConstraint(_BaseDiffConstraint):
 
     @override
     def draw(self, gui: SudokuGUI) -> None:
-        """Draw this dutch constraint on ``gui`` if supported.
+        """Draw this dutch constraint on ``gui``.
 
         Args:
             gui (SudokuGUI): The GUI to draw on.

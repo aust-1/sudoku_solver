@@ -104,7 +104,7 @@ class BishopConstraint(BaseConstraint):
 
     @override
     def draw(self, gui: SudokuGUI) -> None:
-        """Draw this bishop constraint on ``gui`` if supported.
+        """Draw this bishop constraint on ``gui``.
 
         Args:
             gui (SudokuGUI): The GUI to draw on.

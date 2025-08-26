@@ -149,7 +149,7 @@ class KropkiConstraint(BaseConstraint):
 
     @override
     def draw(self, gui: SudokuGUI) -> None:
-        """Draw this kropki constraint on ``gui`` if supported.
+        """Draw this kropki constraint on ``gui``.
 
         Args:
             gui (SudokuGUI): The GUI to draw on.

@@ -5,6 +5,7 @@ from solver.constraints.bishop import BishopConstraint
 from solver.constraints.clone import CloneConstraint
 from solver.constraints.clone_zone_constraint import CloneZoneConstraint
 from solver.constraints.even_odd import ParityConstraint
+from solver.constraints.greater_than import GreaterThanConstraint
 from solver.constraints.killer import KillerConstraint
 from solver.constraints.king import KingConstraint
 from solver.constraints.knight import KnightConstraint
@@ -23,6 +24,7 @@ __all__ = [
     "ConstraintType",
     "DutchConstraint",
     "GermanConstraint",
+    "GreaterThanConstraint",
     "KillerConstraint",
     "KingConstraint",
     "KnightConstraint",
@@ -39,7 +41,6 @@ __all__ = [
 # TODO: Consecutive
 # TODO: Couples
 # TODO: Diagonal
-# TODO: Greater Than
 # TODO: Jigsaw
 # TODO: Little Unique Killer
 # TODO: Lockout Lines

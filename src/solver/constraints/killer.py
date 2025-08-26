@@ -234,7 +234,7 @@ class KillerConstraint(BaseConstraint):
 
     @override
     def draw(self, gui: SudokuGUI) -> None:
-        """Draw this killer constraint on ``gui`` if supported.
+        """Draw this killer constraint on ``gui``.
 
         Args:
             gui (SudokuGUI): The GUI to draw on.

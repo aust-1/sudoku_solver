@@ -9,6 +9,7 @@ class ConstraintType(Enum):
     DUTCH = auto()
     EVEN_ODD = auto()
     GERMAN = auto()
+    GREATER_THAN = auto()
     KILLER = auto()
     KING = auto()
     KNIGHT = auto()

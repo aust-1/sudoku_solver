@@ -97,7 +97,7 @@ class XVConstraint(BaseConstraint):
 
     @override
     def draw(self, gui: SudokuGUI) -> None:
-        """Draw this XV constraint on ``gui`` if supported.
+        """Draw this XV constraint on ``gui``.
 
         Args:
             gui (SudokuGUI): The GUI to draw on.
