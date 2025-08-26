@@ -60,7 +60,7 @@ class ChainViolationGuardStrategy(Solver):
         )
 
         copy = board.deep_copy()
-        copy.get_cell(r=cell.row, c=cell.col).value = value
+        copy.get_cell(row=cell.row, col=cell.col).value = value
         solver = CompositeSolver(
             [
                 EliminationStrategy(),

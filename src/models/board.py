@@ -142,15 +142,15 @@ class Board:
                 cell.add_reachables(c.reachable_cells(self, cell))
 
     @overload
-    def get_cell(self, *, r: int, c: int) -> Cell: ...
+    def get_cell(self, *, row: int, col: int) -> Cell: ...
     @overload
     def get_cell(self, *, pos: str) -> Cell: ...
 
     def get_cell(
         self,
         *,
-        r: int | None = None,
-        c: int | None = None,
+        row: int | None = None,
+        col: int | None = None,
         pos: str | None = None,
     ) -> Cell:
         """Return the cell at ``row``, ``col`` or ``pos``.
@@ -168,18 +168,18 @@ class Board:
         if pos is not None:
             if (
                 len(pos) != 2
-                or not 65 <= ord(pos[0]) < 65 + self._size
+                or not 97 <= ord(pos[0]) < 97 + self._size
                 or not 1 <= int(pos[1]) <= self._size
             ):
-                self._logger.error("Mauvais format")
+                self._logger.error(f"Mauvais format : {pos}")
                 raise ValueError
                 # TODO: rewrite msg
-            return self._grid[ord(pos[0]) - 65][int(pos[1]) - 1]
-        if r is not None and c is not None:
-            if not 0 <= r < self._size or not 0 <= c < self._size:
-                self._logger.error("Index inapprorioé")
+            return self._grid[ord(pos[0]) - 97][int(pos[1]) - 1]
+        if row is not None and col is not None:
+            if not 0 <= row < self._size or not 0 <= col < self._size:
+                self._logger.error(f"Index inapproprié r{row}c{col}")
                 raise ValueError
-            return self._grid[r][c]
+            return self._grid[row][col]
         self._logger.error("Aucun argument de fourni")
         raise ValueError
 

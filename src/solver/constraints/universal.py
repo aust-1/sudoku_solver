@@ -30,7 +30,7 @@ class UniversalConstraint(BaseConstraint):
         invalid_cells: set[Cell] = set()
         for i in range(board.size):
             for j in range(board.size):
-                current_cell = board.get_cell(r=i, c=j)
+                current_cell = board.get_cell(row=i, col=j)
                 value = current_cell.value
                 if value is not None:
                     neighbor_cells = self.reachable_cells(board, current_cell)
@@ -79,7 +79,7 @@ class UniversalConstraint(BaseConstraint):
         y = cell.col % 3
 
         reachable_cells = {
-            board.get_cell(r=i, c=j)
+            board.get_cell(row=i, col=j)
             for i in range(x, board.size, 3)
             for j in range(y, board.size, 3)
         }
@@ -103,7 +103,7 @@ class UniversalConstraint(BaseConstraint):
         for i in range(3):
             for j in range(3):
                 region: set[Cell] = {
-                    board.get_cell(r=x, c=y)
+                    board.get_cell(row=x, col=y)
                     for x in range(i, board.size, 3)
                     for y in range(j, board.size, 3)
                 }

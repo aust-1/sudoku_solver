@@ -31,7 +31,7 @@ class KingConstraint(BaseConstraint):
         invalid_cells: set[Cell] = set()
         for i in range(board.size):
             for j in range(board.size):
-                current_cell = board.get_cell(r=i, c=j)
+                current_cell = board.get_cell(row=i, col=j)
                 value = current_cell.value
                 if value is not None:
                     neighbor_cells = self.reachable_cells(board, current_cell)
@@ -80,7 +80,7 @@ class KingConstraint(BaseConstraint):
                     and 0 <= cell.col + y < board.size
                     and (x or y)
                 ):
-                    reachable.add(board.get_cell(r=cell.row + x, c=cell.col + y))
+                    reachable.add(board.get_cell(row=cell.row + x, col=cell.col + y))
         return reachable
 
     @override

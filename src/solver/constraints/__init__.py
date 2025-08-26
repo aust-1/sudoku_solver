@@ -40,7 +40,6 @@ __all__ = [
 # TODO: Between Lines
 # TODO: Consecutive
 # TODO: Couples
-# TODO: Diagonal
 # TODO: Jigsaw
 # TODO: Little Unique Killer
 # TODO: Lockout Lines

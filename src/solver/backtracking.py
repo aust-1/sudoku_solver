@@ -78,7 +78,7 @@ class BacktrackingSolver(Solver):
                 f"Trying {cand} at ({cell.row}, {cell.col}) in backtracking",
             )
             copy = board.deep_copy()
-            copy.get_cell(r=cell.row, c=cell.col).value = cand
+            copy.get_cell(row=cell.row, col=cell.col).value = cand
             solver = BacktrackingSolver()
             if solver.apply(copy):
                 board.copy_values_from(copy)

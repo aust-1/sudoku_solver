@@ -31,7 +31,7 @@ class KnightConstraint(BaseConstraint):
         invalid_cells: set[Cell] = set()
         for i in range(board.size):
             for j in range(board.size):
-                current_cell = board.get_cell(r=i, c=j)
+                current_cell = board.get_cell(row=i, col=j)
                 value = current_cell.value
                 if value is not None:
                     reachable_cells = self.reachable_cells(board, current_cell)
@@ -82,7 +82,7 @@ class KnightConstraint(BaseConstraint):
                     x = cell.row + dx * sign_x
                     y = cell.col + dy * sign_y
                     if 0 <= x < board.size and 0 <= y < board.size:
-                        reachable.add(board.get_cell(r=x, c=y))
+                        reachable.add(board.get_cell(row=x, col=y))
         return reachable
 
     @override
