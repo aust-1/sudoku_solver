@@ -1,12 +1,10 @@
 {
   "cells": {
-    "...": "...",
-    "a1": [1, 2, 3, 4, 5, 6, 7, 8, 9],
     "a2": [1, 2, 3]
   },
   "constraint": [
     {
-      "cells": ["a1", "b2", "..."],
+      "cells": ["a1", "b2", "c3", "d4"],
       "type": "bishop"
     },
     {
@@ -14,7 +12,7 @@
       "type": "clone"
     },
     {
-      "cells": ["a1", "b2", "..."],
+      "cells": ["a2", "b3"],
       "type": "dutch"
     },
     {
@@ -23,7 +21,7 @@
       "type": "parity"
     },
     {
-      "cells": ["a1", "b2", "..."],
+      "cells": ["a1", "b2"],
       "type": "german"
     },
     {
@@ -32,7 +30,7 @@
       "type": "greater_than"
     },
     {
-      "cells": ["a1", "b2", "..."],
+      "cells": ["d8", "e8", "e9", "f9"],
       "sum": 15,
       "type": "killer"
     },
@@ -52,14 +50,15 @@
       "type": "kropki"
     },
     {
-      "cells": ["a1", "b2", "..."],
+      "cells": ["c3", "d4"],
       "type": "palindrome"
     },
     {
-      "cell1": "a1",
-      "cell2": "a2",
-      "sum": "x",
+      "cell1": "g1",
+      "cell2": "g2",
+      "sum": "10",
       "type": "x_v"
     }
-  ]
+  ],
+  "size": 9
 }

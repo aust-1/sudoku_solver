@@ -37,7 +37,7 @@ CONSTRAINT_REGISTRY: dict[str, type[BaseConstraint]] = {
     "palindrome": PalindromeConstraint,
     "parity": ParityConstraint,
     "universal": UniversalConstraint,
-    "xv": XVConstraint,
+    "x_v": XVConstraint,
 }
 
 

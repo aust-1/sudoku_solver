@@ -93,7 +93,7 @@ class KillerConstraint(BaseConstraint):
         positions: set[str] = set(data["cells"])
         cells: set[Cell] = {board.get_cell(pos=pos) for pos in positions}
 
-        total_sum = data["sum"]
+        total_sum = int(data["sum"])
 
         color = None
         if "color" in data:

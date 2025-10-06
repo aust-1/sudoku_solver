@@ -1,5 +1,7 @@
 """Example script showcasing the Sudoku solver."""
 
+import json
+
 from models import Board
 from solver import CompositeSolver
 from solver.constraints import (
@@ -10,31 +12,21 @@ from utils import SudokuGUI
 
 def main() -> None:
     """Load a puzzle, solve it and print the result."""
-    board = Board(9)
-    puzzle = (
-        "006005420"
-        "502400000"
-        "000020005"
-        "000900030"
-        "020040000"
-        "007000004"
-        "200009041"
-        "409001002"
-        "010204309"
-    )
-    board.load_from_string(puzzle)
+    f = open("board.json")
+    dico = json.load(f)
+    board = Board.from_dict(dico)
     board.add_constraints(
         PalindromeConstraint(
             [
-                board.get_cell(r=0, c=1),
-                board.get_cell(r=1, c=1),
-                board.get_cell(r=1, c=2),
-                board.get_cell(r=2, c=2),
-                board.get_cell(r=3, c=2),
-                board.get_cell(r=3, c=1),
-                board.get_cell(r=4, c=1),
-                board.get_cell(r=4, c=0),
-                board.get_cell(r=5, c=0),
+                board.get_cell(row=0, col=1),
+                board.get_cell(row=1, col=1),
+                board.get_cell(row=1, col=2),
+                board.get_cell(row=2, col=2),
+                board.get_cell(row=3, col=2),
+                board.get_cell(row=3, col=1),
+                board.get_cell(row=4, col=1),
+                board.get_cell(row=4, col=0),
+                board.get_cell(row=5, col=0),
             ],
         ),
     )

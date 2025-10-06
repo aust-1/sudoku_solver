@@ -33,6 +33,34 @@ class Board:
         self._init_regions()
         self._init_reachability()
 
+    @classmethod
+    def from_dict(cls, input_dict: dict[str, Any]) -> Board:
+        """Load the board from a dictionary representation.
+
+        Args:
+            input_dict (dict[str, Any]):
+                The dictionary representation of the board.
+
+        Returns:
+            Board: The loaded Sudoku board.
+        """
+        board = cls(input_dict["size"])
+        board._load_cells_from_dict(input_dict["cells"])
+        board._load_constraint_from_dict(input_dict["constraint"])
+        return board
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert the board to a dictionary representation.
+
+        Returns:
+            dict[str, Any]: The dictionary representation of the board.
+        """
+        return {
+            "size": self._size,
+            "cells": {cell.pos: [cell.candidates] for cell in self.get_all_cells()},
+            "constraint": [c.to_dict() for c in self._constraints],
+        }
+
     def _init_reachability(self) -> None:
         """Initialise reachable cells for each cell."""
         for cell in self.get_all_cells():
@@ -246,18 +274,7 @@ class Board:
                 r, c = divmod(idx, self._size)
                 self._grid[r][c].value = int(d)
 
-    def load_from_dict(self, input_dict: dict[str, Any]) -> None:
-        """Load the board from a dictionary representation.
-
-        Args:
-            input_dict (dict[str, Any]):
-                The dictionary representation of the board.
-        """
-        self._logger.debug("Loading board from dict")
-        self.load_cells_from_dict(input_dict["cells"])
-        self.load_constraint_from_dict(input_dict["constraint"])
-
-    def load_cells_from_dict(self, cells_dict: dict[str, list[int]]) -> None:
+    def _load_cells_from_dict(self, cells_dict: dict[str, list[int]]) -> None:
         """Load cell values from a dictionary representation.
 
         Args:
@@ -268,7 +285,7 @@ class Board:
             cell = self.get_cell(pos=c)
             cell.candidates = set(values)
 
-    def load_constraint_from_dict(
+    def _load_constraint_from_dict(
         self,
         constraint_dict: list[dict[str, Any]],
     ) -> None:

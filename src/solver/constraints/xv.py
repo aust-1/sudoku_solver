@@ -104,7 +104,7 @@ class XVConstraint(BaseConstraint):
         cell1 = board.get_cell(pos=data["cell1"])
         cell2 = board.get_cell(pos=data["cell2"])
 
-        total_sum = data["sum"]
+        total_sum = int(data["sum"])
 
         return cls(cell1, cell2, total_sum)
 

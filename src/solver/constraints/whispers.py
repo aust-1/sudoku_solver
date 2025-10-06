@@ -31,9 +31,9 @@ class _BaseDiffConstraint(BaseConstraint):
         self.cells: list[Cell] = cells
         self.diff: int = diff
 
+    @classmethod
     @abstractmethod
     @override
-    @classmethod
     def from_dict(cls, board: Board, data: dict[str, Any]) -> _BaseDiffConstraint:
         """Create a constraint instance from dictionary data.
 
