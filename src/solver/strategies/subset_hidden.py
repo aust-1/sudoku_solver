@@ -20,7 +20,6 @@ class _BaseHiddenSubsetStrategy(Solver):
 
         Args:
             size (int): The size of the subset.
-
         """
         self.size = size
         super().__init__()
@@ -46,7 +45,6 @@ class _BaseHiddenSubsetStrategy(Solver):
 
         Returns:
             bool: True if any candidates were eliminated, False otherwise.
-
         """
         self._logger.debug(f"{self.__class__.__name__} running")
         moved = False

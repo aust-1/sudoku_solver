@@ -20,7 +20,6 @@ class WWingStrategy(Solver):
 
         Returns:
             bool: ``True`` if any candidates were eliminated, ``False`` otherwise.
-
         """
         self._logger.debug("WWingStrategy running")
         moved = False
@@ -53,7 +52,6 @@ class WWingStrategy(Solver):
 
         Returns:
             bool: ``True`` if any candidates were eliminated, ``False`` otherwise.
-
         """
         moved = False
         for a, b in strong_links:

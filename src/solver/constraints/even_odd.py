@@ -19,7 +19,6 @@ class ParityConstraint(BaseConstraint):
         Args:
             cell (Cell): The cell to constrain.
             rest (int): The remainder when the cell value is divided by 2.
-
         """
         super().__init__(ConstraintType.EVEN_ODD)
         self.parity_cell = cell
@@ -34,7 +33,6 @@ class ParityConstraint(BaseConstraint):
 
         Returns:
             ParityConstraint: The created parity constraint.
-
         """
         return cls(cell, rest=0)
 
@@ -47,7 +45,6 @@ class ParityConstraint(BaseConstraint):
 
         Returns:
             ParityConstraint: The created parity constraint.
-
         """
         return cls(cell, rest=1)
 
@@ -61,7 +58,6 @@ class ParityConstraint(BaseConstraint):
         Returns:
             set[Cell]:
                 A set of cells that do not satisfy the parity constraint.
-
         """
         if (
             self.parity_cell.value is not None
@@ -81,7 +77,6 @@ class ParityConstraint(BaseConstraint):
             bool:
                 ``True`` if at least one candidate was eliminated,
                 ``False`` otherwise.
-
         """
         eliminated = False
         digits = range(1, board.size + 1)
@@ -102,7 +97,6 @@ class ParityConstraint(BaseConstraint):
 
         Args:
             gui (SudokuGUI): The GUI to draw on.
-
         """
         color = (200, 200, 200, 156)
         if self.rest == 1:
@@ -116,6 +110,5 @@ class ParityConstraint(BaseConstraint):
 
         Returns:
             ParityConstraint: A deep copy of the constraint.
-
         """
         return ParityConstraint(self.parity_cell, self.rest)

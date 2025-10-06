@@ -18,7 +18,6 @@ class SudokuGUI:
         Args:
             board (Board): The Sudoku board to display.
             size (int, optional): The size of each cell in pixels. Defaults to 60.
-
         """
         self.board = board
         self.size = size
@@ -42,7 +41,6 @@ class SudokuGUI:
 
         Returns:
             Cell | None: The cell at the position, or None if out of bounds.
-
         """
         x, y = pos
         if x >= self.size * self.board.size or y >= self.size * self.board.size:
@@ -102,7 +100,6 @@ class SudokuGUI:
             line (list[Cell]): The line to draw.
             color (tuple[int, int, int, int]): The color of the line.
             width (int): The width of the line.
-
         """
         points = [
             (
@@ -133,7 +130,6 @@ class SudokuGUI:
         Args:
             cell (Cell): The cell to draw on.
             color (tuple[int, int, int, int]): The color of the circle.
-
         """
         surf = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
         pygame.draw.circle(
@@ -156,7 +152,6 @@ class SudokuGUI:
             cell1 (Cell): The first cell.
             cell2 (Cell): The second cell.
             color (tuple[int, int, int, int]): The color of the circle.
-
         """
         surf = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
         pygame.draw.circle(
@@ -191,7 +186,6 @@ class SudokuGUI:
             cell1 (Cell): The first cell.
             cell2 (Cell): The second cell.
             text (str): The text to write.
-
         """
         text_to_render = pygame.font.SysFont(None, 40).render(text, 1, [0, 0, 0])
         self.screen.blit(
@@ -212,7 +206,6 @@ class SudokuGUI:
         Args:
             cell (Cell): The cell to draw on.
             color (tuple[int, int, int, int]): The color of the square.
-
         """
         surf = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
         margin = 6
@@ -237,7 +230,6 @@ class SudokuGUI:
             start (tuple[int, int]): The starting point of the line.
             end (tuple[int, int]): The ending point of the line.
             color (tuple[int, int, int, int]): The color of the line.
-
         """
         dash_length = 5
         x1, y1 = start
@@ -268,7 +260,6 @@ class SudokuGUI:
             cells (set[Cell]): The cells to draw the cage around.
             total_sum (int): The total sum of the cage.
             color (tuple[int, int, int, int]): The color of the cage.
-
         """
         surf = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
         margin = 3
@@ -344,7 +335,6 @@ class SudokuGUI:
 
         Returns:
             list[Cell]: The ordered cells.
-
         """
         if not cells:
             return []
@@ -444,7 +434,6 @@ class SudokuGUI:
 
         Args:
             rect (pygame.Rect): The rectangle where the button will be drawn.
-
         """
         pygame.draw.rect(self.screen, (200, 200, 200), rect)
         pygame.draw.rect(self.screen, (0, 0, 0), rect, 2)
@@ -456,7 +445,6 @@ class SudokuGUI:
 
         Args:
             rect (pygame.Rect): The rectangle where the button will be drawn.
-
         """
         pygame.draw.rect(self.screen, (200, 200, 200), rect)
         pygame.draw.rect(self.screen, (0, 0, 0), rect, 2)
@@ -484,7 +472,6 @@ class SudokuGUI:
 
         Args:
             solver (Solver): The Sudoku solver instance.
-
         """
         clock = pygame.time.Clock()
         button_rect = pygame.Rect(
@@ -528,5 +515,5 @@ class SudokuGUI:
 
 # TODO: add list des cellules en higlligth qui sont cochées décochées
 # TODO: affichage des codes de chaque ligne et collones
-# HACK: lignes de bishop qui vont jusqu'au bord
-# HACK: couleur différente en fonction de déduction ou don
+# ENHANCE: lignes de bishop qui vont jusqu'au bord
+# ENHANCE: couleur différente en fonction de déduction ou donnée

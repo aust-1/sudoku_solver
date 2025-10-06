@@ -20,7 +20,6 @@ class ChainViolationGuardStrategy(Solver):
 
         Returns:
             bool: ``True`` if any candidates were eliminated, ``False`` otherwise.
-
         """
         self._logger.debug("ChainViolationGuardStrategy running")
         moved = False
@@ -43,7 +42,6 @@ class ChainViolationGuardStrategy(Solver):
 
         Returns:
             bool: ``True`` if the resulting board can be solved, ``False`` otherwise.
-
         """
         from solver.composite import CompositeSolver
         from solver.strategies import (

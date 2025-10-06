@@ -21,7 +21,6 @@ class HiddenSingleStrategy(Solver):
 
         Returns:
             bool: ``True`` if any cells were filled, ``False`` otherwise.
-
         """
         self._logger.debug("HiddenSingleStrategy running")
         moved = False

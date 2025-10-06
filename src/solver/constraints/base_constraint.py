@@ -1,3 +1,9 @@
+"""Base constraint class for Sudoku variant constraints.
+
+This module defines the abstract base class that all constraint implementations
+must inherit from.
+"""
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
@@ -13,11 +19,10 @@ if TYPE_CHECKING:
 
 
 class BaseConstraint(ABC):
-    """A class representing a base constraint for the Sudoku board.
+    """Abstract base class for Sudoku constraints.
 
-    Attributes:
-        _msg (str): A message indicating that subclasses should implement the methods.
-
+    All constraint implementations must inherit from this class and implement
+    the required abstract methods.
     """
 
     _msg: str = "Subclasses should implement this method."
@@ -34,7 +39,6 @@ class BaseConstraint(ABC):
                 The type of the constraint. Defaults to None.
             logger (Logger | None):
                 An optional logger instance for logging. Defaults to None.
-
         """
         self._logger = logger or Logger(
             identifier=self.__class__.__name__,
@@ -56,7 +60,6 @@ class BaseConstraint(ABC):
 
         Raises:
             NotImplementedError: If the method is not implemented in a subclass.
-
         """
         raise NotImplementedError(self._msg)
 
@@ -73,7 +76,6 @@ class BaseConstraint(ABC):
 
         Raises:
             NotImplementedError: If the method is not implemented in a subclass.
-
         """
         raise NotImplementedError(self._msg)
 
@@ -90,7 +92,6 @@ class BaseConstraint(ABC):
 
         Returns:
             set[Cell]: A set of reachable cells.
-
         """
         return set()
 
@@ -102,7 +103,6 @@ class BaseConstraint(ABC):
 
         Returns:
             dict[str,set[Cell]]: A dictionary mapping region names to sets of cells.
-
         """
         return {}
 
@@ -111,7 +111,6 @@ class BaseConstraint(ABC):
 
         Args:
             _gui (SudokuGUI): The GUI to draw on.
-
         """
         return
 
@@ -124,6 +123,5 @@ class BaseConstraint(ABC):
 
         Raises:
             NotImplementedError: If the method is not implemented in a subclass.
-
         """
         raise NotImplementedError(self._msg)

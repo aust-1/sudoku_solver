@@ -20,7 +20,6 @@ class Board:
 
         Args:
             size (int): The size of the Sudoku board (e.g., 9 for a 9x9 board).
-
         """
         self._size = size
         self._grid: list[list[Cell]] = [
@@ -48,6 +47,7 @@ class Board:
         for constraint in self._constraints:
             for cell in self.get_all_cells():
                 cell.add_reachables(constraint.reachable_cells(self, cell))
+        # TODO: add_reachables => bool (modify or not), add while
 
     def _init_regions(self) -> None:
         """Initialise the regions of the board."""
@@ -58,6 +58,7 @@ class Board:
 
         for constraint in self._constraints:
             self._regions |= constraint.get_regions(self)
+        # TODO: create a constraint, is not always classic regions
 
     def _get_row(self, r: int) -> set[Cell]:
         """Return all cells in row ``r``.
@@ -67,7 +68,6 @@ class Board:
 
         Returns:
             set[Cell]: All cells in the specified row.
-
         """
         return set(self._grid[r])
 
@@ -79,7 +79,6 @@ class Board:
 
         Returns:
             set[Cell]: All cells in the specified column.
-
         """
         return {self._grid[r][c] for r in range(self._size)}
 
@@ -91,7 +90,6 @@ class Board:
 
         Returns:
             set[Cell]: All cells in the specified box.
-
         """
         start_r = (box_index // 3) * 3
         start_c = (box_index % 3) * 3
@@ -118,7 +116,6 @@ class Board:
 
         Args:
             *constraints (BaseConstraint): The constraints to add.
-
         """
         for c in constraints:
             self._logger.debug(f"Adding constraint {c.__class__.__name__}")
@@ -134,6 +131,7 @@ class Board:
                 cell.add_reachables(c.reachable_cells(self, cell))
             for cell in self.get_all_cells():
                 cell.add_reachables(c.reachable_cells(self, cell))
+        # TODO: idem refact with while
 
         for c in constraints:
             for cell in self.get_all_cells():
@@ -153,42 +151,44 @@ class Board:
         col: int | None = None,
         pos: str | None = None,
     ) -> Cell:
-        """Return the cell at ``row``, ``col`` or ``pos``.
+        """Return the cell at the specified row, column, or position.
 
         Args:
             row (int | None): The row index of the cell.
             col (int | None): The column index of the cell.
-            pos (str | None): The pos formated like ``a2`` for row 1, column 2.
+            pos (str | None): Position formatted like ``a2`` for row 1, column 2.
 
         Returns:
-            Cell: The cell at the specified row and column.
+            Cell: The cell at the specified row and column or position.
 
+        Raises:
+            ValueError: If no argument is provided or the format is invalid.
         """
-        # TODO: refaire docstring
         if pos is not None:
             if (
                 len(pos) != 2
-                or not 97 <= ord(pos[0]) < 97 + self._size
+                or not ord("a") <= ord(pos[0]) < ord("a") + self._size
                 or not 1 <= int(pos[1]) <= self._size
             ):
-                self._logger.error(f"Mauvais format : {pos}")
-                raise ValueError
-                # TODO: rewrite msg
-            return self._grid[ord(pos[0]) - 97][int(pos[1]) - 1]
+                msg = f"Wrong position format: {pos}"
+                self._logger.error(msg)
+                raise ValueError(msg)
+            return self._grid[ord(pos[0]) - ord("a")][int(pos[1]) - 1]
         if row is not None and col is not None:
             if not 0 <= row < self._size or not 0 <= col < self._size:
-                self._logger.error(f"Index inapproprié r{row}c{col}")
-                raise ValueError
+                msg = f"Wrong index format: r{row}c{col}"
+                self._logger.error(msg)
+                raise ValueError(msg)
             return self._grid[row][col]
-        self._logger.error("Aucun argument de fourni")
-        raise ValueError
+        msg = "No argument provided"
+        self._logger.error(msg)
+        raise ValueError(msg)
 
     def get_all_cells(self) -> Iterable[Cell]:
         """Yield all cells in the board row by row.
 
         Yields:
             Cell: A cell in the board.
-
         """
         for row in self._grid:
             yield from row
@@ -200,7 +200,6 @@ class Board:
             bool:
                 ``True`` if all rows, columns and boxes contain no duplicates,
                 ``False`` otherwise.
-
         """
 
         def region_valid(cells: Iterable[Cell]) -> bool:
@@ -221,14 +220,13 @@ class Board:
             self._logger.debug("Basic validity check failed")
             return False
         self._logger.debug("Basic validity check passed")
-        return all(constraint.check(self) for constraint in self._constraints)
+        return all(not constraint.check(self) for constraint in self._constraints)
 
     def is_solved(self) -> bool:
         """Check if the board is completely filled.
 
         Returns:
             bool: ``True`` if every cell has a value, ``False`` otherwise.
-
         """
         return (
             all(cell.is_filled() for cell in self.get_all_cells()) and self.is_valid()
@@ -239,7 +237,6 @@ class Board:
 
         Args:
             input_str (str): A string representation of the Sudoku board.
-
         """
         self._logger.debug("Loading board from string")
         digits = [d for d in input_str if d.isdigit()]
@@ -259,7 +256,8 @@ class Board:
             cell.candidates = set(values)
 
     def load_constraint_from_dict(
-        self, constraint_dict: dict[str, dict[str, Any]]
+        self,
+        constraint_dict: list[dict[str, Any]],
     ) -> None:
         # TODO: en gros on récup universal, palindrome, etc. On upper, grace à structs on retrouve la contrainte et ça appelle la méthode de classe en question init_from_json
         pass
@@ -272,7 +270,6 @@ class Board:
 
         Returns:
             str: A string representation of the Sudoku board.
-
         """
         lines: list[str] = []
         for r in range(self._size):
@@ -285,7 +282,6 @@ class Board:
 
         Returns:
             Board: A deep copy of the board.
-
         """
         board = Board(self._size)
         for r in range(self._size):
@@ -305,7 +301,6 @@ class Board:
 
         Args:
             other (Board): The board to copy values from.
-
         """
         for r in range(self._size):
             for c in range(self._size):

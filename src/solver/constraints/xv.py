@@ -17,25 +17,28 @@ V_SUM = 5
 class XVConstraint(BaseConstraint):
     """A class representing a XV constraint."""
 
-    def __init__(self, xv_cells: set[Cell], total_sum: int) -> None:
+    def __init__(self, xv_cell1: Cell, xv_cell2: Cell, total_sum: int) -> None:
         """Initialize the XV constraint.
 
         Args:
-            xv_cells (set[Cell]): The cells to constrain.
+            xv_cell1 (Cell): The first cell to constrain.
+            xv_cell2 (Cell): The second cell to constrain.
             total_sum (int): The sum to constrain the cells to.
 
         Raises:
             ValueError:
                 If the cells are not adjacent or if the sum is not a valid Sudoku value.
-
         """
         super().__init__(ConstraintType.X_V)
-        self.cell1, self.cell2 = xv_cells
-        if (abs(self.cell1.row - self.cell2.row) == 1) == (
-            abs(self.cell1.col - self.cell2.col) == 1
-        ):
+        self.cell1 = xv_cell1
+        self.cell2 = xv_cell2
+
+        if (self.cell1.row - self.cell2.row) ** 2 + (
+            self.cell1.col - self.cell2.col
+        ) ** 2 != 1:
             msg = "XV constraint cells must be adjacent."
             raise ValueError(msg)
+
         self.killer_constraint: KillerConstraint = KillerConstraint(
             {self.cell1, self.cell2},
             total_sum=total_sum,
@@ -51,7 +54,6 @@ class XVConstraint(BaseConstraint):
 
         Returns:
             XVConstraint: The created XV constraint.
-
         """
         return cls(x_cells, total_sum=X_SUM)
 
@@ -64,7 +66,6 @@ class XVConstraint(BaseConstraint):
 
         Returns:
             XVConstraint: The created XV constraint.
-
         """
         return cls(v_cells, total_sum=V_SUM)
 
@@ -77,7 +78,6 @@ class XVConstraint(BaseConstraint):
 
         Returns:
             set[Cell]: A set of cells that do not satisfy the XV constraint.
-
         """
         return self.killer_constraint.check(board)
 
@@ -91,7 +91,6 @@ class XVConstraint(BaseConstraint):
         Returns:
             bool:
                 ``True`` if at least one candidate was eliminated, ``False`` otherwise.
-
         """
         return self.killer_constraint.eliminate(board)
 
@@ -101,7 +100,6 @@ class XVConstraint(BaseConstraint):
 
         Args:
             gui (SudokuGUI): The GUI to draw on.
-
         """
         gui.write_text_between_cells(
             self.cell1,
@@ -116,7 +114,6 @@ class XVConstraint(BaseConstraint):
 
         Returns:
             XVConstraint: A deep copy of the constraint.
-
         """
         return XVConstraint(
             {self.cell1, self.cell2},

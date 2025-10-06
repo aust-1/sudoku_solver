@@ -1,4 +1,8 @@
-"""Model classes for Sudoku constraints."""
+"""Constraint implementations for Sudoku variant rules.
+
+This module provides various constraint types that can be applied to Sudoku puzzles
+to create variant puzzles with additional rules beyond standard Sudoku.
+"""
 
 from solver.constraints.base_constraint import BaseConstraint
 from solver.constraints.bishop import BishopConstraint

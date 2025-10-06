@@ -56,7 +56,6 @@ class KingConstraint(BaseConstraint):
             bool:
                 ``True`` if at least one candidate was eliminated,
                 ``False`` otherwise.
-
         """
         return False
 
@@ -70,7 +69,6 @@ class KingConstraint(BaseConstraint):
 
         Returns:
             set[Cell]: A set of reachable cells.
-
         """
         reachable: set[Cell] = set()
         for x in range(-1, 2):
@@ -89,6 +87,5 @@ class KingConstraint(BaseConstraint):
 
         Returns:
             KingConstraint: A deep copy of the constraint.
-
         """
         return KingConstraint()

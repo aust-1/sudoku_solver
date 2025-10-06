@@ -25,7 +25,6 @@ class KillerConstraint(BaseConstraint):
 
         Returns:
             tuple[int, int, int, int]: The RGBA color for the next killer cage.
-
         """
         hue = (cls._killer_cage_index * 0.15) % 1.0
         cls._killer_cage_index += 1
@@ -46,7 +45,6 @@ class KillerConstraint(BaseConstraint):
             total_sum (int): The sum of the cell values.
             board_size (int): The size of the board.
             color (tuple[int, int, int, int] | None): The color of the cage.
-
         """
         super().__init__(
             ConstraintType.KILLER,
@@ -74,7 +72,6 @@ class KillerConstraint(BaseConstraint):
         Returns:
             set[Cell]:
                 A set of cells that do not satisfy the killer constraint.
-
         """
         invalid_cells: set[Cell] = set()
         current_sum = sum(
@@ -115,7 +112,6 @@ class KillerConstraint(BaseConstraint):
             bool:
                 ``True`` if at least one candidate was eliminated,
                 ``False`` otherwise.
-
         """
         eliminated = False
 
@@ -174,7 +170,6 @@ class KillerConstraint(BaseConstraint):
 
         Returns:
             bool: ``True`` if any candidates were eliminated, ``False`` otherwise.
-
         """
         eliminated = False
 
@@ -225,7 +220,6 @@ class KillerConstraint(BaseConstraint):
 
         Returns:
             dict[str,set[Cell]]: A dictionary of sets of cells representing the regions.
-
         """
         idx = 1
         while f"killer_{idx}" in board.regions:
@@ -238,7 +232,6 @@ class KillerConstraint(BaseConstraint):
 
         Args:
             gui (SudokuGUI): The GUI to draw on.
-
         """
         gui.draw_killer_cage(self.killer_cells, self.sum, self.color)
 
@@ -248,7 +241,6 @@ class KillerConstraint(BaseConstraint):
 
         Returns:
             KillerConstraint: A deep copy of the constraint.
-
         """
         return KillerConstraint(
             self.killer_cells.copy(),

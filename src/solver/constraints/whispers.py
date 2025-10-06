@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 class _BaseDiffConstraint(BaseConstraint):
-    """A class representing a German constraint for Sudoku cells."""
+    """A class representing a base difference constraint for Sudoku cells."""
 
     def __init__(
         self,
@@ -19,13 +19,12 @@ class _BaseDiffConstraint(BaseConstraint):
         diff: int,
         constraint_type: ConstraintType,
     ) -> None:
-        """Initialize the German constraint with a list of cells.
+        """Initialize the difference constraint with a list of cell positions.
 
         Args:
             cells (list[Cell]): The list of cells to apply constraints to.
             diff (int): The difference value for the constraint.
             constraint_type (ConstraintType): The type of constraint to apply.
-
         """
         super().__init__(constraint_type)
         self.cells: list[Cell] = cells
@@ -33,14 +32,13 @@ class _BaseDiffConstraint(BaseConstraint):
 
     @override
     def check(self, board: Board) -> set[Cell]:
-        """Check if the German constraint is satisfied.
+        """Check if the difference constraint is satisfied.
 
         Args:
             board (Board): The Sudoku board to check.
 
         Returns:
-            set[Cell]: A set of cells that do not satisfy the German constraint.
-
+            set[Cell]: A set of cells that do not satisfy the constraint.
         """
         invalid_cells: set[Cell] = set()
         for i in range(len(self.cells) - 1):
@@ -56,7 +54,7 @@ class _BaseDiffConstraint(BaseConstraint):
 
     @override
     def eliminate(self, board: Board) -> bool:
-        """Automatically complete the German constraint on the given board.
+        """Automatically complete the difference constraint on the given board.
 
         Args:
             board (Board): The Sudoku board to auto-complete.
@@ -65,7 +63,6 @@ class _BaseDiffConstraint(BaseConstraint):
             bool:
                 ``True`` if at least one candidate was eliminated,
                 ``False`` otherwise.
-
         """
         self._logger.debug(
             f"Eliminating candidates for {self.__class__.__name__} constraint",
@@ -140,7 +137,6 @@ class _BaseDiffConstraint(BaseConstraint):
 
         Returns:
             _BaseDiffConstraint: A deep copy of the constraint.
-
         """
         return _BaseDiffConstraint(self.cells.copy(), self.diff, self.type)
 
@@ -187,7 +183,6 @@ class GermanConstraint(_BaseDiffConstraint):
 
         Args:
             gui (SudokuGUI): The GUI to draw on.
-
         """
         gui.draw_line(self.cells, (0, 255, 0, 120), 5)
 
@@ -200,7 +195,6 @@ class DutchConstraint(_BaseDiffConstraint):
 
         Args:
             dutch_cells (list[Cell]): The list of cells to apply constraints to.
-
         """
         super().__init__(dutch_cells, 5, ConstraintType.DUTCH)
 
@@ -214,7 +208,6 @@ class DutchConstraint(_BaseDiffConstraint):
 
         Returns:
             set[Cell]: A set of reachable cells.
-
         """
         if cell not in self.cells:
             return set()
@@ -235,6 +228,5 @@ class DutchConstraint(_BaseDiffConstraint):
 
         Args:
             gui (SudokuGUI): The GUI to draw on.
-
         """
         gui.draw_line(self.cells, (255, 154, 0, 120), 4)

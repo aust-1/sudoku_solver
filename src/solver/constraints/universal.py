@@ -25,7 +25,6 @@ class UniversalConstraint(BaseConstraint):
 
         Returns:
             set[Cell]: A set of cells that do not satisfy the universal constraint.
-
         """
         invalid_cells: set[Cell] = set()
         for i in range(board.size):
@@ -55,7 +54,6 @@ class UniversalConstraint(BaseConstraint):
             bool:
                 ``True`` if at least one candidate was eliminated,
                 ``False`` otherwise.
-
         """
         return False
 
@@ -73,7 +71,6 @@ class UniversalConstraint(BaseConstraint):
 
         Returns:
             set[Cell]: A set of reachable cells.
-
         """
         x = cell.row % 3
         y = cell.col % 3
@@ -96,7 +93,6 @@ class UniversalConstraint(BaseConstraint):
 
         Returns:
             dict[str,set[Cell]]: A dictionary of sets of cells representing the regions.
-
         """
         regions: dict[str, set[Cell]] = {}
 
@@ -117,6 +113,5 @@ class UniversalConstraint(BaseConstraint):
 
         Returns:
             UniversalConstraint: A deep copy of the constraint.
-
         """
         return UniversalConstraint()

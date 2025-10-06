@@ -40,7 +40,6 @@ class CloneZoneConstraint(BaseConstraint):
 
         Returns:
             set[Cell]: A set of cells that do not satisfy the clones constraint.
-
         """
         return {
             cell
@@ -59,7 +58,6 @@ class CloneZoneConstraint(BaseConstraint):
             bool:
                 ``True`` if at least one candidate was eliminated,
                 ``False`` otherwise.
-
         """
         self._logger.debug(
             f"Eliminating candidates for {self.__class__.__name__} constraint",
@@ -79,7 +77,6 @@ class CloneZoneConstraint(BaseConstraint):
 
         Returns:
             set[Cell]: A set of reachable cells.
-
         """
         reachable_cells: set[Cell] = set()
         for constraint in self.clone_constraints:
@@ -92,6 +89,5 @@ class CloneZoneConstraint(BaseConstraint):
 
         Returns:
             CloneZoneConstraint: A deep copy of the constraint.
-
         """
         return CloneZoneConstraint(*[zone.copy() for zone in self.zones])

@@ -18,7 +18,6 @@ class Cell:
             row (int): The row index of the cell.
             col (int): The column index of the cell.
             size (int): The size of the Sudoku grid.
-
         """
         self._row = row
         self._col = col
@@ -36,7 +35,6 @@ class Cell:
 
         Args:
             cells (Iterable[Cell]): The cells to add.
-
         """
         for cell in cells:
             if cell is not self:
@@ -47,7 +45,6 @@ class Cell:
 
         Args:
             cells (Iterable[Cell]): The cells to add.
-
         """
         for cell in cells:
             self._clone_cells |= cell.clone_cells
@@ -57,7 +54,6 @@ class Cell:
 
         Returns:
             bool: ``True`` if the cell has a value, ``False`` otherwise.
-
         """
         return self._value is not None
 
@@ -79,7 +75,6 @@ class Cell:
 
         Args:
             v (int | None): The value to set.
-
         """
         self._logger.info(f"Set value {v}")
         self._value = v
@@ -100,7 +95,6 @@ class Cell:
 
         Args:
             c (set[int]): The candidates to set.
-
         """
         self._candidates = c
         self._logger.info(f"Set candidates {c}")
@@ -111,7 +105,7 @@ class Cell:
 
     @property
     def clone_cells(self) -> set[Cell]:
-        return self._reachable_cells
+        return self._clone_cells
 
     def eliminate_candidate(self, v: int) -> bool:
         """Remove a value from the candidate set.
@@ -122,7 +116,6 @@ class Cell:
         Returns:
             bool:
             ``True`` if the value was removed, ``False`` if it was not a candidate.
-
         """
         if v not in self._candidates:
             return False
@@ -153,7 +146,6 @@ class Cell:
 
         Returns:
             int: The hash of the cell.
-
         """
         return hash((self._row, self._col))
 
@@ -163,7 +155,6 @@ class Cell:
 
         Returns:
             str: A string representation of the cell.
-
         """
         return str(self._value) if self._value is not None else "."
 
@@ -173,7 +164,6 @@ class Cell:
 
         Returns:
             str: A string representation of the cell.
-
         """
         return f"C{self._row}.{self._col}"
 

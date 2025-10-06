@@ -20,7 +20,6 @@ class ConstraintStrategy(Solver):
 
         Returns:
             bool: ``True`` if any candidates were eliminated, ``False`` otherwise.
-
         """
         moved = False
         for constraint in board.constraints:

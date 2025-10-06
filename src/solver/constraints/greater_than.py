@@ -13,24 +13,26 @@ if TYPE_CHECKING:
 class GreaterThanConstraint(BaseConstraint):
     """A class representing a Greater Than constraint."""
 
-    def __init__(self, cell: Cell, greater_than: Cell) -> None:
+    def __init__(self, higher_value_cell: Cell, lower_value_cell: Cell) -> None:
         """Initialize the Greater Than constraint.
 
         Args:
-            cell (Cell): The cells to constrain with the higher value.
-            greater_than (Cell): The cells to constrain with the lower value.
+            higher_value_cell (Cell): The cells to constrain with the higher value.
+            lower_value_cell (Cell): The cells to constrain with the lower value.
 
         Raises:
             ValueError:
                 If the cells are not adjacent.
-
         """
         super().__init__(ConstraintType.GREATER_THAN)
-        self.cell1, self.cell2 = cell, greater_than
+        self.higher_value_cell, self.lower_value_cell = (
+            higher_value_cell,
+            lower_value_cell,
+        )
 
-        if (abs(self.cell1.row - self.cell2.row) == 1) == (
-            abs(self.cell1.col - self.cell2.col) == 1
-        ):
+        if (self.higher_value_cell.row - self.lower_value_cell.row) ** 2 + (
+            self.higher_value_cell.col - self.lower_value_cell.col
+        ) ** 2 != 1:
             msg = "Greater Than constraint cells must be adjacent."
             raise ValueError(msg)
 
@@ -43,14 +45,13 @@ class GreaterThanConstraint(BaseConstraint):
 
         Returns:
             set[Cell]: A set of cells that do not satisfy the Greater Than constraint.
-
         """
         if (
-            self.cell1.value is not None
-            and self.cell2.value is not None
-            and not self.cell1.value > self.cell2.value
+            self.higher_value_cell.value is not None
+            and self.lower_value_cell.value is not None
+            and not self.higher_value_cell.value > self.lower_value_cell.value
         ):
-            return {self.cell1, self.cell2}
+            return {self.higher_value_cell, self.lower_value_cell}
         return set()
 
     @override
@@ -64,26 +65,25 @@ class GreaterThanConstraint(BaseConstraint):
             bool:
                 ``True`` if at least one candidate was eliminated,
                 ``False`` otherwise.
-
         """
         eliminated = False
 
-        cell1_candidates: set[int] = set(self.cell1.candidates)
-        cell2_candidates: set[int] = set(self.cell2.candidates)
+        cell1_candidates: set[int] = set(self.higher_value_cell.candidates)
+        cell2_candidates: set[int] = set(self.lower_value_cell.candidates)
         max_c1 = max(cell1_candidates)
         min_c2 = min(cell2_candidates)
 
         for v1 in cell1_candidates:
             if v1 <= min_c2:
-                eliminated |= self.cell1.eliminate_candidate(v1)
+                eliminated |= self.higher_value_cell.eliminate_candidate(v1)
 
         for v2 in cell2_candidates:
             if v2 >= max_c1:
-                eliminated |= self.cell2.eliminate_candidate(v2)
+                eliminated |= self.lower_value_cell.eliminate_candidate(v2)
 
         if eliminated:
             self._logger.debug(
-                f"Eliminated due to greater than in {self.cell1} > {self.cell2}",
+                f"Eliminated due to greater than in {self.higher_value_cell} > {self.lower_value_cell}",
             )
         return eliminated
 
@@ -93,7 +93,6 @@ class GreaterThanConstraint(BaseConstraint):
 
         Args:
             gui (SudokuGUI): The GUI to draw on.
-
         """
         # TODO: implement
 
@@ -103,11 +102,10 @@ class GreaterThanConstraint(BaseConstraint):
 
         Returns:
             GreaterThanConstraint: A deep copy of the constraint.
-
         """
         return GreaterThanConstraint(
-            self.cell1,
-            self.cell2,
+            self.higher_value_cell,
+            self.lower_value_cell,
         )
 
 
