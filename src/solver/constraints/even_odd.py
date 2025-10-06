@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, Any, override
 
 from solver.constraints.base_constraint import BaseConstraint
 from solver.constraints.structs import ConstraintType
@@ -20,7 +20,7 @@ class ParityConstraint(BaseConstraint):
             cell (Cell): The cell to constrain.
             rest (int): The remainder when the cell value is divided by 2.
         """
-        super().__init__(ConstraintType.EVEN_ODD)
+        super().__init__(ConstraintType.PARITY)
         self.parity_cell = cell
         self.rest = rest
 
@@ -47,6 +47,47 @@ class ParityConstraint(BaseConstraint):
             ParityConstraint: The created parity constraint.
         """
         return cls(cell, rest=1)
+
+    @classmethod
+    @override
+    def from_dict(cls, board: Board, data: dict[str, Any]) -> ParityConstraint:
+        """Create a constraint instance from dictionary data.
+
+        Args:
+            board (Board): The Sudoku board the constraint applies to.
+            data (dict[str, Any]): Dictionary containing constraint configuration.
+                Expected format: {"type": "parity", "cell": "a1", "rest": 0}
+                rest: 0 for even, 1 for odd
+
+        Returns:
+            ParityConstraint: New constraint instance.
+
+        Raises:
+            ValueError: If data format is invalid.
+        """
+        if "cell" not in data:
+            msg = "Parity constraint requires 'cell' field"
+            raise ValueError(msg)
+        if "rest" not in data:
+            msg = "Parity constraint requires 'rest' field"
+            raise ValueError(msg)
+
+        cell = board.get_cell(pos=data["cell"])
+        rest = data["rest"]
+        return cls(cell, rest)
+
+    @override
+    def to_dict(self) -> dict[str, Any]:
+        """Convert constraint to dictionary representation.
+
+        Returns:
+            dict[str, Any]: Dictionary representation of the constraint.
+        """
+        return {
+            "type": self.type.value,
+            "cell": self.parity_cell.pos,
+            "rest": self.rest,
+        }
 
     @override
     def check(self, board: Board) -> set[Cell]:
@@ -112,3 +153,13 @@ class ParityConstraint(BaseConstraint):
             ParityConstraint: A deep copy of the constraint.
         """
         return ParityConstraint(self.parity_cell, self.rest)
+
+    @override
+    def __repr__(self) -> str:
+        """Return string representation of the constraint.
+
+        Returns:
+            str: String representation for debugging.
+        """
+        parity_str = "odd" if self.rest == 1 else "even"
+        return f"ParityConstraint({self.parity_cell.pos}, {parity_str})"

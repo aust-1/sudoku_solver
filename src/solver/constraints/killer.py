@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import colorsys
 from itertools import combinations
-from typing import TYPE_CHECKING, ClassVar, override
+from typing import TYPE_CHECKING, Any, ClassVar, override
 
 from loggerplusplus import Logger
 
@@ -61,6 +61,60 @@ class KillerConstraint(BaseConstraint):
         for combination in combinations(range(1, self.board_size + 1), len(cells)):
             if sum(combination) == total_sum:
                 self.possible_combinations.add(frozenset(combination))
+
+    @classmethod
+    @override
+    def from_dict(cls, board: Board, data: dict[str, Any]) -> KillerConstraint:
+        """Create a constraint instance from dictionary data.
+
+        Args:
+            board (Board): The Sudoku board the constraint applies to.
+            data (dict[str, Any]): Dictionary containing constraint configuration.
+                Expected format: {
+                    "type": "killer",
+                    "cells": ["a1", "a2", ...],
+                    "sum": 15,
+                    "color": [255, 0, 0, 255] (optional)
+                }
+
+        Returns:
+            KillerConstraint: New constraint instance.
+
+        Raises:
+            ValueError: If data format is invalid.
+        """
+        if "cells" not in data:
+            msg = "Killer constraint requires 'cells' field"
+            raise ValueError(msg)
+        if "sum" not in data:
+            msg = "Killer constraint requires 'sum' field"
+            raise ValueError(msg)
+
+        positions: set[str] = set(data["cells"])
+        cells: set[Cell] = {board.get_cell(pos=pos) for pos in positions}
+
+        total_sum = data["sum"]
+
+        color = None
+        if "color" in data:
+            color_data = data["color"]
+            color = tuple(color_data)
+
+        return cls(cells, total_sum, board.size, color)
+
+    @override
+    def to_dict(self) -> dict[str, Any]:
+        """Convert constraint to dictionary representation.
+
+        Returns:
+            dict[str, Any]: Dictionary representation of the constraint.
+        """
+        return {
+            "type": self.type.value,
+            "cells": [cell.pos for cell in self.killer_cells],
+            "sum": self.sum,
+            "color": list(self.color),
+        }
 
     @override
     def check(self, board: Board) -> set[Cell]:
@@ -248,6 +302,16 @@ class KillerConstraint(BaseConstraint):
             self.board_size,
             self.color,
         )
+
+    @override
+    def __repr__(self) -> str:
+        """Return string representation of the constraint.
+
+        Returns:
+            str: String representation for debugging.
+        """
+        cells_repr = ", ".join(c.pos for c in self.killer_cells)
+        return f"KillerConstraint([{cells_repr}], sum={self.sum})"
 
 
 # TODO: centralisation des killer constraints pour faire toutes les sous cages

@@ -7,7 +7,7 @@ class ConstraintType(Enum):
     BISHOP = "bishop"
     CLONE = "clone"
     DUTCH = "dutch"
-    EVEN_ODD = "even_odd"
+    PARITY = "parity"
     GERMAN = "german"
     GREATER_THAN = "greater_than"
     KILLER = "killer"

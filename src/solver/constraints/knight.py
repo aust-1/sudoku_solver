@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, Any, override
 
 from solver.constraints.base_constraint import BaseConstraint
 from solver.constraints.structs import ConstraintType
@@ -15,6 +15,21 @@ class KnightConstraint(BaseConstraint):
     def __init__(self) -> None:
         """Initialize the knight's movement constraint."""
         super().__init__(ConstraintType.KNIGHT)
+
+    @classmethod
+    @override
+    def from_dict(cls, board: Board, data: dict[str, Any]) -> KnightConstraint:
+        """Create a constraint instance from dictionary data.
+
+        Args:
+            board (Board): The Sudoku board the constraint applies to.
+            data (dict[str, Any]): Dictionary containing constraint configuration.
+                Expected format: {"type": "knight"}
+
+        Returns:
+            KnightConstraint: New constraint instance.
+        """
+        return cls()
 
     @override
     def check(self, board: Board) -> set[Cell]:

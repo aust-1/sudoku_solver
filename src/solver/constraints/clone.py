@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, Any, override
 
 from solver.constraints.base_constraint import BaseConstraint
 from solver.constraints.structs import ConstraintType
@@ -22,6 +22,43 @@ class CloneConstraint(BaseConstraint):
         self.clone_cells = clone_cells
         for cell in self.clone_cells:
             cell.add_clones(self.clone_cells)
+
+    @classmethod
+    @override
+    def from_dict(cls, board: Board, data: dict[str, Any]) -> CloneConstraint:
+        """Create a constraint instance from dictionary data.
+
+        Args:
+            board (Board): The Sudoku board the constraint applies to.
+            data (dict[str, Any]): Dictionary containing constraint configuration.
+                Expected format: {"type": "clone", "cells": ["a1", "a2", ...]}
+
+        Returns:
+            CloneConstraint: New constraint instance.
+
+        Raises:
+            ValueError: If data format is invalid.
+        """
+        if "cells" not in data:
+            msg = "Clone constraint requires 'cells' field"
+            raise ValueError(msg)
+
+        positions: set[str] = set(data["cells"])
+        cells: set[Cell] = {board.get_cell(pos=pos) for pos in positions}
+
+        return cls(cells)
+
+    @override
+    def to_dict(self) -> dict[str, Any]:
+        """Convert constraint to dictionary representation.
+
+        Returns:
+            dict[str, Any]: Dictionary representation of the constraint.
+        """
+        return {
+            "type": self.type.value,
+            "cells": [cell.pos for cell in self.clone_cells],
+        }
 
     @override
     def check(self, board: Board) -> set[Cell]:
@@ -100,3 +137,13 @@ class CloneConstraint(BaseConstraint):
             CloneConstraint: A deep copy of the constraint.
         """
         return CloneConstraint(self.clone_cells.copy())
+
+    @override
+    def __repr__(self) -> str:
+        """Return string representation of the constraint.
+
+        Returns:
+            str: String representation for debugging.
+        """
+        cells_repr = ", ".join(c.pos for c in self.clone_cells)
+        return f"CloneConstraint([{cells_repr}])"

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, overload, override
+from abc import abstractmethod
+from typing import TYPE_CHECKING, Any, overload, override
 
 from solver.constraints.base_constraint import BaseConstraint
 from solver.constraints.structs import ConstraintType
@@ -29,6 +30,37 @@ class _BaseDiffConstraint(BaseConstraint):
         super().__init__(constraint_type)
         self.cells: list[Cell] = cells
         self.diff: int = diff
+
+    @abstractmethod
+    @override
+    @classmethod
+    def from_dict(cls, board: Board, data: dict[str, Any]) -> _BaseDiffConstraint:
+        """Create a constraint instance from dictionary data.
+
+        Args:
+            board (Board): The Sudoku board the constraint applies to.
+            data (dict[str, Any]): Dictionary containing constraint configuration.
+
+        Returns:
+            _BaseDiffConstraint: New constraint instance.
+
+        Raises:
+            ValueError: If data format is invalid.
+        """
+        msg = "_BaseDiffConstraint.from_dict should not be called directly"
+        raise NotImplementedError(msg)
+
+    @override
+    def to_dict(self) -> dict[str, Any]:
+        """Convert constraint to dictionary representation.
+
+        Returns:
+            dict[str, Any]: Dictionary representation of the constraint.
+        """
+        return {
+            "type": self.type.value,
+            "cells": [cell.pos for cell in self.cells],
+        }
 
     @override
     def check(self, board: Board) -> set[Cell]:
@@ -138,7 +170,22 @@ class _BaseDiffConstraint(BaseConstraint):
         Returns:
             _BaseDiffConstraint: A deep copy of the constraint.
         """
-        return _BaseDiffConstraint(self.cells.copy(), self.diff, self.type)
+        if self.type == ConstraintType.GERMAN:
+            return GermanConstraint(self.cells.copy())
+        if self.type == ConstraintType.DUTCH:
+            return DutchConstraint(self.cells.copy())
+        msg = f"Deep copy not implemented for {self.type} constraint"
+        raise NotImplementedError(msg)
+
+    @override
+    def __repr__(self) -> str:
+        """Return string representation of the constraint.
+
+        Returns:
+            str: String representation for debugging.
+        """
+        cells_repr = ", ".join(c.pos for c in self.cells)
+        return f"{self.__class__.__name__}([{cells_repr}])"
 
 
 class GermanConstraint(_BaseDiffConstraint):
@@ -152,6 +199,31 @@ class GermanConstraint(_BaseDiffConstraint):
 
         """
         super().__init__(german_cells, 5, ConstraintType.GERMAN)
+
+    @classmethod
+    @override
+    def from_dict(cls, board: Board, data: dict[str, Any]) -> GermanConstraint:
+        """Create a constraint instance from dictionary data.
+
+        Args:
+            board (Board): The Sudoku board the constraint applies to.
+            data (dict[str, Any]): Dictionary containing constraint configuration.
+                Expected format: {"type": "german", "cells": ["a1", "a2", ...]}
+
+        Returns:
+            GermanConstraint: New constraint instance.
+
+        Raises:
+            ValueError: If data format is invalid.
+        """
+        if "cells" not in data:
+            msg = "German constraint requires 'cells' field"
+            raise ValueError(msg)
+
+        positions: list[str] = list(data["cells"])
+        cells: list[Cell] = [board.get_cell(pos=pos) for pos in positions]
+
+        return cls(cells)
 
     @override
     def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:
@@ -197,6 +269,31 @@ class DutchConstraint(_BaseDiffConstraint):
             dutch_cells (list[Cell]): The list of cells to apply constraints to.
         """
         super().__init__(dutch_cells, 5, ConstraintType.DUTCH)
+
+    @classmethod
+    @override
+    def from_dict(cls, board: Board, data: dict[str, Any]) -> DutchConstraint:
+        """Create a constraint instance from dictionary data.
+
+        Args:
+            board (Board): The Sudoku board the constraint applies to.
+            data (dict[str, Any]): Dictionary containing constraint configuration.
+                Expected format: {"type": "dutch", "cells": ["a1", "a2", ...]}
+
+        Returns:
+            DutchConstraint: New constraint instance.
+
+        Raises:
+            ValueError: If data format is invalid.
+        """
+        if "cells" not in data:
+            msg = "Dutch constraint requires 'cells' field"
+            raise ValueError(msg)
+
+        positions: list[str] = list(data["cells"])
+        cells: list[Cell] = [board.get_cell(pos=pos) for pos in positions]
+
+        return cls(cells)
 
     @override
     def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:

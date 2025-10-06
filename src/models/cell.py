@@ -66,6 +66,10 @@ class Cell:
         return self._col
 
     @property
+    def pos(self) -> str:
+        return f"{chr(self._row + ord('a'))}{self._col + 1}"
+
+    @property
     def value(self) -> int | None:
         return self._value
 

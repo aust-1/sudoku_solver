@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, Any, override
 
 from solver.constraints.base_constraint import BaseConstraint
 from solver.constraints.structs import ConstraintType
@@ -35,6 +35,51 @@ class GreaterThanConstraint(BaseConstraint):
         ) ** 2 != 1:
             msg = "Greater Than constraint cells must be adjacent."
             raise ValueError(msg)
+
+    @classmethod
+    @override
+    def from_dict(cls, board: Board, data: dict[str, Any]) -> GreaterThanConstraint:
+        """Create a constraint instance from dictionary data.
+
+        Args:
+            board (Board): The Sudoku board the constraint applies to.
+            data (dict[str, Any]): Dictionary containing constraint configuration.
+                Expected format: {
+                    "type": "greater_than",
+                    "higher_value_cell": "a1",
+                    "lower_value_cell": "a2"
+                }
+
+        Returns:
+            GreaterThanConstraint: New constraint instance.
+
+        Raises:
+            ValueError: If data format is invalid.
+        """
+        if "higher_value_cell" not in data:
+            msg = "GreaterThan constraint requires 'higher_value_cell' field"
+            raise ValueError(msg)
+        if "lower_value_cell" not in data:
+            msg = "GreaterThan constraint requires 'lower_value_cell' field"
+            raise ValueError(msg)
+
+        higher_value_cell = board.get_cell(pos=data["higher_value_cell"])
+        lower_value_cell = board.get_cell(pos=data["lower_value_cell"])
+
+        return cls(higher_value_cell, lower_value_cell)
+
+    @override
+    def to_dict(self) -> dict[str, Any]:
+        """Convert constraint to dictionary representation.
+
+        Returns:
+            dict[str, Any]: Dictionary representation of the constraint.
+        """
+        return {
+            "type": self.type.value,
+            "higher_value_cell": self.higher_value_cell.pos,
+            "lower_value_cell": self.lower_value_cell.pos,
+        }
 
     @override
     def check(self, board: Board) -> set[Cell]:
@@ -107,6 +152,15 @@ class GreaterThanConstraint(BaseConstraint):
             self.higher_value_cell,
             self.lower_value_cell,
         )
+
+    @override
+    def __repr__(self) -> str:
+        """Return string representation of the constraint.
+
+        Returns:
+            str: String representation for debugging.
+        """
+        return f"GreaterThanConstraint({self.higher_value_cell.pos} > {self.lower_value_cell.pos})"
 
 
 # TODO: logic for greater than in series

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, Any, override
 
 from solver.constraints.base_constraint import BaseConstraint
 from solver.constraints.structs import ConstraintType
@@ -15,6 +15,21 @@ class UniversalConstraint(BaseConstraint):
     def __init__(self) -> None:
         """Initialize the universal constraint."""
         super().__init__(ConstraintType.UNIVERSAL)
+
+    @classmethod
+    @override
+    def from_dict(cls, board: Board, data: dict[str, Any]) -> UniversalConstraint:
+        """Create a constraint instance from dictionary data.
+
+        Args:
+            board (Board): The Sudoku board the constraint applies to.
+            data (dict[str, Any]): Dictionary containing constraint configuration.
+                Expected format: {"type": "universal"}
+
+        Returns:
+            UniversalConstraint: New constraint instance.
+        """
+        return cls()
 
     @override
     def check(self, board: Board) -> set[Cell]:

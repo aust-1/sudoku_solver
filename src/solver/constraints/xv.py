@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, Any, override
 
 from solver.constraints.base_constraint import BaseConstraint
 from solver.constraints.killer import KillerConstraint
@@ -46,28 +46,81 @@ class XVConstraint(BaseConstraint):
         )
 
     @classmethod
-    def x(cls, x_cells: set[Cell]) -> XVConstraint:
+    def x(
+        cls,
+        x_cell1: Cell,
+        x_cell2: Cell,
+    ) -> XVConstraint:
         """Create a X constraint.
 
         Args:
-            x_cells (set[Cell]): The cells to constrain.
+            x_cell1 (Cell): The first cell to constrain.
+            x_cell2 (Cell): The second cell to constrain.
 
         Returns:
             XVConstraint: The created XV constraint.
         """
-        return cls(x_cells, total_sum=X_SUM)
+        return cls(x_cell1, x_cell2, total_sum=X_SUM)
 
     @classmethod
-    def v(cls, v_cells: set[Cell]) -> XVConstraint:
+    def v(cls, v_cell1: Cell, v_cell2: Cell) -> XVConstraint:
         """Create a V constraint.
 
         Args:
-            v_cells (set[Cell]): The cells to constrain.
+            v_cell1 (Cell): The first cell to constrain.
+            v_cell2 (Cell): The second cell to constrain.
 
         Returns:
             XVConstraint: The created XV constraint.
         """
-        return cls(v_cells, total_sum=V_SUM)
+        return cls(v_cell1, v_cell2, total_sum=V_SUM)
+
+    @classmethod
+    @override
+    def from_dict(cls, board: Board, data: dict[str, Any]) -> XVConstraint:
+        """Create a constraint instance from dictionary data.
+
+        Args:
+            board (Board): The Sudoku board the constraint applies to.
+            data (dict[str, Any]): Dictionary containing constraint configuration.
+                Expected format: {"type": "xv", "cell1": "a1", "cell2": "a2", "sum": 10}
+
+        Returns:
+            XVConstraint: New constraint instance.
+
+        Raises:
+            ValueError: If data format is invalid.
+        """
+        if "cell1" not in data:
+            msg = "XV constraint requires 'cell1' field"
+            raise ValueError(msg)
+        if "cell2" not in data:
+            msg = "XV constraint requires 'cell2' field"
+            raise ValueError(msg)
+        if "sum" not in data:
+            msg = "XV constraint requires 'sum' field"
+            raise ValueError(msg)
+
+        cell1 = board.get_cell(pos=data["cell1"])
+        cell2 = board.get_cell(pos=data["cell2"])
+
+        total_sum = data["sum"]
+
+        return cls(cell1, cell2, total_sum)
+
+    @override
+    def to_dict(self) -> dict[str, Any]:
+        """Convert constraint to dictionary representation.
+
+        Returns:
+            dict[str, Any]: Dictionary representation of the constraint.
+        """
+        return {
+            "type": self.type.value,
+            "cell1": self.cell1.pos,
+            "cell2": self.cell2.pos,
+            "sum": self.killer_constraint.sum,
+        }
 
     @override
     def check(self, board: Board) -> set[Cell]:
@@ -116,9 +169,20 @@ class XVConstraint(BaseConstraint):
             XVConstraint: A deep copy of the constraint.
         """
         return XVConstraint(
-            {self.cell1, self.cell2},
+            self.cell1,
+            self.cell2,
             total_sum=self.killer_constraint.sum,
         )
+
+    @override
+    def __repr__(self) -> str:
+        """Return string representation of the constraint.
+
+        Returns:
+            str: String representation for debugging.
+        """
+        xv_type = "X" if self.killer_constraint.sum == X_SUM else "V"
+        return f"XVConstraint([{self.cell1.pos}, {self.cell2.pos}], {xv_type}={self.killer_constraint.sum})"
 
 
 # QUESTION: init par set ou deux cells

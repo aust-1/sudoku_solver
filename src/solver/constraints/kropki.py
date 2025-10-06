@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, Any, override
 
 from solver.constraints.base_constraint import BaseConstraint
 from solver.constraints.structs import ConstraintType
@@ -38,12 +38,6 @@ class KropkiConstraint(BaseConstraint):
 
         if color == "black":
             self.is_black_dot = True
-            self.cell1.eliminate_candidate(5)
-            self.cell2.eliminate_candidate(5)
-            self.cell1.eliminate_candidate(7)
-            self.cell2.eliminate_candidate(7)
-            self.cell1.eliminate_candidate(9)
-            self.cell2.eliminate_candidate(9)
         elif color == "white":
             self.is_black_dot = False
         else:
@@ -51,28 +45,83 @@ class KropkiConstraint(BaseConstraint):
             raise ValueError(msg)
 
     @classmethod
-    def black(cls, kropki_cells: set[Cell]) -> KropkiConstraint:
+    @override
+    def from_dict(cls, board: Board, data: dict[str, Any]) -> KropkiConstraint:
+        """Create a constraint instance from dictionary data.
+
+        Args:
+            board (Board): The Sudoku board the constraint applies to.
+            data (dict[str, Any]): Dictionary containing constraint configuration.
+                Expected format: {"type": "kropki", "cell1": "a1", "cell2": "a2", "color": "black"}
+
+        Returns:
+            KropkiConstraint: New constraint instance.
+
+        Raises:
+            ValueError: If data format is invalid.
+        """
+        if "cell1" not in data:
+            msg = "Kropki constraint requires 'cell1' field"
+            raise ValueError(msg)
+        if "cell2" not in data:
+            msg = "Kropki constraint requires 'cell2' field"
+            raise ValueError(msg)
+        if "color" not in data:
+            msg = "Kropki constraint requires 'color' field"
+            raise ValueError(msg)
+
+        cell1 = board.get_cell(pos=data["cell1"])
+        cell2 = board.get_cell(pos=data["cell2"])
+
+        return cls(cell1, cell2, data["color"])
+
+    @override
+    def to_dict(self) -> dict[str, Any]:
+        """Convert constraint to dictionary representation.
+
+        Returns:
+            dict[str, Any]: Dictionary representation of the constraint.
+        """
+        return {
+            "type": self.type.value,
+            "cell1": self.cell1.pos,
+            "cell2": self.cell2.pos,
+            "color": "black" if self.is_black_dot else "white",
+        }
+
+    @classmethod
+    def black(
+        cls,
+        kropki_cell1: Cell,
+        kropki_cell2: Cell,
+    ) -> KropkiConstraint:
         """Create a Kropki constraint with black dot.
 
         Args:
-            kropki_cells (set[Cell]): The cells to constrain.
+            kropki_cell1 (Cell): The first cell to constrain.
+            kropki_cell2 (Cell): The second cell to constrain.
 
         Returns:
             KropkiConstraint: The created Kropki constraint.
         """
-        return cls(kropki_cells, color="black")
+        return cls(kropki_cell1, kropki_cell2, color="black")
 
     @classmethod
-    def white(cls, kropki_cells: set[Cell]) -> KropkiConstraint:
+    def white(
+        cls,
+        kropki_cell1: Cell,
+        kropki_cell2: Cell,
+    ) -> KropkiConstraint:
         """Create a Kropki constraint with white dot.
 
         Args:
-            kropki_cells (set[Cell]): The cells to constrain.
+            kropki_cell1 (Cell): The first cell to constrain.
+            kropki_cell2 (Cell): The second cell to constrain.
 
         Returns:
             KropkiConstraint: The created Kropki constraint.
         """
-        return cls(kropki_cells, color="white")
+        return cls(kropki_cell1, kropki_cell2, color="white")
 
     def _is_kropki_valid(self, v1: int, v2: int) -> bool:
         """Check if the Kropki constraint is satisfied for the given values.
@@ -162,9 +211,20 @@ class KropkiConstraint(BaseConstraint):
             KropkiConstraint: A deep copy of the constraint.
         """
         return KropkiConstraint(
-            {self.cell1, self.cell2},
+            self.cell1,
+            self.cell2,
             "black" if self.is_black_dot else "white",
         )
+
+    @override
+    def __repr__(self) -> str:
+        """Return string representation of the constraint.
+
+        Returns:
+            str: String representation for debugging.
+        """
+        color_str = "black" if self.is_black_dot else "white"
+        return f"KropkiConstraint([{self.cell1.pos}, {self.cell2.pos}], {color_str})"
 
 
 # TODO: implement logique quand plusieurs kropki à la suite

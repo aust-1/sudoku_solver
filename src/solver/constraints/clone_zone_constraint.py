@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, Any, override
 
 from solver.constraints.base_constraint import BaseConstraint
 from solver.constraints.clone import CloneConstraint
@@ -19,7 +19,6 @@ class CloneZoneConstraint(BaseConstraint):
 
         Args:
             *clone_zones (list[Cell]): The lists of cells to apply constraints to.
-
         """
         super().__init__()
         self.zones: list[list[Cell]] = []
@@ -30,6 +29,42 @@ class CloneZoneConstraint(BaseConstraint):
         for i in range(len(self.zones[0])):
             column_cells: set[Cell] = {self.zones[j][i] for j in range(len(self.zones))}
             self.clone_constraints.append(CloneConstraint(column_cells))
+
+    @classmethod
+    @override
+    def from_dict(cls, board: Board, data: dict[str, Any]) -> CloneZoneConstraint:
+        """Create a constraint instance from dictionary data.
+
+        Args:
+            board (Board): The Sudoku board the constraint applies to.
+            data (dict[str, Any]): Dictionary containing constraint configuration.
+                Expected format: {"type": "clone_zone", "zones": [["a1", "a2"], ["b1", "b2"]]}
+
+        Returns:
+            CloneZoneConstraint: New constraint instance.
+
+        Raises:
+            ValueError: If data format is invalid.
+        """
+        if "zones" not in data:
+            msg = "CloneZone constraint requires 'zones' field"
+            raise ValueError(msg)
+
+        zones = [[board.get_cell(pos=pos) for pos in zone] for zone in data["zones"]]
+
+        return cls(*zones)
+
+    @override
+    def to_dict(self) -> dict[str, Any]:
+        """Convert constraint to dictionary representation.
+
+        Returns:
+            dict[str, Any]: Dictionary representation of the constraint.
+        """
+        return {
+            "type": self.type.value,
+            "zones": [[cell.pos for cell in zone] for zone in self.zones],
+        }
 
     @override
     def check(self, board: Board) -> set[Cell]:
@@ -91,3 +126,13 @@ class CloneZoneConstraint(BaseConstraint):
             CloneZoneConstraint: A deep copy of the constraint.
         """
         return CloneZoneConstraint(*[zone.copy() for zone in self.zones])
+
+    @override
+    def __repr__(self) -> str:
+        """Return string representation of the constraint.
+
+        Returns:
+            str: String representation for debugging.
+        """
+        zones_repr = ", ".join("[" + ", ".join(zone) + "]" for zone in self.zones)
+        return f"CloneZoneConstraint({zones_repr})"

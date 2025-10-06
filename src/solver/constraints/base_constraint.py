@@ -7,7 +7,7 @@ must inherit from.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, override
 
 from loggerplusplus import Logger
 
@@ -45,6 +45,38 @@ class BaseConstraint(ABC):
             follow_logger_manager_rules=True,
         )
         self.type: ConstraintType = constraint_type or ConstraintType.UNDEFINED
+
+    @classmethod
+    @abstractmethod
+    def from_dict(cls, board: Board, data: dict[str, Any]) -> BaseConstraint:
+        """Create a constraint instance from dictionary data.
+
+        This is used for loading constraints from JSON configuration.
+
+        Args:
+            board (Board): The Sudoku board the constraint applies to.
+            data (dict[str, Any]): Dictionary containing constraint configuration.
+
+        Returns:
+            BaseConstraint: New constraint instance.
+
+        Raises:
+            ValueError: If data format is invalid.
+            NotImplementedError: If the method is not implemented in a subclass.
+        """
+        raise NotImplementedError(BaseConstraint._msg)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert constraint to dictionary representation.
+
+        This is used for exporting constraints to JSON format.
+
+        Returns:
+            dict[str, Any]: Dictionary representation of the constraint.
+        """
+        return {
+            "type": self.type.value,
+        }
 
     @abstractmethod
     def check(self, board: Board) -> set[Cell]:
@@ -125,3 +157,12 @@ class BaseConstraint(ABC):
             NotImplementedError: If the method is not implemented in a subclass.
         """
         raise NotImplementedError(self._msg)
+
+    @override
+    def __repr__(self) -> str:
+        """Return string representation of the constraint.
+
+        Returns:
+            str: String representation for debugging.
+        """
+        return f"{self.__class__.__name__}()"

@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, overload, override
 from loggerplusplus import Logger
 
 from models import Cell
+from solver.constraints.factory import create_constraint_from_dict
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -245,12 +246,24 @@ class Board:
                 r, c = divmod(idx, self._size)
                 self._grid[r][c].value = int(d)
 
-    def load_from_dict(self, input_dict: dict[str, dict[str, Any]]) -> None:
+    def load_from_dict(self, input_dict: dict[str, Any]) -> None:
+        """Load the board from a dictionary representation.
+
+        Args:
+            input_dict (dict[str, Any]):
+                The dictionary representation of the board.
+        """
         self._logger.debug("Loading board from dict")
         self.load_cells_from_dict(input_dict["cells"])
         self.load_constraint_from_dict(input_dict["constraint"])
 
     def load_cells_from_dict(self, cells_dict: dict[str, list[int]]) -> None:
+        """Load cell values from a dictionary representation.
+
+        Args:
+            cells_dict (dict[str, list[int]]):
+                The dictionary representation of the cells.
+        """
         for c, values in cells_dict.items():
             cell = self.get_cell(pos=c)
             cell.candidates = set(values)
@@ -259,8 +272,25 @@ class Board:
         self,
         constraint_dict: list[dict[str, Any]],
     ) -> None:
-        # TODO: en gros on récup universal, palindrome, etc. On upper, grace à structs on retrouve la contrainte et ça appelle la méthode de classe en question init_from_json
-        pass
+        """Load constraints from dictionary representation.
+
+        Args:
+            constraint_dict (list[dict[str, Any]]):
+                List of dictionaries containing constraint configurations.
+                Format: [{"type": "palindrome", "cells": ["a1", "a2", ...]}].
+
+        Raises:
+            ValueError: If constraint type is unknown or data is invalid.
+        """
+        self._logger.debug("Loading constraints from dict")
+        for constraint_data in constraint_dict:
+            try:
+                constraint = create_constraint_from_dict(self, constraint_data)
+                self.add_constraints(constraint)
+                self._logger.info(f"Loaded constraint: {constraint}")
+            except ValueError as e:
+                self._logger.error(f"Failed to load constraint: {e}")
+                raise
 
     # TODO: Load stylé fichier, interface ?
 
