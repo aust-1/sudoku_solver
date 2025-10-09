@@ -144,7 +144,7 @@ class BishopConstraint(BaseConstraint):
             gui (SudokuGUI): The GUI to draw on.
         """
         gui.draw_line(
-            gui.order_diagonal(self.bishop_cells),
+            self.bishop_cells,
             (0, 130, 255, 255),
             2,
         )

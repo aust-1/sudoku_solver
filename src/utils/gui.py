@@ -326,50 +326,9 @@ class SudokuGUI:
             (top_left.col * self.size + 2, top_left.row * self.size + 2),
         )
 
-    @staticmethod
-    def order_diagonal(cells: set[Cell]) -> list[Cell]:
-        """Return cells ordered by diagonal adjacency.
-
-        Args:
-            cells (set[Cell]): The cells to order.
-
-        Returns:
-            list[Cell]: The ordered cells.
-        """
-        if not cells:
-            return []
-
-        neighbors: dict[Cell, set[Cell]] = {
-            cell: {
-                other
-                for other in cells
-                if abs(cell.row - other.row) == 1 and abs(cell.col - other.col) == 1
-            }
-            for cell in cells
-        }
-        start = next(c for c in cells if len(neighbors[c]) == 1)
-        ordered = [start]
-        visited = {start}
-        while len(ordered) < len(cells):
-            last = ordered[-1]
-            nxt = next((n for n in neighbors[last] if n not in visited), None)
-            if nxt is None:
-                break
-            ordered.append(nxt)
-            visited.add(nxt)
-
-        if len(ordered) < len(cells):
-            ordered.extend(
-                sorted(
-                    [c for c in cells if c not in visited],
-                    key=lambda x: (x.row, x.col),
-                ),
-            )
-        return ordered
-
     def _draw_constraints(self) -> None:
         """Draw the constraints on the board."""
-        for constraint in self.board._constraints:
+        for constraint in self.board.constraints:
             constraint.draw(self)
 
     def _draw_grid(self) -> None:
