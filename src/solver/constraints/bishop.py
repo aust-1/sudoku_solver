@@ -14,11 +14,11 @@ if TYPE_CHECKING:
 class BishopConstraint(BaseConstraint):
     """A class representing a bishop's movement constraint."""
 
-    def __init__(self, bishop_cells: set[Cell]) -> None:
+    def __init__(self, bishop_cells: list[Cell]) -> None:
         """Initialize the bishop's movement constraint.
 
         Args:
-            bishop_cells (set[Cell]): The cells that the bishop can move to.
+            bishop_cells (list[Cell]): The cells that the bishop can move to.
         """
         super().__init__(ConstraintType.BISHOP)
         self.bishop_cells = bishop_cells
@@ -43,8 +43,8 @@ class BishopConstraint(BaseConstraint):
             msg = "Bishop constraint requires 'cells' field"
             raise ValueError(msg)
 
-        positions: set[str] = set(data["cells"])
-        cells: set[Cell] = {board.get_cell(pos=pos) for pos in positions}
+        positions: list[str] = list(data["cells"])
+        cells: list[Cell] = [board.get_cell(pos=pos) for pos in positions]
 
         return cls(cells)
 
@@ -116,7 +116,7 @@ class BishopConstraint(BaseConstraint):
             return set()
 
         reachable: set[Cell] = set()
-        reachable |= self.bishop_cells
+        reachable = set(self.bishop_cells)
         reachable.discard(cell)
 
         return reachable
@@ -134,7 +134,7 @@ class BishopConstraint(BaseConstraint):
         idx = 1
         while f"bishop_{idx}" in board.regions:
             idx += 1
-        return {f"bishop_{idx}": self.bishop_cells}
+        return {f"bishop_{idx}": set(self.bishop_cells)}
 
     @override
     def draw(self, gui: SudokuGUI) -> None:

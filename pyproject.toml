@@ -9,7 +9,7 @@ description = "Simple Sudoku solver implemented in Python."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { file = "LICENSE" }
-dependencies = ["loggerplusplus", "pygame"]
+dependencies = ["loggerplusplus", "pygame", "flask>=3.0.0", "flask-cors>=4.0.0"]
 
 [dependency-groups]
 dev = [
@@ -21,6 +21,7 @@ dev = [
     "pylint>=3.3.8",
     "pytest>=8.4.1",
     "pytest-cov>=6.2.1",
+    "requests>=2.31.0",
     "ruff>=0.12.8",
 ]
 
@@ -106,6 +107,7 @@ ignore = [
     "TD001",  # invalid-todo-tag
     "TD002",  # missing-todo-author
     "TD003",  # missing-todo-link
+    "TRY400", # error-instead-of-exception
 ]
 
 [tool.ruff.lint.pydocstyle]

@@ -61,3 +61,4 @@ __all__ = [
 # TODO: Windoku
 # TODO: X-Sum
 # TODO: Zipper Line
+# TODO: la nouvelle là, carré avec diagonales noires

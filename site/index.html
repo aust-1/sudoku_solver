@@ -1,24 +1,152 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sudoku CTC Solver Assistant</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
 
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Sudoku Constraint Editor</title>
-        <link rel="stylesheet" href="css/style.css" />
-    </head>
-
-    <body>
-        <div id="toolbar">
-            <select id="constraint-select">
-                <option value="none">No Constraint</option>
-            </select>
+  <body>
+    <div id="app">
+      <!-- Header -->
+      <header>
+        <h1>🧩 Sudoku CTC Solver Assistant</h1>
+        <div class="mode-toggle">
+          <button id="setup-mode-btn" class="mode-btn active">
+            Setup Mode
+          </button>
+          <button id="solver-mode-btn" class="mode-btn">Solver Mode</button>
         </div>
-        <div id="sudoku-grid" class="grid"></div>
-        <button id="export-btn">Export JSON</button>
+      </header>
 
-        <script src="js/constraints.js"></script>
-        <script src="js/app.js"></script>
-    </body>
+      <!-- Main Content -->
+      <div id="content">
+        <!-- Setup Mode -->
+        <div id="setup-mode" class="mode-panel active">
+          <div class="panel-container">
+            <!-- Toolbar -->
+            <div class="toolbar">
+              <h2>Constraints</h2>
+              <div id="constraint-list" class="constraint-list">
+                <!-- Constraints will be loaded here -->
+              </div>
 
+              <h3>Selected Constraint</h3>
+              <div id="selected-constraint-info" class="constraint-info">
+                <p>Select a constraint type above</p>
+              </div>
+
+              <div class="constraint-params" id="constraint-params">
+                <!-- Dynamic constraint parameters will appear here -->
+              </div>
+
+              <button id="add-constraint-btn" class="btn btn-primary" disabled>
+                Add Constraint to Board
+              </button>
+
+              <div class="divider"></div>
+
+              <h3>Board Actions</h3>
+              <button id="clear-board-btn" class="btn btn-secondary">
+                Clear Board
+              </button>
+              <button id="import-board-btn" class="btn btn-secondary">
+                Import JSON
+              </button>
+              <button id="export-board-btn" class="btn btn-secondary">
+                Export JSON
+              </button>
+            </div>
+
+            <!-- Grid Area -->
+            <div class="grid-area">
+              <div class="grid-wrapper">
+                <div id="sudoku-grid" class="sudoku-grid"></div>
+              </div>
+              <div id="active-constraints" class="active-constraints">
+                <h3>Active Constraints</h3>
+                <ul id="constraint-list-display"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Solver Mode -->
+        <div id="solver-mode" class="mode-panel">
+          <div class="panel-container">
+            <!-- Solver Controls -->
+            <div class="toolbar">
+              <h2>Solver</h2>
+
+              <div class="solver-select">
+                <label for="solver-type">Solver Type:</label>
+                <select id="solver-type">
+                  <option value="simple">Simple (Elimination only)</option>
+                  <option value="composite" selected>
+                    Composite (All strategies)
+                  </option>
+                  <option value="backtracking">Backtracking</option>
+                </select>
+              </div>
+
+              <button id="solve-step-btn" class="btn btn-primary">
+                Execute Step
+              </button>
+              <button id="solve-auto-btn" class="btn btn-success">
+                Auto Solve
+              </button>
+              <button id="reset-board-btn" class="btn btn-warning">
+                Reset to Initial
+              </button>
+
+              <div class="divider"></div>
+
+              <h3>Board Status</h3>
+              <div id="board-status" class="board-status">
+                <p><strong>Valid:</strong> <span id="status-valid">-</span></p>
+                <p>
+                  <strong>Solved:</strong> <span id="status-solved">-</span>
+                </p>
+                <p><strong>Steps:</strong> <span id="status-steps">0</span></p>
+              </div>
+            </div>
+
+            <!-- Grid and Logs -->
+            <div class="grid-area">
+              <div class="grid-wrapper">
+                <div id="sudoku-grid-solver" class="sudoku-grid"></div>
+              </div>
+
+              <div id="solver-logs" class="solver-logs">
+                <h3>Solver Logs</h3>
+                <div id="log-container" class="log-container">
+                  <!-- Logs will appear here -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden file input for import -->
+    <input type="file" id="file-input" accept=".json" style="display: none" />
+
+    <!-- Modal for constraint parameters -->
+    <div id="constraint-param-modal" class="modal">
+      <div class="modal-content">
+        <h3 id="modal-title">Constraint Parameters</h3>
+        <div id="modal-body"></div>
+        <div class="modal-buttons">
+          <button id="modal-ok" class="btn btn-primary">OK</button>
+          <button id="modal-cancel" class="btn btn-secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/constraints.js"></script>
+    <script type="module" src="js/app.js"></script>
+  </body>
 </html>

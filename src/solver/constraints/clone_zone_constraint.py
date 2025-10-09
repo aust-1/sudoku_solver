@@ -134,5 +134,7 @@ class CloneZoneConstraint(BaseConstraint):
         Returns:
             str: String representation for debugging.
         """
-        zones_repr = ", ".join("[" + ", ".join(zone) + "]" for zone in self.zones)
+        zones_repr = ", ".join(
+            "[" + ", ".join(cell.pos for cell in zone) + "]" for zone in self.zones
+        )
         return f"CloneZoneConstraint({zones_repr})"

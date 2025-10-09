@@ -1,29 +1,605 @@
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    margin: 2rem;
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.grid {
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+#app {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+header {
+    background: white;
+    border-radius: 12px;
+    padding: 20px 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    color: #667eea;
+    font-size: 28px;
+}
+
+.mode-toggle {
+    display: flex;
+    gap: 10px;
+}
+
+.mode-btn {
+    padding: 10px 20px;
+    border: 2px solid #667eea;
+    background: white;
+    color: #667eea;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mode-btn:hover {
+    background: #f0f4ff;
+}
+
+.mode-btn.active {
+    background: #667eea;
+    color: white;
+}
+
+/* Mode Panels */
+.mode-panel {
+    display: none;
+}
+
+.mode-panel.active {
+    display: block;
+}
+
+.panel-container {
     display: grid;
-    grid-template-columns: repeat(9, 40px);
-    grid-template-rows: repeat(9, 40px);
-    gap: 2px;
+    grid-template-columns: 300px 1fr;
+    gap: 20px;
+}
+
+/* Toolbar */
+.toolbar {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.toolbar h2 {
+    color: #667eea;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.toolbar h3 {
+    color: #555;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.divider {
+    height: 1px;
+    background: #e0e0e0;
+    margin: 20px 0;
+}
+
+/* Constraint List */
+.constraint-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.constraint-item {
+    padding: 10px 15px;
+    background: #f5f5f5;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.constraint-item:hover {
+    background: #e8f0fe;
+    border-color: #667eea;
+}
+
+.constraint-item.selected {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.constraint-info {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.constraint-params {
+    margin-top: 15px;
+}
+
+.param-group {
+    margin-bottom: 15px;
+}
+
+.param-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #555;
+}
+
+.param-group input,
+.param-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+/* Buttons */
+.btn {
+    width: 100%;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 10px;
+}
+
+.btn-primary {
+    background: #667eea;
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: #5568d3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #218838;
+}
+
+.btn-warning {
+    background: #ffc107;
+    color: #333;
+}
+
+.btn-warning:hover {
+    background: #e0a800;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Grid Area */
+.grid-area {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Sudoku Grid */
+.grid-wrapper {
+    position: relative;
+    display: inline-block;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sudoku-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 60px);
+    grid-template-rows: repeat(9, 60px);
+    gap: 0;
+    border: 3px solid #333;
+}
+
+/* Constraint visualization overlay */
+.constraint-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
 }
 
 .cell {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background: white;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+/* Box borders */
+.cell:nth-child(3n) {
+    border-right: 3px solid #333;
+}
+
+.cell:nth-child(n + 19):nth-child(-n + 27),
+.cell:nth-child(n + 46):nth-child(-n + 54) {
+    border-bottom: 3px solid #333;
+}
+
+.cell:hover {
+    background: #f0f4ff;
+}
+
+.cell.selected {
+    background: #fff3cd;
+}
+
+.cell.highlighted {
+    background: #d1ecf1;
+}
+
+.cell.changed {
+    background: #d4edda;
+    animation: pulse 0.5s ease;
+}
+
+.cell.eliminated {
+    background: #f8d7da;
+    animation: pulse 0.5s ease;
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Cell Value */
+.cell-value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+}
+
+.cell-value.given {
+    color: #000;
+}
+
+.cell-value.solved {
+    color: #667eea;
+}
+
+/* Cell Candidates */
+.cell-candidates {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    width: 100%;
+    height: 100%;
+    padding: 4px;
+    font-size: 10px;
+    color: #666;
+}
+
+.candidate {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid #ccc;
-    cursor: pointer;
 }
 
-.constraint-active {
-    background-color: #e0f7fa;
+/* Active Constraints */
+.active-constraints {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.active-constraints h3 {
+    color: #667eea;
+    margin-bottom: 15px;
+}
+
+.active-constraints ul {
+    list-style: none;
+}
+
+.active-constraints li {
+    padding: 8px 12px;
+    background: #f5f5f5;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.constraint-delete {
+    color: #dc3545;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Solver Logs */
+.solver-logs {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-height: 500px;
+}
+
+.solver-logs h3 {
+    color: #667eea;
+    margin-bottom: 15px;
+}
+
+.log-container {
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+.log-entry {
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+    background: #f9f9f9;
+}
+
+.log-entry.no-change {
+    border-left-color: #6c757d;
+}
+
+.log-entry.success {
+    border-left-color: #28a745;
+    background: #d4edda;
+}
+
+.log-entry.error {
+    border-left-color: #dc3545;
+    background: #f8d7da;
+}
+
+.log-header {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.log-changes {
+    font-size: 14px;
+    color: #555;
+}
+
+.change-item {
+    margin: 4px 0;
+    padding: 4px 8px;
+    background: white;
+    border-radius: 4px;
+}
+
+.change-item.value-set {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.change-item.candidates-eliminated {
+    color: #dc3545;
+}
+
+/* Board Status */
+.board-status {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.board-status p {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.board-status span {
+    color: #667eea;
+    font-weight: bold;
+}
+
+/* Solver Select */
+.solver-select {
+    margin-bottom: 15px;
+}
+
+.solver-select label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #555;
+}
+
+.solver-select select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .panel-container {
+        grid-template-columns: 1fr;
+    }
+
+    .toolbar {
+        max-height: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .sudoku-grid {
+        grid-template-columns: repeat(9, 45px);
+        grid-template-rows: repeat(9, 45px);
+    }
+
+    .cell {
+        width: 45px;
+        height: 45px;
+    }
+
+    .cell-value {
+        font-size: 20px;
+    }
+
+    .cell-candidates {
+        font-size: 8px;
+    }
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    min-width: 300px;
+    max-width: 500px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #667eea;
+}
+
+.modal-body {
+    margin-bottom: 20px;
+}
+
+.modal-body label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+}
+
+.modal-body input,
+.modal-body select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.modal-buttons .btn {
+    width: auto;
+    padding: 10px 20px;
+    margin-bottom: 0;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #5568d3;
 }
