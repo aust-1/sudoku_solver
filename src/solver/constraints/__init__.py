@@ -41,9 +41,11 @@ __all__ = [
 
 # TODO: Arrow
 # TODO: Ascending Sequences
+# TODO: Axia
 # TODO: Between Lines
 # TODO: Consecutive
 # TODO: Couples
+# TODO: Friendly-Cells
 # TODO: Jigsaw
 # TODO: Little Unique Killer
 # TODO: Lockout Lines
@@ -61,4 +63,3 @@ __all__ = [
 # TODO: Windoku
 # TODO: X-Sum
 # TODO: Zipper Line
-# TODO: la nouvelle là, carré avec diagonales noires

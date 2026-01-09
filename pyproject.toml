@@ -3,26 +3,30 @@ build-backend = "setuptools.build_meta"
 requires = ["setuptools", "wheel"]
 
 [project]
-name = "sudoku-solver"
-version = "0.1.0"
+dependencies = [
+  "loggerplusplus",
+  "pygame",
+  "flask>=3.0.0",
+  "flask-cors>=6.0.2",
+]
 description = "Simple Sudoku solver implemented in Python."
+license = {file = "LICENSE"}
+name = "sudoku-solver"
 readme = "README.md"
 requires-python = ">=3.11"
-license = { file = "LICENSE" }
-dependencies = ["loggerplusplus", "pygame", "flask>=3.0.0", "flask-cors>=4.0.0"]
+version = "0.1.0"
 
 [dependency-groups]
 dev = [
-    "black>=25.1.0",
-    "isort>=6.0.1",
-    "mypy>=1.17.1",
-    "pdoc>=15.0.4",
-    "pydoclint>=0.6.8",
-    "pylint>=3.3.8",
-    "pytest>=8.4.1",
-    "pytest-cov>=6.2.1",
-    "requests>=2.31.0",
-    "ruff>=0.12.8",
+  "isort>=7.0.0",
+  "mypy>=1.19.1",
+  "pdoc>=16.0.0",
+  "pydoclint>=0.8.3",
+  "pylint>=4.0.4",
+  "pytest>=9.0.2",
+  "pytest-cov>=7.0.0",
+  "requests>=2.31.0",
+  "ruff>=0.14.11",
 ]
 
 [tool.isort]
@@ -60,16 +64,16 @@ skip-checking-short-docstrings = false
 style = 'google'
 
 [tool.pylint.main]
-enable = "all"
 disable = [
-    "E0401", # import-error
-    "R0902", # too-many-instance-attributes
-    "R0903", # too-few-public-methods
-    "W0212", # protected-access -> Best management with ruff
-    "W0511", # fixme
-    "W0613", # unused-argument -> Best management with ruff
-    "W1113", # keyword-arg-before-vararg -> Best management with ruff
+  "E0401", # import-error
+  "R0902", # too-many-instance-attributes
+  "R0903", # too-few-public-methods
+  "W0212", # protected-access -> Best management with ruff
+  "W0511", # fixme
+  "W0613", # unused-argument -> Best management with ruff
+  "W1113", # keyword-arg-before-vararg -> Best management with ruff
 ]
+enable = "all"
 msg-template = "{line}:{column}: {msg_id}: {msg} ({symbol})"
 output-format = "text"
 
@@ -97,18 +101,18 @@ quote-style = "double"
 known-first-party = ["sudoku"]
 
 [tool.ruff.lint]
-select = ["ALL"]
 ignore = [
-    "CPY001", # missing-copyright-notice
-    "FIX001", # line-contains-fixme
-    "FIX002", # line-contains-todo
-    "FIX004", # line-contains-hack
-    "G004",   # logging-f-string
-    "TD001",  # invalid-todo-tag
-    "TD002",  # missing-todo-author
-    "TD003",  # missing-todo-link
-    "TRY400", # error-instead-of-exception
+  "CPY001", # missing-copyright-notice
+  "FIX001", # line-contains-fixme
+  "FIX002", # line-contains-todo
+  "FIX004", # line-contains-hack
+  "G004", # logging-f-string
+  "TD001", # invalid-todo-tag
+  "TD002", # missing-todo-author
+  "TD003", # missing-todo-link
+  "TRY400", # error-instead-of-exception
 ]
+select = ["ALL"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

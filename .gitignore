@@ -172,3 +172,8 @@ cython_debug/
 
 # loggerplusplus logs
 logs/
+
+# BMAD (local only)
+.bmad-core/
+.bmad-*/
+web_bundles/
