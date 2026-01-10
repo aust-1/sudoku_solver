@@ -2,7 +2,7 @@
   "cells": {
     "a2": [1, 2, 3]
   },
-  "constraint": [
+  "constraints": [
     {
       "cells": ["a1", "b2", "c3", "d4"],
       "type": "bishop"

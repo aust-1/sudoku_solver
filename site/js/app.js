@@ -148,7 +148,7 @@ async function initializeBoard() {
   const boardData = {
     size: 9,
     cells: {},
-    constraint: [],
+    constraints: [],
   };
 
   // Initialize all cells with candidates 1-9
@@ -684,7 +684,7 @@ function exportBoard() {
   const data = {
     size: state.board.size,
     cells: {},
-    constraint: state.board.constraints,
+    constraints: state.board.constraints,
   };
 
   // Convert cells array to dictionary format

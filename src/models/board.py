@@ -6,6 +6,7 @@ from loggerplusplus import Logger
 
 from models import Cell
 from solver.constraints.factory import create_constraint_from_dict
+from utils.exceptions import InvalidSudokuError
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -44,9 +45,10 @@ class Board:
         Returns:
             Board: The loaded Sudoku board.
         """
-        board = cls(input_dict["size"])
-        board._load_cells_from_dict(input_dict["cells"])
-        board._load_constraint_from_dict(input_dict["constraint"])
+        normalized = cls._normalize_board_dict(input_dict)
+        board = cls(normalized["size"])
+        board._load_cells_from_dict(normalized["cells"])
+        board._load_constraint_from_dict(constraint_dict=normalized["constraints"])
         return board
 
     def to_dict(self) -> dict[str, Any]:
@@ -57,9 +59,87 @@ class Board:
         """
         return {
             "size": self._size,
-            "cells": {cell.pos: [cell.candidates] for cell in self.get_all_cells()},
-            "constraint": [c.to_dict() for c in self._constraints],
+            "cells": {
+                cell.pos: sorted(cell.candidates) for cell in self.get_all_cells()
+            },
+            "constraints": [c.to_dict() for c in self._constraints],
         }
+
+    @staticmethod
+    def _normalize_board_dict(input_dict: dict[str, Any]) -> dict[str, Any]:
+        """Validate and normalize a board payload.
+
+        Args:
+            input_dict (dict[str, Any]): The input board payload.
+
+        Returns:
+            dict[str, Any]: The normalized board payload.
+
+        Raises:
+            InvalidSudokuError: If the payload is malformed.
+        """
+        if "size" not in input_dict:
+            msg = "Missing required field: size."
+            raise InvalidSudokuError(msg)
+        size = input_dict["size"]
+        if not isinstance(size, int) or size <= 0:
+            msg = "size must be a positive integer."
+            raise InvalidSudokuError(msg)
+
+        if "cells" not in input_dict:
+            msg = "Missing required field: cells."
+            raise InvalidSudokuError(msg)
+        cells = input_dict["cells"]
+        if not isinstance(cells, dict):
+            msg = "cells must be an object mapping cell ids to candidate lists."
+            raise InvalidSudokuError(msg)
+
+        constraints = input_dict.get("constraints", [])
+
+        if not isinstance(constraints, list):
+            msg = "constraints must be a list."
+            raise InvalidSudokuError(msg)
+
+        for cell_id, candidates in cells.items():
+            if not isinstance(cell_id, str):
+                msg = "Cell id keys must be strings."
+                raise InvalidSudokuError(msg)
+            if not Board._is_valid_cell_id(cell_id, size):
+                msg = f"Invalid cell id: {cell_id}."
+                raise InvalidSudokuError(msg)
+            if not isinstance(candidates, list):
+                msg = f"Candidates for cell '{cell_id}' must be a list."
+                raise InvalidSudokuError(msg)
+            if any(not isinstance(c, int) or not 1 <= c <= size for c in candidates):
+                msg = f"Candidates for cell '{cell_id}' must be integers between 1 and {size}."
+                raise InvalidSudokuError(msg)
+            if len(set(candidates)) != len(candidates):
+                msg = f"Candidates for cell '{cell_id}' must be unique."
+                raise InvalidSudokuError(msg)
+
+        for idx, constraint in enumerate(constraints):
+            if not isinstance(constraint, dict):
+                msg = f"Constraint at index {idx} must be an object."
+                raise InvalidSudokuError(msg)
+            constraint_type = constraint.get("type")
+            if not isinstance(constraint_type, str) or not constraint_type.strip():
+                msg = f"Constraint at index {idx} must include a non-empty 'type'."
+                raise InvalidSudokuError(msg)
+
+        return {"size": size, "cells": cells, "constraints": constraints}
+
+    @staticmethod
+    def _is_valid_cell_id(cell_id: str, size: int) -> bool:
+        if len(cell_id) != 2:
+            return False
+        row_char = cell_id[0]
+        col_char = cell_id[1]
+        if not ("a" <= row_char < chr(ord("a") + size)):
+            return False
+        if not col_char.isdigit():
+            return False
+        col = int(col_char)
+        return 1 <= col <= size
 
     def _init_reachability(self) -> None:
         """Initialise reachable cells for each cell."""

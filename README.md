@@ -209,7 +209,7 @@ Les grilles sont stockées au format JSON :
     "a2": [5],
     "b1": [1, 2, 3, 4, 5, 6, 7, 8, 9]
   },
-  "constraint": [
+  "constraints": [
     {
       "type": "knight"
     },
@@ -227,7 +227,21 @@ Les grilles sont stockées au format JSON :
 ```
 
 - **cells** : dictionnaire `position -> liste de candidats`
-- **constraint** : liste de contraintes avec leurs paramètres
+- **constraints** : liste de contraintes avec leurs paramètres
+
+Required fields:
+
+- `size` (int): grid size (usually 9)
+- `cells` (object): map of cell id to candidate list
+
+Optional fields:
+
+- `constraints` (array): constraint objects, empty if none
+
+Cell ids use the `a1` format where `a` is row 0, `1` is column 0. Row letters
+go from `a` to `a + size - 1`, columns go from `1` to `size`.
+
+Legacy compatibility: the API also accepts `constraint` as the key name.
 
 Voir `board.json` et `board.example.json` pour des exemples complets.
 
