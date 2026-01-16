@@ -6,6 +6,7 @@ class ConstraintType(Enum):
 
     BISHOP = "bishop"
     CLONE = "clone"
+    COUPLE = "couple"
     DUTCH = "dutch"
     FRIENDLY_CELL = "friendly_cell"
     PARITY = "parity"

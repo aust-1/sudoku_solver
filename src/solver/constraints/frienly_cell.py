@@ -68,7 +68,7 @@ class FriendlyCellConstraint(BaseConstraint):
             set[Cell]:
                 A set of cells that do not satisfy the parity constraint.
         """
-        if self.friendly_cell.value not in {
+        if self.friendly_cell.value is not None and self.friendly_cell not in {
             self.friendly_cell.row + 1,
             self.friendly_cell.col + 1,
             self.friendly_cell.box + 1,
@@ -112,7 +112,7 @@ class FriendlyCellConstraint(BaseConstraint):
         Args:
             gui (SudokuGUI): The GUI to draw on.
         """
-        # TODO: implement drawing
+        # TODO: implement drawing (hearth)
 
     @override
     def deep_copy(self) -> FriendlyCellConstraint:

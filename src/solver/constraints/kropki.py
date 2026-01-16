@@ -228,5 +228,3 @@ class KropkiConstraint(BaseConstraint):
 
 
 # TODO: implement logique quand plusieurs kropki à la suite
-
-# QUESTION: init par set ou deux cells
