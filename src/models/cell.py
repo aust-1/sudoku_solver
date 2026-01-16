@@ -58,12 +58,16 @@ class Cell:
         return self._value is not None
 
     @property
-    def row(self) -> int:
+    def row(self) -> int:  # TODO: docstring with 0,8 range specification
         return self._row
 
     @property
     def col(self) -> int:
         return self._col
+
+    @property
+    def box(self) -> int:
+        return self._row // 3 * 3 + self._col // 3
 
     @property
     def pos(self) -> str:

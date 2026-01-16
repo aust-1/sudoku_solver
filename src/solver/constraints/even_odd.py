@@ -134,7 +134,7 @@ class ParityConstraint(BaseConstraint):
 
     @override
     def draw(self, gui: SudokuGUI) -> None:
-        """Draw this bishop constraint on ``gui``.
+        """Draw this parity constraint on ``gui``.
 
         Args:
             gui (SudokuGUI): The GUI to draw on.
