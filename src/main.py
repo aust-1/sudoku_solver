@@ -4,9 +4,7 @@ import json
 
 from models import Board
 from solver import CompositeSolver
-from solver.constraints import (
-    PalindromeConstraint,
-)
+from solver.constraints import PalindromeConstraint
 from utils import SudokuGUI
 
 
