@@ -4,6 +4,7 @@ from enum import Enum
 class ConstraintType(Enum):
     """Represents the type of constraint in the Sudoku puzzle."""
 
+    AXIA = "axia"
     BISHOP = "bishop"
     CLONE = "clone"
     COUPLE = "couple"

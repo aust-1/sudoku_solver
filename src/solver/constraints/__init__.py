@@ -4,6 +4,7 @@ This module provides various constraint types that can be applied to Sudoku puzz
 to create variant puzzles with additional rules beyond standard Sudoku.
 """
 
+from solver.constraints.axia import AxiaConstraint
 from solver.constraints.base_constraint import BaseConstraint
 from solver.constraints.bishop import BishopConstraint
 from solver.constraints.clone import CloneConstraint
@@ -23,6 +24,7 @@ from solver.constraints.whispers import DutchConstraint, GermanConstraint
 from solver.constraints.xv import XVConstraint
 
 __all__ = [
+    "AxiaConstraint",
     "BaseConstraint",
     "BishopConstraint",
     "CloneConstraint",
@@ -45,7 +47,6 @@ __all__ = [
 
 # TODO: Arrow
 # TODO: Ascending Sequences
-# TODO: Axia
 # TODO: Between Lines
 # TODO: Consecutive
 # TODO: Jigsaw
