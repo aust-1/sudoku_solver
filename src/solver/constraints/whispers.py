@@ -268,7 +268,7 @@ class DutchConstraint(_BaseDiffConstraint):
         Args:
             dutch_cells (list[Cell]): The list of cells to apply constraints to.
         """
-        super().__init__(dutch_cells, 5, ConstraintType.DUTCH)
+        super().__init__(dutch_cells, 4, ConstraintType.DUTCH)
 
     @classmethod
     @override
