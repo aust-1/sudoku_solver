@@ -59,16 +59,16 @@ class FriendlyCellConstraint(BaseConstraint):
 
     @override
     def check(self, board: Board) -> set[Cell]:
-        """Check if the parity constraint is satisfied.
+        """Check if the friendly cell constraint is satisfied.
 
         Args:
             board (Board): The Sudoku board to check.
 
         Returns:
             set[Cell]:
-                A set of cells that do not satisfy the parity constraint.
+                A set of cells that do not satisfy the friendly cell constraint.
         """
-        if self.friendly_cell.value is not None and self.friendly_cell not in {
+        if self.friendly_cell.value is not None and self.friendly_cell.value not in {
             self.friendly_cell.row + 1,
             self.friendly_cell.col + 1,
             self.friendly_cell.box + 1,
