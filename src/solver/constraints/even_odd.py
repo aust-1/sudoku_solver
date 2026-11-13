@@ -74,6 +74,18 @@ class ParityConstraint(BaseConstraint):
 
         cell = board.get_cell(pos=data["cell"])
         rest = data["rest"]
+
+        if isinstance(rest, str) and rest in {"0", "1"}:
+            rest = int(rest)
+
+        if (
+            isinstance(rest, bool)
+            or not isinstance(rest, int)
+            or rest not in {0, 1}
+        ):
+            msg = "Parity constraint 'rest' must be 0 or 1"
+            raise ValueError(msg)
+
         return cls(cell, rest)
 
     @override
