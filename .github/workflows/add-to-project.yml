@@ -1,0 +1,26 @@
+# Ajoute chaque nouvelle issue et pull request au projet GitHub « Projets perso ».
+#
+# Le GITHUB_TOKEN ne peut pas écrire dans un projet GitHub : le secret
+# ADD_TO_PROJECT_PAT doit contenir un jeton qui a accès en écriture au projet.
+name: Add to project
+
+on:
+  issues:
+    types: [opened, reopened, transferred]
+  # pull_request_target pour avoir le secret aussi sur les PR venant d'un fork :
+  # aucun code de la PR n'est récupéré ni exécuté.
+  pull_request_target:
+    types: [opened, reopened]
+
+permissions: {}
+
+jobs:
+  add-to-project:
+    name: Add to Projets perso
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/add-to-project@v2.0.0
+        with:
+          project-url: https://github.com/users/aust-1/projects/1
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
