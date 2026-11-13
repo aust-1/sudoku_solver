@@ -1,1 +1,66 @@
-PLACEHOLDER
+{
+  "cells": {
+    "...": "...",
+    "a1": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "a2": [1, 2, 3]
+  },
+  "constraints": [
+    {
+      "cells": ["a1", "b2", "..."],
+      "type": "bishop"
+    },
+    {
+      "cells": ["a1", "d4", "f8"],
+      "type": "clone"
+    },
+    {
+      "cells": ["a1", "b2", "..."],
+      "type": "dutch"
+    },
+    {
+      "cell": "a1",
+      "rest": 1,
+      "type": "parity"
+    },
+    {
+      "cells": ["a1", "b2", "..."],
+      "type": "german"
+    },
+    {
+      "higher_value_cell": "a2",
+      "lower_value_cell": "a1",
+      "type": "greater_than"
+    },
+    {
+      "cells": ["a1", "b2", "..."],
+      "sum": 15,
+      "type": "killer"
+    },
+    {
+      "type": "knight"
+    },
+    {
+      "type": "king"
+    },
+    {
+      "type": "universal"
+    },
+    {
+      "cell1": "a1",
+      "cell2": "a2",
+      "color": "black",
+      "type": "kropki"
+    },
+    {
+      "cells": ["a1", "b2", "..."],
+      "type": "palindrome"
+    },
+    {
+      "cell1": "a1",
+      "cell2": "a2",
+      "sum": "10",
+      "type": "x_v"
+    }
+  ],
+  "size": 9
+}
