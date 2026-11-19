@@ -8,6 +8,7 @@ const state = {
   board: null,
   initialBoard: null,
   selectedCells: [],
+  activeCell: null, // Last clicked cell in setup mode, receives typed digits
   selectedConstraint: null,
   constraints: [],
   stepCount: 0,
@@ -24,6 +25,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Setup event listeners
 function setupEventListeners() {
+  // Given digits typed in setup mode
+  document.addEventListener("keydown", handleSetupKeydown);
+
   // Mode switching
   document
     .getElementById("setup-mode-btn")
@@ -203,6 +207,13 @@ function createGrid(gridId) {
 function handleCellClick(cellElement) {
   const pos = cellElement.dataset.pos;
 
+  // The last clicked cell receives the digits typed on the keyboard
+  document
+    .querySelectorAll("#sudoku-grid .cell.active")
+    .forEach((cell) => cell.classList.remove("active"));
+  cellElement.classList.add("active");
+  state.activeCell = pos;
+
   // Toggle selection
   if (state.selectedCells.includes(pos)) {
     state.selectedCells = state.selectedCells.filter((p) => p !== pos);
@@ -210,6 +221,61 @@ function handleCellClick(cellElement) {
   } else {
     state.selectedCells.push(pos);
     cellElement.classList.add("selected");
+  }
+}
+
+// Type a given digit (1-9) in the active cell of the setup grid, or clear it
+// with Delete / Backspace
+function handleSetupKeydown(event) {
+  if (state.mode !== "setup" || !state.activeCell) return;
+  if (event.ctrlKey || event.metaKey || event.altKey) return;
+  const target = event.target;
+  if (
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLSelectElement ||
+    target instanceof HTMLTextAreaElement ||
+    document
+      .getElementById("constraint-param-modal")
+      .classList.contains("active")
+  ) {
+    return;
+  }
+
+  if (/^[1-9]$/.test(event.key)) {
+    event.preventDefault();
+    setGivenDigit(state.activeCell, parseInt(event.key));
+  } else if (event.key === "Delete" || event.key === "Backspace") {
+    event.preventDefault();
+    setGivenDigit(state.activeCell, null);
+  }
+}
+
+// Place (or clear, with null) a given digit of the puzzle
+async function setGivenDigit(pos, value) {
+  const candidates = value === null ? [1, 2, 3, 4, 5, 6, 7, 8, 9] : [value];
+  try {
+    const response = await fetch(`${API_BASE}/board/${state.boardId}/cell`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ pos, value, candidates, given: value !== null }),
+    });
+    let data = null;
+    try {
+      data = await response.json();
+    } catch (error) {
+      data = null;
+    }
+    if (!response.ok || !data || data.error) {
+      const message =
+        (data && data.error) || `Request failed (${response.status})`;
+      alert(`Failed to set cell ${pos.toUpperCase()}: ${message}`);
+      return;
+    }
+    state.board = data.board;
+    renderGrid("sudoku-grid");
+  } catch (error) {
+    console.error("Failed to set given digit:", error);
+    alert(`Failed to set cell ${pos.toUpperCase()}: ${error.message}`);
   }
 }
 
@@ -468,7 +534,8 @@ function renderGrid(gridId) {
     if (cellData.is_filled) {
       // Show value
       const valueDiv = document.createElement("div");
-      valueDiv.className = "cell-value";
+      // Given digits of the puzzle and placed digits look different
+      valueDiv.className = `cell-value ${cellData.is_given ? "given" : "solved"}`;
       valueDiv.textContent = cellData.value;
       cellElement.appendChild(valueDiv);
     } else {

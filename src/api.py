@@ -95,6 +95,7 @@ def _serialize_board_ui(
                 "value": cell.value,
                 "candidates": sorted(cell.candidates),
                 "is_filled": cell.is_filled(),
+                "is_given": cell.given,
             }
             for cell in board.get_all_cells()
         ],
@@ -165,7 +166,27 @@ def _create_board(payload: dict[str, Any]) -> tuple[Board, list[dict[str, Any]]]
 
     normalized = _normalize_board_payload(payload)
     board = Board.from_dict(normalized)
+    _place_givens(board, normalized.get("cells", {}))
     return board, constraints_list
+
+
+def _place_givens(board: Board, cells: dict[str, list[int]]) -> None:
+    """Fill the cells with a single candidate and mark them as given digits.
+
+    In the board JSON format, a given digit is written as a one-element
+    candidate list (``"a1": [4]``).
+
+    Args:
+        board (Board): The board loaded from ``cells``.
+        cells (dict[str, list[int]]): The candidate lists of the board JSON.
+    """
+    for pos, candidates in cells.items():
+        if len(candidates) != 1:
+            continue
+        cell = board.get_cell(pos=pos)
+        if not cell.is_filled():
+            cell.value = candidates[0]
+        cell.given = True
 
 
 def _build_constraint_catalog() -> list[dict[str, str]]:
@@ -279,6 +300,8 @@ def update_cell(board_id: str) -> Any:
     else:
         cell.value = int(value)
 
+    # A digit typed in setup mode is part of the puzzle ("given": true).
+    cell.given = cell.value is not None and payload.get("given") is True
     return jsonify({
         "board": _serialize_board_ui(board, board_constraints.get(board_id, [])),
     })

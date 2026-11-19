@@ -325,6 +325,20 @@ header h1 {
 
 .cell-value.given {
     color: #000;
+    font-weight: 800;
+}
+
+/* Cell receiving the digits typed in setup mode */
+.cell.active {
+    outline: 2px solid #667eea;
+    outline-offset: -2px;
+}
+
+.grid-hint {
+    font-size: 13px;
+    color: #666;
+    margin-top: 10px;
+    text-align: center;
 }
 
 .cell-value.solved {
