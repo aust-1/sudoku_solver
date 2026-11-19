@@ -115,6 +115,11 @@ header h1 {
 }
 
 .constraint-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    font: inherit;
+    color: inherit;
     padding: 10px 15px;
     background: #f5f5f5;
     border: 2px solid transparent;
@@ -274,14 +279,46 @@ header h1 {
     transition: background 0.2s ease;
 }
 
+/* Rows only exist for assistive technologies: cells stay in the CSS grid */
+.grid-row {
+    display: contents;
+}
+
 /* Box borders */
-.cell:nth-child(3n) {
+.cell[data-col="2"],
+.cell[data-col="5"],
+.cell[data-col="8"] {
     border-right: 3px solid #333;
 }
 
-.cell:nth-child(n + 19):nth-child(-n + 27),
-.cell:nth-child(n + 46):nth-child(-n + 54) {
+.cell[data-row="2"],
+.cell[data-row="5"] {
     border-bottom: 3px solid #333;
+}
+
+/* Cell edited with the keypad in solver mode */
+.cell.editing {
+    box-shadow: inset 0 0 0 3px #667eea;
+}
+
+/* Changes of a step are marked with a symbol, not only a colour */
+.cell.changed::before,
+.cell.eliminated::before {
+    position: absolute;
+    top: 1px;
+    left: 3px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.cell.changed::before {
+    content: "✓";
+    color: #155724;
+}
+
+.cell.eliminated::before {
+    content: "✗";
+    color: #721c24;
 }
 
 .cell:hover {
@@ -380,6 +417,11 @@ header h1 {
     color: #dc3545;
     cursor: pointer;
     font-weight: bold;
+    background: none;
+    border: none;
+    font-size: 16px;
+    padding: 2px 6px;
+    border-radius: 4px;
 }
 
 /* Solver Logs */
@@ -602,4 +644,80 @@ header h1 {
 
 ::-webkit-scrollbar-thumb:hover {
     background: #5568d3;
+}
+
+/* Visible keyboard focus */
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+.cell:focus-visible {
+    outline: 3px solid #1a3dbf;
+    outline-offset: 2px;
+}
+
+.cell:focus-visible {
+    outline-offset: -3px;
+    z-index: 20;
+}
+
+/* In-page messages */
+.notification {
+    margin: 0 0 15px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    background: #e8f0fe;
+    color: #1a3d7c;
+    font-weight: 600;
+}
+
+.notification:empty {
+    display: none;
+}
+
+.notification.success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.notification.error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.param-title {
+    font-weight: 600;
+    color: #555;
+    margin: 0 0 5px;
+}
+
+.param-help {
+    font-size: 12px;
+    color: #555;
+}
+
+/* Keypad of the solver mode */
+.keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.keypad-btn {
+    padding: 10px 0;
+    font-size: 16px;
+    font-weight: bold;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+}
+
+.keypad-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.keypad-clear {
+    grid-column: 1 / -1;
 }
