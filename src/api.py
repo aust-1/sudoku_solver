@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import time
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -23,17 +24,70 @@ SITE_DIR = ROOT_DIR / "site"
 app = Flask(__name__)
 CORS(app)
 
+# In-memory state, keyed by board_id. Boards unused for BOARD_TTL_SECONDS are
+# dropped, and at most MAX_BOARDS are kept (least recently used first out).
+MAX_BOARDS = 100
+BOARD_TTL_SECONDS = 60 * 60
+MAX_LOGS_PER_BOARD = 200
+
 boards: dict[str, Board] = {}
 board_constraints: dict[str, list[dict[str, Any]]] = {}
 board_logs: dict[str, list[dict[str, Any]]] = {}
-current_board: Board | None = None
-current_constraints: list[dict[str, Any]] = []
+board_last_access: dict[str, float] = {}
 
 
-def set_current_board_for_tests(board: Board) -> None:
-    global current_board, current_constraints
-    current_board = board
-    current_constraints = [c.to_dict() for c in board.constraints]
+def _forget_board(board_id: str) -> None:
+    """Remove every piece of state kept for ``board_id``.
+
+    Args:
+        board_id (str): The board to forget.
+    """
+    boards.pop(board_id, None)
+    board_constraints.pop(board_id, None)
+    board_logs.pop(board_id, None)
+    board_last_access.pop(board_id, None)
+
+
+def _purge_expired_boards() -> None:
+    """Forget the boards that were not used for ``BOARD_TTL_SECONDS``."""
+    deadline = time.monotonic() - BOARD_TTL_SECONDS
+    for board_id in [b for b, last in board_last_access.items() if last < deadline]:
+        _forget_board(board_id)
+
+
+def _store_board(board: Board, constraints: list[dict[str, Any]]) -> str:
+    """Keep ``board`` in memory under a new id, within ``MAX_BOARDS``.
+
+    Args:
+        board (Board): The board to store.
+        constraints (list[dict[str, Any]]): The constraints as sent by the client.
+
+    Returns:
+        str: The id of the stored board.
+    """
+    _purge_expired_boards()
+    while len(boards) >= MAX_BOARDS:
+        oldest = min(board_last_access, key=board_last_access.__getitem__)
+        _forget_board(oldest)
+
+    board_id = str(uuid.uuid4())
+    boards[board_id] = board
+    board_constraints[board_id] = constraints
+    board_logs[board_id] = []
+    board_last_access[board_id] = time.monotonic()
+    return board_id
+
+
+def _append_log(board_id: str, entry: dict[str, Any]) -> None:
+    """Add ``entry`` to the logs of ``board_id``, keeping the latest ones only.
+
+    Args:
+        board_id (str): The board the entry belongs to.
+        entry (dict[str, Any]): The log entry.
+    """
+    logs = board_logs.setdefault(board_id, [])
+    logs.append(entry)
+    del logs[:-MAX_LOGS_PER_BOARD]
 
 
 def _default_board_payload(size: int = 9) -> dict[str, Any]:
@@ -186,9 +240,11 @@ def _build_constraint_catalog() -> list[dict[str, str]]:
 
 
 def _get_board_or_404(board_id: str) -> Board:
+    _purge_expired_boards()
     board = boards.get(board_id)
     if board is None:
         abort(404, description="Board not found")
+    board_last_access[board_id] = time.monotonic()
     return board
 
 
@@ -234,14 +290,46 @@ def create_board() -> Any:
     except (InvalidSudokuError, ValueError) as exc:
         return jsonify({"error": str(exc)}), 400
 
-    board_id = str(uuid.uuid4())
+    board_id = _store_board(board, constraints_list)
+
+    return jsonify({
+        "board_id": board_id,
+        "board": _serialize_board_ui(board, constraints_list),
+    })
+
+
+@app.delete("/api/board/<board_id>")
+def delete_board(board_id: str) -> Any:
+    _get_board_or_404(board_id)
+    _forget_board(board_id)
+    return jsonify({"deleted": board_id})
+
+
+@app.post("/api/board/<board_id>/reset")
+def reset_board(board_id: str) -> Any:
+    """Replace the board with the given state and clear its logs.
+
+    The body uses the board JSON format (``size``, ``cells``, ``constraints``),
+    for instance the state saved by the site when it enters solver mode.
+
+    Args:
+        board_id (str): The board to reset.
+
+    Returns:
+        Any: The new state of the board.
+    """
+    _get_board_or_404(board_id)
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict):
+        return jsonify({"error": "Missing board state."}), 400
+    try:
+        board, constraints_list = _create_board(payload)
+    except (InvalidSudokuError, ValueError) as exc:
+        return jsonify({"error": str(exc)}), 400
+
     boards[board_id] = board
     board_constraints[board_id] = constraints_list
     board_logs[board_id] = []
-
-    global current_board, current_constraints
-    current_board = board
-    current_constraints = constraints_list
 
     return jsonify({
         "board_id": board_id,
@@ -349,7 +437,7 @@ def solve_step(board_id: str) -> Any:
         "changed": changed,
         "changes": changes,
     }
-    board_logs.setdefault(board_id, []).append(log_entry)
+    _append_log(board_id, log_entry)
 
     return jsonify({
         "changed": changed,
@@ -365,11 +453,12 @@ def get_logs(board_id: str) -> Any:
     return jsonify({"logs": board_logs.get(board_id, [])})
 
 
-@app.get("/api/board")
-def export_board() -> Any:
-    if current_board is None:
-        return jsonify(_default_board_payload())
-    return jsonify(_serialize_board_export(current_board, current_constraints))
+@app.get("/api/board/<board_id>/export")
+def export_board(board_id: str) -> Any:
+    board = _get_board_or_404(board_id)
+    return jsonify(
+        _serialize_board_export(board, board_constraints.get(board_id, [])),
+    )
 
 
 @app.post("/api/board/import")
@@ -380,11 +469,10 @@ def import_board() -> Any:
     except (InvalidSudokuError, ValueError) as exc:
         return jsonify({"error": str(exc)}), 400
 
-    global current_board, current_constraints
-    current_board = board
-    current_constraints = constraints_list
+    board_id = _store_board(board, constraints_list)
 
     return jsonify({
+        "board_id": board_id,
         "board": _serialize_board_export(board, constraints_list),
         "delta": {
             "cells": payload.get("cells", {}),

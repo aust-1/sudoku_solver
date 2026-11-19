@@ -11,7 +11,99 @@ const state = {
   selectedConstraint: null,
   constraints: [],
   stepCount: 0,
+  autoSolving: false,
 };
+
+// Error raised when the API cannot be reached or answers with an error
+class ApiError extends Error {
+  constructor(message, status = null) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
+
+// Call the API and return the JSON body, or throw an ApiError with the
+// message sent by the API (or a readable one when the body is not JSON)
+async function apiRequest(path, options = {}) {
+  const { body, ...fetchOptions } = options;
+  if (body !== undefined) {
+    fetchOptions.headers = { "Content-Type": "application/json" };
+    fetchOptions.body = JSON.stringify(body);
+  }
+
+  let response;
+  try {
+    response = await fetch(`${API_BASE}${path}`, fetchOptions);
+  } catch (error) {
+    throw new ApiError(
+      "Cannot reach the server. Check that the API is running."
+    );
+  }
+
+  const text = await response.text();
+  let data = null;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch (error) {
+    data = null; // Flask HTML error page
+  }
+
+  if (!response.ok || (data && data.error)) {
+    const message =
+      (data && data.error) ||
+      `Request failed (${response.status} ${response.statusText})`;
+    throw new ApiError(message, response.status);
+  }
+  if (data === null) {
+    throw new ApiError("The server sent an invalid response.", response.status);
+  }
+  return data;
+}
+
+// Tell the user that an action failed, with the cause given by the API
+function reportError(action, error) {
+  console.error(`${action}:`, error);
+  alert(`${action}: ${error.message}`);
+}
+
+// Delete a board on the server, ignoring failures (the server also drops
+// unused boards after a while)
+function deleteBoardOnServer(boardId, keepalive = false) {
+  fetch(`${API_BASE}/board/${boardId}`, { method: "DELETE", keepalive }).catch(
+    () => {}
+  );
+}
+
+// Use a new board returned by the API and forget the previous one
+function replaceBoard(boardId, board) {
+  const previousId = state.boardId;
+  state.boardId = boardId;
+  state.board = board;
+  state.initialBoard = null;
+  state.stepCount = 0;
+  document.getElementById("log-container").innerHTML = "";
+  if (previousId && previousId !== boardId) {
+    deleteBoardOnServer(previousId);
+  }
+
+  renderGrid(state.mode === "solver" ? "sudoku-grid-solver" : "sudoku-grid");
+  updateActiveConstraints();
+  updateBoardStatus();
+}
+
+// Board in the JSON format of the API (size, cells, constraints)
+function boardToExport(board) {
+  const cells = {};
+  board.cells.forEach((cell) => {
+    cells[cell.pos] = cell.is_filled ? [cell.value] : [...cell.candidates];
+  });
+  return {
+    size: board.size,
+    cells,
+    constraints: JSON.parse(JSON.stringify(board.constraints || [])),
+  };
+}
 
 // Initialize application
 document.addEventListener("DOMContentLoaded", async () => {
@@ -20,6 +112,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   createGrid("sudoku-grid");
   createGrid("sudoku-grid-solver");
   initializeBoard();
+});
+
+// Free the board on the server when the page is closed
+window.addEventListener("pagehide", () => {
+  if (state.boardId) {
+    deleteBoardOnServer(state.boardId, true);
+  }
 });
 
 // Setup event listeners
@@ -79,7 +178,7 @@ function switchMode(mode) {
 
   if (mode === "solver") {
     // Save initial board state when entering solver mode
-    state.initialBoard = JSON.parse(JSON.stringify(state.board));
+    state.initialBoard = state.board ? boardToExport(state.board) : null;
     renderGrid("sudoku-grid-solver");
     updateBoardStatus();
   } else if (mode === "setup") {
@@ -91,12 +190,13 @@ function switchMode(mode) {
 // Load available constraints from API
 async function loadConstraints() {
   try {
-    const response = await fetch(`${API_BASE}/constraints`);
-    const data = await response.json();
+    const data = await apiRequest("/constraints");
     state.constraints = data.constraints;
     renderConstraintList();
   } catch (error) {
     console.error("Failed to load constraints:", error);
+    const list = document.getElementById("constraint-list");
+    list.textContent = `Failed to load constraints: ${error.message}`;
   }
 }
 
@@ -160,18 +260,13 @@ async function initializeBoard() {
   }
 
   try {
-    const response = await fetch(`${API_BASE}/board/new`, {
+    const data = await apiRequest("/board/new", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(boardData),
+      body: boardData,
     });
-
-    const data = await response.json();
-    state.boardId = data.board_id;
-    state.board = data.board;
-    renderGrid("sudoku-grid");
+    replaceBoard(data.board_id, data.board);
   } catch (error) {
-    console.error("Failed to initialize board:", error);
+    reportError("Failed to create the board", error);
   }
 }
 
@@ -238,18 +333,15 @@ function handleSolverCellClick(cellElement) {
 // Update cell value
 async function updateCell(pos, value, candidates) {
   try {
-    const response = await fetch(`${API_BASE}/board/${state.boardId}/cell`, {
+    const data = await apiRequest(`/board/${state.boardId}/cell`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ pos, value, candidates }),
+      body: { pos, value, candidates },
     });
-
-    const data = await response.json();
     state.board = data.board;
     renderGrid("sudoku-grid-solver");
     updateBoardStatus();
   } catch (error) {
-    console.error("Failed to update cell:", error);
+    reportError(`Failed to update cell ${pos.toUpperCase()}`, error);
   }
 }
 
@@ -367,21 +459,10 @@ async function addConstraint() {
   }
 
   try {
-    const response = await fetch(
-      `${API_BASE}/board/${state.boardId}/constraint`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(constraintData),
-      }
-    );
-
-    const data = await response.json();
-
-    if (data.error) {
-      alert(`Error: ${data.error}`);
-      return;
-    }
+    const data = await apiRequest(`/board/${state.boardId}/constraint`, {
+      method: "POST",
+      body: constraintData,
+    });
 
     state.board = data.board;
     renderGrid("sudoku-grid");
@@ -398,8 +479,7 @@ async function addConstraint() {
       `Constraint "${state.selectedConstraint.name}" added successfully`
     );
   } catch (error) {
-    console.error("Failed to add constraint:", error);
-    alert("Failed to add constraint. Check console for details.");
+    reportError("Failed to add constraint", error);
   }
 }
 
@@ -430,26 +510,15 @@ async function deleteConstraint(index) {
   if (!confirm("Delete this constraint?")) return;
 
   try {
-    const response = await fetch(
-      `${API_BASE}/board/${state.boardId}/constraint/${index}`,
-      {
-        method: "DELETE",
-      }
+    const data = await apiRequest(
+      `/board/${state.boardId}/constraint/${index}`,
+      { method: "DELETE" }
     );
-
-    const data = await response.json();
-
-    if (data.error) {
-      alert(`Error: ${data.error}`);
-      return;
-    }
-
     state.board = data.board;
     renderGrid("sudoku-grid");
     updateActiveConstraints();
   } catch (error) {
-    console.error("Failed to delete constraint:", error);
-    alert("Failed to delete constraint.");
+    reportError("Failed to delete constraint", error);
   }
 }
 
@@ -489,10 +558,8 @@ function renderGrid(gridId) {
     }
   });
 
-  // Render constraints if they exist
-  if (state.board.constraints && state.board.constraints.length > 0) {
-    renderConstraints(gridId, state.board.constraints);
-  }
+  // Always redraw the constraint layer, so that an empty list clears it
+  renderConstraints(gridId, state.board.constraints || []);
 }
 
 // Solve one step
@@ -500,21 +567,10 @@ async function solveStep() {
   const solverType = document.getElementById("solver-type").value;
 
   try {
-    const response = await fetch(
-      `${API_BASE}/board/${state.boardId}/solve/step`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ solver_type: solverType }),
-      }
-    );
-
-    const data = await response.json();
-
-    if (data.error) {
-      alert(`Error: ${data.error}`);
-      return;
-    }
+    const data = await apiRequest(`/board/${state.boardId}/solve/step`, {
+      method: "POST",
+      body: { solver_type: solverType },
+    });
 
     state.board = data.board;
     state.stepCount++;
@@ -535,53 +591,58 @@ async function solveStep() {
       alert("No progress made. Try a different solver or manual intervention.");
     }
   } catch (error) {
-    console.error("Failed to solve step:", error);
-    alert("Failed to execute solving step.");
+    reportError("Failed to execute solving step", error);
   }
 }
 
 // Auto solve
 async function solveAuto() {
+  if (state.autoSolving) return;
   const solverType = document.getElementById("solver-type").value;
   let maxSteps = 100;
+  state.autoSolving = true;
+  setSolverButtonsDisabled(true);
 
-  while (maxSteps-- > 0) {
-    const response = await fetch(
-      `${API_BASE}/board/${state.boardId}/solve/step`,
-      {
+  try {
+    while (maxSteps-- > 0) {
+      const data = await apiRequest(`/board/${state.boardId}/solve/step`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ solver_type: solverType }),
+        body: { solver_type: solverType },
+      });
+
+      state.board = data.board;
+      state.stepCount++;
+
+      addLogEntry(data.log, data.changed, data.solved);
+      renderGrid("sudoku-grid-solver");
+      updateBoardStatus();
+
+      if (data.solved) {
+        alert("🎉 Puzzle solved!");
+        break;
       }
-    );
 
-    const data = await response.json();
+      if (!data.changed) {
+        alert("Cannot make further progress automatically.");
+        break;
+      }
 
-    if (data.error) {
-      alert(`Error: ${data.error}`);
-      break;
+      // Small delay for visualization
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
-
-    state.board = data.board;
-    state.stepCount++;
-
-    addLogEntry(data.log, data.changed, data.solved);
-    renderGrid("sudoku-grid-solver");
-    updateBoardStatus();
-
-    if (data.solved) {
-      alert("🎉 Puzzle solved!");
-      break;
-    }
-
-    if (!data.changed) {
-      alert("Cannot make further progress automatically.");
-      break;
-    }
-
-    // Small delay for visualization
-    await new Promise((resolve) => setTimeout(resolve, 100));
+  } catch (error) {
+    reportError("Auto solve stopped", error);
+  } finally {
+    state.autoSolving = false;
+    setSolverButtonsDisabled(false);
   }
+}
+
+// Disable the solver buttons while auto solve is running
+function setSolverButtonsDisabled(disabled) {
+  ["solve-step-btn", "solve-auto-btn", "reset-board-btn"].forEach((id) => {
+    document.getElementById(id).disabled = disabled;
+  });
 }
 
 // Highlight changed cells
@@ -655,42 +716,47 @@ function updateBoardStatus() {
   document.getElementById("status-steps").textContent = state.stepCount;
 }
 
-// Reset board to initial state
-function resetBoard() {
+// Reset board to the state saved when entering solver mode, on the server too
+async function resetBoard() {
   if (!state.initialBoard) return;
 
-  state.board = JSON.parse(JSON.stringify(state.initialBoard));
-  state.stepCount = 0;
-  renderGrid("sudoku-grid-solver");
-  updateBoardStatus();
-  document.getElementById("log-container").innerHTML = "";
+  try {
+    const data = await apiRequest(`/board/${state.boardId}/reset`, {
+      method: "POST",
+      body: state.initialBoard,
+    });
+    state.board = data.board;
+    state.stepCount = 0;
+    renderGrid("sudoku-grid-solver");
+    updateBoardStatus();
+    document.getElementById("log-container").innerHTML = "";
+  } catch (error) {
+    reportError("Failed to reset the board", error);
+  }
 }
 
 // Clear board
-function clearBoard() {
+async function clearBoard() {
   if (confirm("Clear the entire board?")) {
-    initializeBoard();
     state.selectedCells = [];
     document
       .querySelectorAll(".cell.selected")
       .forEach((cell) => cell.classList.remove("selected"));
+    await initializeBoard();
   }
 }
 
 // Export board
-function exportBoard() {
-  if (!state.board) return;
+async function exportBoard() {
+  if (!state.boardId) return;
 
-  const data = {
-    size: state.board.size,
-    cells: {},
-    constraints: state.board.constraints,
-  };
-
-  // Convert cells array to dictionary format
-  state.board.cells.forEach((cell) => {
-    data.cells[cell.pos] = cell.candidates;
-  });
+  let data;
+  try {
+    data = await apiRequest(`/board/${state.boardId}/export`);
+  } catch (error) {
+    reportError("Failed to export the board", error);
+    return;
+  }
 
   const blob = new Blob([JSON.stringify(data, null, 2)], {
     type: "application/json",
@@ -770,29 +836,29 @@ function showConstraintParamModal(title, fields) {
 
 // Import board
 async function importBoard(event) {
-  const file = event.target.files[0];
+  const input = event.target;
+  const file = input.files[0];
+  // Allow choosing the same file again after an error
+  input.value = "";
   if (!file) return;
 
+  let data;
   try {
-    const text = await file.text();
-    const data = JSON.parse(text);
+    data = JSON.parse(await file.text());
+  } catch (error) {
+    reportError("Failed to import board", new Error("The file is not valid JSON."));
+    return;
+  }
 
-    const response = await fetch(`${API_BASE}/board/new`, {
+  try {
+    const result = await apiRequest("/board/new", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: data,
     });
-
-    const result = await response.json();
-    state.boardId = result.board_id;
-    state.board = result.board;
-    renderGrid("sudoku-grid");
-    renderConstraints("sudoku-grid", state.board.constraints);
-    updateActiveConstraints();
-
+    replaceBoard(result.board_id, result.board);
     alert("Board imported successfully!");
   } catch (error) {
-    console.error("Failed to import board:", error);
-    alert("Failed to import board. Please check the file format.");
+    // The previous board is kept and stays usable
+    reportError("Failed to import board", error);
   }
 }
