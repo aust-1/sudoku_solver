@@ -11,7 +11,44 @@ const state = {
   selectedConstraint: null,
   constraints: [],
   stepCount: 0,
+  solverCell: null, // Cell edited with the keypad in solver mode
 };
+
+const DIGITS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const GRID_LABELS = {
+  "sudoku-grid": "Setup grid",
+  "sudoku-grid-solver": "Solver grid",
+};
+
+// Show a message in the page (announced by screen readers) instead of an alert dialog
+let notificationTimer = null;
+function notify(message, type = "info") {
+  const area = document.getElementById("notification");
+  area.className = `notification ${type}`;
+  area.textContent = type === "error" ? `Error: ${message}` : message;
+  clearTimeout(notificationTimer);
+  notificationTimer = setTimeout(() => {
+    area.textContent = "";
+  }, 8000);
+}
+
+// Ask for confirmation in the page instead of a confirm dialog
+async function showConfirmDialog(question, confirmLabel = "Confirm") {
+  const result = await showConstraintParamModal(question, [], confirmLabel);
+  return result !== null;
+}
+
+// Accessible name of a cell, e.g. "A1, empty, candidates 1 2 3"
+function describeCell(cellData) {
+  const pos = cellData.pos.toUpperCase();
+  if (cellData.is_filled) {
+    return `${pos}, value ${cellData.value}`;
+  }
+  if (cellData.candidates.length === 0) {
+    return `${pos}, empty, no candidate`;
+  }
+  return `${pos}, empty, candidates ${cellData.candidates.join(" ")}`;
+}
 
 // Initialize application
 document.addEventListener("DOMContentLoaded", async () => {
@@ -59,6 +96,15 @@ function setupEventListeners() {
   document
     .getElementById("reset-board-btn")
     .addEventListener("click", resetBoard);
+
+  // Keypad of the solver mode (replaces the prompt dialog)
+  document.querySelectorAll(".keypad-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (!state.solverCell) return;
+      const value = button.dataset.value ? parseInt(button.dataset.value) : null;
+      setSolverCellValue(state.solverCell, value);
+    });
+  });
 }
 
 // Switch between setup and solver modes
@@ -66,10 +112,13 @@ function switchMode(mode) {
   state.mode = mode;
 
   // Update mode buttons
-  document
-    .querySelectorAll(".mode-btn")
-    .forEach((btn) => btn.classList.remove("active"));
-  document.getElementById(`${mode}-mode-btn`).classList.add("active");
+  document.querySelectorAll(".mode-btn").forEach((btn) => {
+    btn.classList.remove("active");
+    btn.setAttribute("aria-pressed", "false");
+  });
+  const modeButton = document.getElementById(`${mode}-mode-btn`);
+  modeButton.classList.add("active");
+  modeButton.setAttribute("aria-pressed", "true");
 
   // Update mode panels
   document
@@ -97,6 +146,7 @@ async function loadConstraints() {
     renderConstraintList();
   } catch (error) {
     console.error("Failed to load constraints:", error);
+    notify("Failed to load the constraint types.", "error");
   }
 }
 
@@ -106,23 +156,27 @@ function renderConstraintList() {
   list.innerHTML = "";
 
   state.constraints.forEach((constraint) => {
-    const item = document.createElement("div");
+    const item = document.createElement("button");
+    item.type = "button";
     item.className = "constraint-item";
     item.textContent = constraint.name.replace("Constraint", "");
-    item.addEventListener("click", () => selectConstraint(constraint));
+    item.setAttribute("aria-pressed", "false");
+    item.addEventListener("click", () => selectConstraint(constraint, item));
     list.appendChild(item);
   });
 }
 
 // Select a constraint type
-function selectConstraint(constraint) {
+function selectConstraint(constraint, itemElement) {
   state.selectedConstraint = constraint;
 
   // Update UI
-  document
-    .querySelectorAll(".constraint-item")
-    .forEach((item) => item.classList.remove("selected"));
-  event.target.classList.add("selected");
+  document.querySelectorAll(".constraint-item").forEach((item) => {
+    item.classList.remove("selected");
+    item.setAttribute("aria-pressed", "false");
+  });
+  itemElement.classList.add("selected");
+  itemElement.setAttribute("aria-pressed", "true");
 
   // Show constraint info
   const info = document.getElementById("selected-constraint-info");
@@ -135,8 +189,8 @@ function selectConstraint(constraint) {
   const params = document.getElementById("constraint-params");
   params.innerHTML = `
         <div class="param-group">
-            <label>Select cells on the grid</label>
-            <p style="font-size: 12px; color: #666;">Click cells to select them for this constraint</p>
+            <p class="param-title">Select cells on the grid</p>
+            <p class="param-help">Click cells to select them for this constraint, or move with the arrow keys and press Enter or Space.</p>
         </div>
     `;
 
@@ -172,21 +226,37 @@ async function initializeBoard() {
     renderGrid("sudoku-grid");
   } catch (error) {
     console.error("Failed to initialize board:", error);
+    notify("Failed to create the board.", "error");
   }
 }
 
-// Create grid DOM elements
+// Create grid DOM elements (ARIA grid: rows of gridcells, roving tabindex)
 function createGrid(gridId) {
   const grid = document.getElementById(gridId);
   grid.innerHTML = "";
+  grid.setAttribute("role", "grid");
+  grid.setAttribute("aria-label", GRID_LABELS[gridId]);
+  if (gridId === "sudoku-grid") {
+    grid.setAttribute("aria-multiselectable", "true");
+  }
 
   for (let row = 0; row < 9; row++) {
+    const rowElement = document.createElement("div");
+    rowElement.className = "grid-row";
+    rowElement.setAttribute("role", "row");
+
     for (let col = 0; col < 9; col++) {
       const cell = document.createElement("div");
       cell.className = "cell";
       cell.dataset.row = row;
       cell.dataset.col = col;
       cell.dataset.pos = String.fromCharCode(97 + row) + (col + 1);
+      cell.setAttribute("role", "gridcell");
+      cell.setAttribute("aria-label", `${cell.dataset.pos.toUpperCase()}, empty`);
+      cell.tabIndex = row === 0 && col === 0 ? 0 : -1;
+      if (gridId === "sudoku-grid") {
+        cell.setAttribute("aria-selected", "false");
+      }
 
       if (gridId === "sudoku-grid") {
         cell.addEventListener("click", () => handleCellClick(cell));
@@ -194,44 +264,136 @@ function createGrid(gridId) {
         cell.addEventListener("click", () => handleSolverCellClick(cell));
       }
 
-      grid.appendChild(cell);
+      rowElement.appendChild(cell);
     }
+    grid.appendChild(rowElement);
   }
+
+  grid.addEventListener("keydown", (event) => handleGridKeydown(gridId, event));
+}
+
+// Keyboard navigation in a grid: arrows, Home/End, Enter/Space, digits
+function handleGridKeydown(gridId, event) {
+  const cell = event.target.closest(".cell");
+  if (!cell) return;
+  let row = parseInt(cell.dataset.row);
+  let col = parseInt(cell.dataset.col);
+
+  switch (event.key) {
+    case "ArrowUp":
+      row = Math.max(0, row - 1);
+      break;
+    case "ArrowDown":
+      row = Math.min(8, row + 1);
+      break;
+    case "ArrowLeft":
+      col = Math.max(0, col - 1);
+      break;
+    case "ArrowRight":
+      col = Math.min(8, col + 1);
+      break;
+    case "Home":
+      col = 0;
+      break;
+    case "End":
+      col = 8;
+      break;
+    case "Enter":
+    case " ":
+      event.preventDefault();
+      cell.click();
+      return;
+    case "Delete":
+    case "Backspace":
+    case "0":
+      if (gridId === "sudoku-grid-solver") {
+        event.preventDefault();
+        selectSolverCell(cell);
+        setSolverCellValue(cell.dataset.pos, null);
+      }
+      return;
+    default:
+      if (gridId === "sudoku-grid-solver" && /^[1-9]$/.test(event.key)) {
+        event.preventDefault();
+        selectSolverCell(cell);
+        setSolverCellValue(cell.dataset.pos, parseInt(event.key));
+      }
+      return;
+  }
+
+  event.preventDefault();
+  focusCell(gridId, row, col);
+}
+
+// Move the keyboard focus (and the single tab stop) to a cell
+function focusCell(gridId, row, col) {
+  const grid = document.getElementById(gridId);
+  const target = grid.querySelector(
+    `.cell[data-row="${row}"][data-col="${col}"]`
+  );
+  if (!target) return;
+  grid
+    .querySelectorAll(".cell[tabindex='0']")
+    .forEach((cell) => (cell.tabIndex = -1));
+  target.tabIndex = 0;
+  target.focus();
 }
 
 // Handle cell click in setup mode
 function handleCellClick(cellElement) {
   const pos = cellElement.dataset.pos;
 
+  focusCell(
+    "sudoku-grid",
+    parseInt(cellElement.dataset.row),
+    parseInt(cellElement.dataset.col)
+  );
+
   // Toggle selection
   if (state.selectedCells.includes(pos)) {
     state.selectedCells = state.selectedCells.filter((p) => p !== pos);
     cellElement.classList.remove("selected");
+    cellElement.setAttribute("aria-selected", "false");
   } else {
     state.selectedCells.push(pos);
     cellElement.classList.add("selected");
+    cellElement.setAttribute("aria-selected", "true");
   }
 }
 
-// Handle cell click in solver mode
+// Handle cell click in solver mode: select the cell for the keypad
 function handleSolverCellClick(cellElement) {
-  const pos = cellElement.dataset.pos;
-  const value = prompt(
-    `Enter value for cell ${pos.toUpperCase()} (1-9) or leave empty to clear:`
+  selectSolverCell(cellElement);
+  focusCell(
+    "sudoku-grid-solver",
+    parseInt(cellElement.dataset.row),
+    parseInt(cellElement.dataset.col)
   );
+}
 
-  if (value === null) return; // Cancelled
+// Select the cell edited with the keypad (or the keyboard) in solver mode
+function selectSolverCell(cellElement) {
+  document
+    .querySelectorAll("#sudoku-grid-solver .cell.editing")
+    .forEach((cell) => cell.classList.remove("editing"));
+  cellElement.classList.add("editing");
+  state.solverCell = cellElement.dataset.pos;
 
-  if (value === "" || value === "0") {
+  document.getElementById(
+    "cell-editor-target"
+  ).textContent = `Selected cell: ${state.solverCell.toUpperCase()}. Type a digit or use the buttons below.`;
+  document
+    .querySelectorAll(".keypad-btn")
+    .forEach((button) => (button.disabled = false));
+}
+
+// Set (or clear, with null) the value of a cell in solver mode
+function setSolverCellValue(pos, value) {
+  if (value === null) {
     // Clear cell - reset to all candidates
-    updateCell(pos, null, [1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    updateCell(pos, null, [...DIGITS]);
   } else {
-    const num = parseInt(value);
-    if (num >= 1 && num <= 9) {
-      updateCell(pos, num, [num]);
-    } else {
-      alert("Invalid value. Please enter a number between 1 and 9.");
-    }
+    updateCell(pos, value, [value]);
   }
 }
 
@@ -245,18 +407,28 @@ async function updateCell(pos, value, candidates) {
     });
 
     const data = await response.json();
+    if (!response.ok || data.error) {
+      notify(data.error || "Failed to update the cell.", "error");
+      return;
+    }
     state.board = data.board;
     renderGrid("sudoku-grid-solver");
     updateBoardStatus();
+    notify(
+      value === null
+        ? `${pos.toUpperCase()} cleared.`
+        : `${pos.toUpperCase()} set to ${value}.`
+    );
   } catch (error) {
     console.error("Failed to update cell:", error);
+    notify("Failed to update the cell.", "error");
   }
 }
 
 // Add constraint to board
 async function addConstraint() {
   if (!state.selectedConstraint) {
-    alert("Please select a constraint type.");
+    notify("Please select a constraint type.", "error");
     return;
   }
 
@@ -266,7 +438,7 @@ async function addConstraint() {
     !globalConstraints.includes(state.selectedConstraint.id) &&
     state.selectedCells.length === 0
   ) {
-    alert("Please select at least one cell.");
+    notify("Please select at least one cell.", "error");
     return;
   }
 
@@ -286,7 +458,7 @@ async function addConstraint() {
     constraintData.sum = parseInt(params.sum);
   } else if (state.selectedConstraint.id === "kropki") {
     if (state.selectedCells.length !== 2) {
-      alert("Kropki constraint requires exactly 2 adjacent cells.");
+      notify("Kropki constraint requires exactly 2 adjacent cells.", "error");
       return;
     }
     params = await showConstraintParamModal("Kropki Dot Type: ", [
@@ -308,7 +480,7 @@ async function addConstraint() {
     delete constraintData.cells;
   } else if (state.selectedConstraint.id === "xv") {
     if (state.selectedCells.length !== 2) {
-      alert("XV constraint requires exactly 2 adjacent cells.");
+      notify("XV constraint requires exactly 2 adjacent cells.", "error");
       return;
     }
     params = await showConstraintParamModal("XV Constraint Type: ", [
@@ -330,7 +502,7 @@ async function addConstraint() {
     delete constraintData.cells;
   } else if (state.selectedConstraint.id === "parity") {
     if (state.selectedCells.length !== 1) {
-      alert("Parity constraint requires exactly 1 cell.");
+      notify("Parity constraint requires exactly 1 cell.", "error");
       return;
     }
     params = await showConstraintParamModal("Parity Type: ", [
@@ -351,7 +523,7 @@ async function addConstraint() {
     delete constraintData.cells;
   } else if (state.selectedConstraint.id === "greater_than") {
     if (state.selectedCells.length !== 2) {
-      alert("GreaterThan constraint requires exactly 2 adjacent cells.");
+      notify("GreaterThan constraint requires exactly 2 adjacent cells.", "error");
       return;
     }
     constraintData.higher_value_cell = state.selectedCells[0];
@@ -379,7 +551,7 @@ async function addConstraint() {
     const data = await response.json();
 
     if (data.error) {
-      alert(`Error: ${data.error}`);
+      notify(data.error, "error");
       return;
     }
 
@@ -390,16 +562,15 @@ async function addConstraint() {
 
     // Clear selection
     state.selectedCells = [];
-    document
-      .querySelectorAll(".cell.selected")
-      .forEach((cell) => cell.classList.remove("selected"));
+    document.querySelectorAll(".cell.selected").forEach((cell) => {
+      cell.classList.remove("selected");
+      cell.setAttribute("aria-selected", "false");
+    });
 
-    console.log(
-      `Constraint "${state.selectedConstraint.name}" added successfully`
-    );
+    notify(`Constraint "${state.selectedConstraint.name}" added.`);
   } catch (error) {
     console.error("Failed to add constraint:", error);
-    alert("Failed to add constraint. Check console for details.");
+    notify("Failed to add constraint.", "error");
   }
 }
 
@@ -412,14 +583,18 @@ function updateActiveConstraints() {
 
   state.board.constraints.forEach((constraint, index) => {
     const item = document.createElement("li");
-    item.innerHTML = `
-            <span>${constraint.type}</span>
-            <span class="constraint-delete" data-index="${index}">✕</span>
-        `;
-
-    // Add click handler for delete button
-    const deleteBtn = item.querySelector(".constraint-delete");
+    const label = document.createElement("span");
+    label.textContent = constraint.type;
+    const deleteBtn = document.createElement("button");
+    deleteBtn.type = "button";
+    deleteBtn.className = "constraint-delete";
+    deleteBtn.textContent = "✕";
+    deleteBtn.setAttribute(
+      "aria-label",
+      `Delete constraint ${index + 1} (${constraint.type})`
+    );
     deleteBtn.addEventListener("click", () => deleteConstraint(index));
+    item.append(label, deleteBtn);
 
     list.appendChild(item);
   });
@@ -427,7 +602,7 @@ function updateActiveConstraints() {
 
 // Delete constraint
 async function deleteConstraint(index) {
-  if (!confirm("Delete this constraint?")) return;
+  if (!(await showConfirmDialog("Delete this constraint?", "Delete"))) return;
 
   try {
     const response = await fetch(
@@ -440,16 +615,17 @@ async function deleteConstraint(index) {
     const data = await response.json();
 
     if (data.error) {
-      alert(`Error: ${data.error}`);
+      notify(data.error, "error");
       return;
     }
 
     state.board = data.board;
     renderGrid("sudoku-grid");
     updateActiveConstraints();
+    notify("Constraint deleted.");
   } catch (error) {
     console.error("Failed to delete constraint:", error);
-    alert("Failed to delete constraint.");
+    notify("Failed to delete constraint.", "error");
   }
 }
 
@@ -464,6 +640,7 @@ function renderGrid(gridId) {
     const cellElement = cells[index];
     cellElement.innerHTML = "";
     cellElement.classList.remove("changed", "eliminated");
+    cellElement.setAttribute("aria-label", describeCell(cellData));
 
     if (cellData.is_filled) {
       // Show value
@@ -475,6 +652,8 @@ function renderGrid(gridId) {
       // Show candidates
       const candidatesDiv = document.createElement("div");
       candidatesDiv.className = "cell-candidates";
+      // The cell label already lists the candidates
+      candidatesDiv.setAttribute("aria-hidden", "true");
 
       for (let i = 1; i <= 9; i++) {
         const candidate = document.createElement("div");
@@ -512,7 +691,7 @@ async function solveStep() {
     const data = await response.json();
 
     if (data.error) {
-      alert(`Error: ${data.error}`);
+      notify(data.error, "error");
       return;
     }
 
@@ -530,13 +709,15 @@ async function solveStep() {
     updateBoardStatus();
 
     if (data.solved) {
-      alert("🎉 Puzzle solved!");
+      notify("🎉 Puzzle solved!", "success");
     } else if (!data.changed) {
-      alert("No progress made. Try a different solver or manual intervention.");
+      notify("No progress made. Try a different solver or manual intervention.");
+    } else {
+      notify(`Step ${state.stepCount}: ${summarizeChanges(data.log.changes)}.`);
     }
   } catch (error) {
     console.error("Failed to solve step:", error);
-    alert("Failed to execute solving step.");
+    notify("Failed to execute solving step.", "error");
   }
 }
 
@@ -558,7 +739,7 @@ async function solveAuto() {
     const data = await response.json();
 
     if (data.error) {
-      alert(`Error: ${data.error}`);
+      notify(data.error, "error");
       break;
     }
 
@@ -570,18 +751,25 @@ async function solveAuto() {
     updateBoardStatus();
 
     if (data.solved) {
-      alert("🎉 Puzzle solved!");
+      notify("🎉 Puzzle solved!", "success");
       break;
     }
 
     if (!data.changed) {
-      alert("Cannot make further progress automatically.");
+      notify("Cannot make further progress automatically.");
       break;
     }
 
     // Small delay for visualization
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
+}
+
+// Short text summary of the changes of a step
+function summarizeChanges(changes) {
+  const values = changes.filter((c) => c.type === "value_set").length;
+  const eliminations = changes.length - values;
+  return `${values} value(s) set, candidates eliminated in ${eliminations} cell(s)`;
 }
 
 // Highlight changed cells
@@ -667,8 +855,8 @@ function resetBoard() {
 }
 
 // Clear board
-function clearBoard() {
-  if (confirm("Clear the entire board?")) {
+async function clearBoard() {
+  if (await showConfirmDialog("Clear the entire board?", "Clear")) {
     initializeBoard();
     state.selectedCells = [];
     document
@@ -703,22 +891,26 @@ function exportBoard() {
   URL.revokeObjectURL(url);
 }
 
-// Show modal for constraint parameters
-function showConstraintParamModal(title, fields) {
+// Show modal for constraint parameters (accessible dialog: focus moved into
+// the dialog and kept there, Escape cancels, focus restored on close)
+function showConstraintParamModal(title, fields, okLabel = "OK") {
   return new Promise((resolve) => {
     const modal = document.getElementById("constraint-param-modal");
     const modalTitle = document.getElementById("modal-title");
     const modalBody = document.getElementById("modal-body");
     const okBtn = document.getElementById("modal-ok");
     const cancelBtn = document.getElementById("modal-cancel");
+    const previouslyFocused = document.activeElement;
 
     modalTitle.textContent = title;
+    okBtn.textContent = okLabel;
     modalBody.innerHTML = "";
 
-    // Create form fields
+    // Create form fields, each label tied to its field
     fields.forEach((field) => {
       const label = document.createElement("label");
       label.textContent = field.label;
+      label.htmlFor = `modal-${field.name}`;
       modalBody.appendChild(label);
 
       let input;
@@ -741,11 +933,19 @@ function showConstraintParamModal(title, fields) {
     });
 
     modal.classList.add("active");
+    modal.setAttribute("aria-hidden", "false");
+    const firstField = modalBody.querySelector("input, select");
+    (firstField || okBtn).focus();
 
     const cleanup = () => {
       modal.classList.remove("active");
+      modal.setAttribute("aria-hidden", "true");
       okBtn.removeEventListener("click", handleOk);
       cancelBtn.removeEventListener("click", handleCancel);
+      modal.removeEventListener("keydown", handleKeydown);
+      if (previouslyFocused && previouslyFocused.focus) {
+        previouslyFocused.focus();
+      }
     };
 
     const handleOk = () => {
@@ -763,8 +963,30 @@ function showConstraintParamModal(title, fields) {
       resolve(null);
     };
 
+    const handleKeydown = (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        handleCancel();
+      } else if (event.key === "Tab") {
+        // Keep the focus inside the dialog
+        const focusable = [
+          ...modal.querySelectorAll("input, select, button"),
+        ].filter((element) => !element.disabled);
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
     okBtn.addEventListener("click", handleOk);
     cancelBtn.addEventListener("click", handleCancel);
+    modal.addEventListener("keydown", handleKeydown);
   });
 }
 
@@ -790,9 +1012,9 @@ async function importBoard(event) {
     renderConstraints("sudoku-grid", state.board.constraints);
     updateActiveConstraints();
 
-    alert("Board imported successfully!");
+    notify("Board imported successfully!", "success");
   } catch (error) {
     console.error("Failed to import board:", error);
-    alert("Failed to import board. Please check the file format.");
+    notify("Failed to import board. Please check the file format.", "error");
   }
 }
