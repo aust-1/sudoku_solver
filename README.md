@@ -187,7 +187,7 @@ Contraintes enregistrées dans `src/solver/constraints/factory.py`, utilisables 
 | `bishop` | `cells` | Les cellules listées contiennent des chiffres tous différents |
 | `clone` | `cells` | Les cellules listées contiennent le même chiffre |
 | `clone_zone` | `zones` (liste de listes de cellules) | Zones clones : les cellules de même rang dans chaque zone sont identiques |
-| `dutch` | `cells` | Whispers hollandais : deux cellules voisines sur la ligne diffèrent d'au moins 4 (l'implémentation actuelle utilise 5, comme `german`) |
+| `dutch` | `cells` | Whispers hollandais : deux cellules voisines sur la ligne diffèrent d'au moins 4 |
 | `german` | `cells` | Whispers allemands : deux cellules voisines sur la ligne diffèrent d'au moins 5 |
 | `greater_than` | `higher_value_cell`, `lower_value_cell` | Relation d'ordre entre deux cellules adjacentes |
 | `killer` | `cells`, `sum`, `color` (optionnel) | Cage : somme imposée, chiffres différents |
