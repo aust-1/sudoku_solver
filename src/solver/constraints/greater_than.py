@@ -115,6 +115,10 @@ class GreaterThanConstraint(BaseConstraint):
 
         cell1_candidates: set[int] = set(self.higher_value_cell.candidates)
         cell2_candidates: set[int] = set(self.lower_value_cell.candidates)
+        if not cell1_candidates or not cell2_candidates:
+            # A cell without candidate is a contradiction: there is nothing to
+            # deduce, Board.is_valid reports it.
+            return False
         max_c1 = max(cell1_candidates)
         min_c2 = min(cell2_candidates)
 
