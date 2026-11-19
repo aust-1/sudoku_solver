@@ -64,14 +64,18 @@ class WWingStrategy(Solver):
                     continue
                 for k in set(b.reachable_cells):
                     if (
-                        k.is_filled()
+                        k is j
+                        or k.is_filled()
                         or len(k.candidates) != 2  # noqa: PLR2004
                         or digit not in k.candidates
                         or set(j.candidates) != set(k.candidates)
                     ):
                         continue
 
-                    targets = a.reachable_cells.intersection(b.reachable_cells)
+                    # One of j or k holds the other digit: remove it from the
+                    # cells that see both j and k.
+                    targets = j.reachable_cells.intersection(k.reachable_cells)
+                    targets -= {j, k}
                     value = (j.candidates - {digit}).pop()
                     eliminated = False
                     for cell in targets:
