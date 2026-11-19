@@ -148,8 +148,8 @@ sudoku_solver/
 │   └── js/
 │       ├── app.js              # Logique de l'interface et appels API
 │       └── constraints.js      # Dessin des contraintes sur la grille
-├── tests/                       # Tests unitaires (pytest)
-├── test_api.py                  # Script de test manuel de l'API
+├── .github/workflows/tests.yml  # CI : Ruff et pytest à chaque push sur main et PR
+├── tests/                       # Tests unitaires et tests de l'API (pytest)
 ├── board.json                   # Grille chargée par src/main.py
 ├── board.example.json           # Illustration du format JSON
 ├── ARCHITECTURE.md              # Documentation architecture
@@ -233,12 +233,9 @@ uv run pytest                      # Tous les tests de tests/
 uv run pytest tests/test_board.py  # Test spécifique
 ```
 
-`test_api.py`, à la racine, est un script de vérification manuelle de l'API : il n'est pas collecté par `uv run pytest` et nécessite que le serveur tourne sur `http://localhost:5000`.
+Les routes de l'API sont testées sans serveur, avec `app.test_client()` de Flask (`tests/test_api_routes.py`, `tests/test_import_export_api.py`).
 
-```bash
-uv run python src/api.py   # Terminal 1
-uv run python test_api.py  # Terminal 2
-```
+La CI GitHub Actions (`.github/workflows/tests.yml`) installe les dépendances avec `uv sync --group dev --locked`, lance `ruff check --select E9,F` (erreurs de syntaxe, noms indéfinis, imports inutilisés) puis `uv run pytest`, à chaque push sur `main` et sur chaque pull request.
 
 ## 🛠️ Développement
 

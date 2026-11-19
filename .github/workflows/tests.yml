@@ -1,0 +1,35 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Ruff et pytest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Installer uv et Python
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.13"
+          enable-cache: true
+
+      - name: Installer les dépendances
+        run: uv sync --group dev --locked
+
+      - name: Ruff (erreurs de syntaxe, noms indéfinis, imports inutilisés)
+        run: uv run ruff check --no-fix --select E9,F --output-format github .
+
+      - name: Pytest
+        run: uv run pytest
