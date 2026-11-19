@@ -17,7 +17,7 @@
     },
     {
       "cell": "a1",
-      "rest": "1",
+      "rest": 1,
       "type": "parity"
     },
     {
@@ -56,7 +56,7 @@
     {
       "cell1": "g1",
       "cell2": "g2",
-      "sum": "10",
+      "sum": 10,
       "type": "x_v"
     }
   ],
