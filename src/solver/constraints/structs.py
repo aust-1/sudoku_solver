@@ -7,6 +7,7 @@ class ConstraintType(Enum):
     AXIA = "axia"
     BISHOP = "bishop"
     CLONE = "clone"
+    CLONE_ZONE = "clone_zone"
     COUPLE = "couple"
     DUTCH = "dutch"
     FRIENDLY_CELL = "friendly_cell"
