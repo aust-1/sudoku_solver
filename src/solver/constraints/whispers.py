@@ -138,28 +138,23 @@ class _BaseDiffConstraint(BaseConstraint):
     ) -> bool:
         eliminated = False
 
-        if cell3 is None:
-            for cand1 in cell1.candidates.copy():
-                for cand2 in cell2.candidates.copy():
-                    if abs(cand1 - cand2) > self.diff:
-                        break
-                else:
-                    eliminated |= cell1.eliminate_candidate(cand1)
-
-        else:
-            for cand1 in cell1.candidates.copy():
-                for cand2 in cell2.candidates.copy():
-                    for cand3 in cell3.candidates.copy():
-                        if (
-                            cand2 != cand3
-                            and abs(cand1 - cand2) > self.diff
-                            and abs(cand1 - cand3) > self.diff
-                        ):
-                            break
-                    else:
-                        break
-                else:
-                    eliminated |= cell1.eliminate_candidate(cand1)
+        for cand1 in cell1.candidates.copy():
+            if cell3 is None:
+                has_support = any(
+                    abs(cand1 - cand2) >= self.diff for cand2 in cell2.candidates
+                )
+            else:
+                # cell2 and cell3 see each other: they need two distinct digits,
+                # both far enough from cand1.
+                has_support = any(
+                    cand2 != cand3
+                    and abs(cand1 - cand2) >= self.diff
+                    and abs(cand1 - cand3) >= self.diff
+                    for cand2 in cell2.candidates
+                    for cand3 in cell3.candidates
+                )
+            if not has_support:
+                eliminated |= cell1.eliminate_candidate(cand1)
 
         return eliminated
 
@@ -268,7 +263,7 @@ class DutchConstraint(_BaseDiffConstraint):
         Args:
             dutch_cells (list[Cell]): The list of cells to apply constraints to.
         """
-        super().__init__(dutch_cells, 5, ConstraintType.DUTCH)
+        super().__init__(dutch_cells, 4, ConstraintType.DUTCH)
 
     @classmethod
     @override
