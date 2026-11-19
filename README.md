@@ -245,17 +245,16 @@ uv run python test_api.py  # Terminal 2
 ### Formatage et linting
 
 ```bash
-make format    # Formater le code (isort, black, ruff format)
-make lint      # Linter (ruff, pydoclint, pylint)
-make typecheck # Vérification de types (mypy)
+make format    # Trier les imports (isort) puis formater (ruff format)
+make lint      # Linter sans rien modifier (ruff check --no-fix, pydoclint, pylint)
+make baseline  # Régénérer ruff-baseline.txt, pylint-baseline.txt et pydoclint-baseline.txt
+make typecheck # Vérification de types de src/ (mypy)
 make check     # lint, puis format, puis typecheck
 make all       # Équivalent à make check
-make auto      # Relance make all en boucle, sans jamais s'arrêter (Ctrl+C pour sortir)
+make auto      # Relance make all toutes les AUTO_INTERVAL secondes (10 par défaut, Ctrl+C pour arrêter)
 ```
 
-Les outils doivent être disponibles dans le `PATH` (par exemple dans l'environnement virtuel activé). `black` ne fait pas partie du groupe `dev` et doit être installé séparément. `make lint` réécrit `ruff-baseline.txt` et `pylint-baseline.txt`.
-
-`make auto` fonctionne comme une boucle de type « watch » : la cible s'appelle elle-même récursivement après chaque `make all`, sans condition d'arrêt.
+Les outils sont lancés avec `uv run` après `uv sync --group dev` (variable `RUN` à surcharger, par exemple `make lint RUN=` pour utiliser ceux du `PATH`). `make lint` ne modifie ni le code ni les baselines : seule `make baseline` réécrit les fichiers `*-baseline.txt`, et pydoclint ne signale que les violations absentes de `pydoclint-baseline.txt`.
 
 ### Structure des commits
 
@@ -351,7 +350,7 @@ Ce projet suit des standards stricts de qualité :
 - Type hints complets (mypy strict mode)
 - Docstrings Google style
 - Tests unitaires (pytest)
-- Formatage automatique (black, isort, ruff)
+- Formatage automatique (isort, ruff format)
 
 ## 📄 Licence
 

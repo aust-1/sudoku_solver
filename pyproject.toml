@@ -32,11 +32,11 @@ dev = [
 [tool.isort]
 force_grid_wrap = 0
 include_trailing_comma = true
-known_first_party = ["sudoku"]
+known_first_party = ["api", "main", "models", "solver", "utils"]
 line_length = 88
 multi_line_output = 3
 profile = "black"
-skip_glob = ["*/sudoku/models/__init__.py"]
+skip_glob = ["*/models/__init__.py"]
 use_parentheses = true
 
 [tool.mypy]
@@ -45,7 +45,6 @@ disallow_incomplete_defs = true
 disallow_untyped_defs = true
 ignore_missing_imports = true
 no_implicit_optional = true
-plugins = "mypy-type-checker"
 pretty = true
 python_version = "3.13"
 show_error_codes = true
@@ -58,7 +57,9 @@ warn_unused_ignores = false
 allow-init-docstring = true
 baseline = "pydoclint-baseline.txt"
 check-style-mismatch = true
-generate-baseline = true
+auto-regenerate-baseline = false
+exclude = '\.git|\.tox|\.venv'
+generate-baseline = false
 show-filenames-in-every-violation-message = true
 skip-checking-short-docstrings = false
 style = 'google'
@@ -98,7 +99,7 @@ docstring-code-format = true
 quote-style = "double"
 
 [tool.ruff.lint.isort]
-known-first-party = ["sudoku"]
+known-first-party = ["api", "main", "models", "solver", "utils"]
 
 [tool.ruff.lint]
 ignore = [
