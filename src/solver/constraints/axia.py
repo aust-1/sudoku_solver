@@ -144,13 +144,16 @@ class AxiaConstraint(BaseConstraint):
         # TODO: Implement drawing logic for Axia constraint
 
     @override
-    def deep_copy(self) -> AxiaConstraint:
-        """Create a deep copy of the constraint.
+    def deep_copy(self, board: Board) -> AxiaConstraint:
+        """Create a copy of the constraint bound to the cells of ``board``.
+
+        Args:
+            board (Board): The board whose cells the copy uses.
 
         Returns:
             AxiaConstraint: A deep copy of the constraint.
         """
-        return AxiaConstraint(self.axia_cell)
+        return AxiaConstraint(self._cell_on(board, self.axia_cell))
 
     @override
     def __repr__(self) -> str:
