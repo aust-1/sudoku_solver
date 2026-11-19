@@ -199,7 +199,7 @@ Contraintes enregistrées dans `src/solver/constraints/factory.py`, utilisables 
 | `universal` | aucun | Cellules occupant la même position dans chaque boîte 3×3, ajoutées comme régions supplémentaires |
 | `x_v` (alias `xv`) | `cell1`, `cell2`, `sum` | Somme de deux cellules adjacentes : X (10) ou V (5) |
 
-Contraintes implémentées dans `src/solver/constraints/` mais pas encore enregistrées dans la factory (non utilisables via JSON ou l'API pour le moment) :
+Contraintes également enregistrées dans la factory, sans dessin sur la grille du site pour le moment :
 
 - **axia** (`AxiaConstraint`, `cell`) : vérifie que la cellule ne partage pas son chiffre avec les cellules situées sur ses diagonales
 - **couple** (`CoupleConstraint`, `cell1`, `cell2`, `same`) : deux cellules adjacentes de même parité (`same: true`) ou de parités différentes

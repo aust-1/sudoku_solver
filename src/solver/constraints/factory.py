@@ -3,10 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from solver.constraints import (
+    AxiaConstraint,
     BishopConstraint,
     CloneConstraint,
     CloneZoneConstraint,
+    CoupleConstraint,
     DutchConstraint,
+    FriendlyCellConstraint,
     GermanConstraint,
     GreaterThanConstraint,
     KillerConstraint,
@@ -24,10 +27,13 @@ if TYPE_CHECKING:
     from solver.constraints import BaseConstraint
 
 CONSTRAINT_REGISTRY: dict[str, type[BaseConstraint]] = {
+    "axia": AxiaConstraint,
     "bishop": BishopConstraint,
     "clone": CloneConstraint,
     "clone_zone": CloneZoneConstraint,
+    "couple": CoupleConstraint,
     "dutch": DutchConstraint,
+    "friendly_cell": FriendlyCellConstraint,
     "german": GermanConstraint,
     "greater_than": GreaterThanConstraint,
     "killer": KillerConstraint,

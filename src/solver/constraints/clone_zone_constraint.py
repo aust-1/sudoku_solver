@@ -50,7 +50,19 @@ class CloneZoneConstraint(BaseConstraint):
             msg = "CloneZone constraint requires 'zones' field"
             raise ValueError(msg)
 
-        zones = [[board.get_cell(pos=pos) for pos in zone] for zone in data["zones"]]
+        raw_zones = data["zones"]
+        if (
+            not isinstance(raw_zones, list)
+            or len(raw_zones) < 2  # noqa: PLR2004
+            or not all(isinstance(zone, list) and zone for zone in raw_zones)
+        ):
+            msg = "CloneZone constraint requires at least two non-empty zones"
+            raise ValueError(msg)
+        if len({len(zone) for zone in raw_zones}) != 1:
+            msg = "CloneZone constraint zones must all have the same size"
+            raise ValueError(msg)
+
+        zones = [[board.get_cell(pos=pos) for pos in zone] for zone in raw_zones]
 
         return cls(*zones)
 

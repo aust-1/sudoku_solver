@@ -20,6 +20,67 @@ from utils.exceptions import InvalidSudokuError
 ROOT_DIR = Path(__file__).resolve().parent.parent
 SITE_DIR = ROOT_DIR / "site"
 
+# Rule and expected selection of each constraint type, shown by the site.
+CONSTRAINT_DESCRIPTIONS: dict[str, str] = {
+    "axia": (
+        "Digits on the diagonals of the cell must differ from its digit. "
+        "Select one cell."
+    ),
+    "bishop": (
+        "The selected cells must hold different digits. "
+        "Select the cells of the bishop path."
+    ),
+    "clone": "The selected cells hold the same digit. Select the cells to clone.",
+    "clone_zone": (
+        "Zones of the same shape hold the same digits, cell by cell. Select the "
+        "cells of a zone in order and click 'Validate zone', then do the same for "
+        "each other zone (at least two zones of the same size)."
+    ),
+    "couple": (
+        "Two adjacent cells have the same parity, or a different parity. "
+        "Select two adjacent cells."
+    ),
+    "dutch": (
+        "Neighbouring cells on the line differ by at least 4. "
+        "Select the cells of the line in order."
+    ),
+    "friendly_cell": (
+        "The digit of the cell is its row, column or box number. Select one cell."
+    ),
+    "german": (
+        "Neighbouring cells on the line differ by at least 5. "
+        "Select the cells of the line in order."
+    ),
+    "greater_than": (
+        "The first cell is greater than the second one. "
+        "Select the greater cell, then the smaller one."
+    ),
+    "killer": (
+        "Digits in the cage sum to the given total and do not repeat. "
+        "Select the cells of the cage."
+    ),
+    "king": "Cells a king's move apart hold different digits. No selection needed.",
+    "knight": (
+        "Cells a knight's move apart hold different digits. No selection needed."
+    ),
+    "kropki": (
+        "Black dot: one digit is twice the other. White dot: consecutive digits. "
+        "Select two adjacent cells."
+    ),
+    "palindrome": (
+        "The line reads the same in both directions. "
+        "Select the cells of the line in order."
+    ),
+    "parity": "The cell holds an odd or an even digit. Select one cell.",
+    "universal": (
+        "Cells at the same position in every box hold different digits. "
+        "No selection needed."
+    ),
+    "x_v": (
+        "X: the two digits sum to 10. V: they sum to 5. Select two adjacent cells."
+    ),
+}
+
 app = Flask(__name__)
 CORS(app)
 
@@ -180,7 +241,10 @@ def _build_constraint_catalog() -> list[dict[str, str]]:
         catalog.append({
             "id": display_type,
             "name": name,
-            "description": f"{display_type.replace('_', ' ').title()} constraint.",
+            "description": CONSTRAINT_DESCRIPTIONS.get(
+                constraint_type,
+                f"{display_type.replace('_', ' ').title()} constraint.",
+            ),
         })
     return catalog
 
