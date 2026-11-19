@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import override
+from typing import Any, override
 
 import pytest
 
@@ -27,19 +27,37 @@ class DummyConstraint(BaseConstraint):
         super().__init__()
         self.check_result = check_result
 
+    @classmethod
     @override
-    def check(self, board: Board) -> bool:
+    def from_dict(cls, board: Board, data: dict[str, Any]) -> DummyConstraint:
+        """Create a dummy constraint from dictionary data.
+
+        Args:
+            board (Board): The Sudoku board the constraint applies to.
+            data (dict[str, Any]): Dictionary containing constraint configuration.
+
+        Returns:
+            DummyConstraint: New constraint instance.
+
+        """
+        return cls(bool(data.get("check_result", True)))
+
+    @override
+    def check(self, board: Board) -> set[Cell]:
         """Check if the constraint is satisfied on the given board.
 
         Args:
             board (Board): The Sudoku board to check.
 
         Returns:
-            bool:
-                ``True`` if the constraint is satisfied, ``False`` otherwise.
+            set[Cell]:
+                An empty set if the constraint is satisfied, otherwise the
+                cell ``a1`` reported as invalid.
 
         """
-        return self.check_result
+        if self.check_result:
+            return set()
+        return {board.get_cell(row=0, col=0)}
 
     @override
     def eliminate(self, board: Board) -> bool:
@@ -67,7 +85,7 @@ class DummyConstraint(BaseConstraint):
             set[Cell]: A set of reachable cells.
 
         """
-        return {board.get_cell(cell.row, (cell.col + 1) % board.size)}
+        return {board.get_cell(row=cell.row, col=(cell.col + 1) % board.size)}
 
     @override
     def get_regions(self, board: Board) -> dict[str, set[Cell]]:
@@ -194,8 +212,10 @@ class TestBoard:
         assert len(clone.constraints) == len(board.constraints)
         clone.get_cell(row=0, col=0).value = 9
         assert board.get_cell(row=0, col=0).value != clone.get_cell(row=0, col=0).value
-        board.get_cell(row=0, col=2).candidates = {1, 2}
+        source = Board(9)
+        source.get_cell(row=0, col=0).value = 5
+        source.get_cell(row=4, col=4).candidates = {1, 2}
         board2 = Board(9)
-        board2.copy_values_from(board)
-        assert board2.get_cell(row=0, col=0).value == board.get_cell(row=0, col=0).value
-        assert board2.get_cell(row=0, col=2).candidates == {1, 2}
+        board2.copy_values_from(source)
+        assert board2.get_cell(row=0, col=0).value == 5  # noqa: PLR2004
+        assert board2.get_cell(row=4, col=4).candidates == {1, 2}

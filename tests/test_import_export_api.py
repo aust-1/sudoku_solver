@@ -19,11 +19,11 @@ def _sorted_constraints(constraints: list[dict[str, object]]) -> list[str]:
     return sorted(json.dumps(c, sort_keys=True) for c in constraints)
 
 
-def test_get_board_returns_boardfile(flask_client) -> None:
+def test_get_board_returns_boardfile(client) -> None:
     board = Board(9)
     set_current_board_for_tests(board)
 
-    response = flask_client.get("/api/board")
+    response = client.get("/api/board")
     assert response.status_code == 200
     data = response.get_json()
 
