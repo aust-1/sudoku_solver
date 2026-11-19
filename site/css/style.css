@@ -149,6 +149,16 @@ header h1 {
     margin-bottom: 15px;
 }
 
+.param-help {
+    font-size: 12px;
+    color: #666;
+}
+
+.clone-zone-list {
+    margin: 10px 0 0 20px;
+    font-size: 13px;
+}
+
 .param-group label {
     display: block;
     margin-bottom: 5px;
@@ -290,6 +300,21 @@ header h1 {
 
 .cell.selected {
     background: #fff3cd;
+}
+
+/* Cells of a validated clone zone, numbered by zone */
+.cell.in-clone-zone {
+    background: #e2e3f9;
+}
+
+.cell.in-clone-zone::after {
+    content: attr(data-zone);
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    font-size: 10px;
+    font-weight: bold;
+    color: #667eea;
 }
 
 .cell.highlighted {

@@ -9,6 +9,7 @@ const state = {
   initialBoard: null,
   selectedCells: [],
   selectedConstraint: null,
+  cloneZones: [], // Validated zones of the clone_zone constraint being built
   constraints: [],
   stepCount: 0,
 };
@@ -109,20 +110,25 @@ function renderConstraintList() {
     const item = document.createElement("div");
     item.className = "constraint-item";
     item.textContent = constraint.name.replace("Constraint", "");
-    item.addEventListener("click", () => selectConstraint(constraint));
+    item.addEventListener("click", () => selectConstraint(constraint, item));
     list.appendChild(item);
   });
 }
 
+// Constraints that apply to the whole grid, without cell selection
+const GLOBAL_CONSTRAINTS = ["knight", "king", "universal"];
+
 // Select a constraint type
-function selectConstraint(constraint) {
+function selectConstraint(constraint, itemElement) {
   state.selectedConstraint = constraint;
+  state.cloneZones = [];
+  renderCloneZones();
 
   // Update UI
   document
     .querySelectorAll(".constraint-item")
     .forEach((item) => item.classList.remove("selected"));
-  event.target.classList.add("selected");
+  itemElement.classList.add("selected");
 
   // Show constraint info
   const info = document.getElementById("selected-constraint-info");
@@ -131,16 +137,97 @@ function selectConstraint(constraint) {
         <p>${constraint.description || "No description available."}</p>
     `;
 
-  // Show constraint parameters (simplified for now)
+  // Show constraint parameters
   const params = document.getElementById("constraint-params");
-  params.innerHTML = `
+  if (constraint.id === "clone_zone") {
+    params.innerHTML = `
         <div class="param-group">
-            <label>Select cells on the grid</label>
-            <p style="font-size: 12px; color: #666;">Click cells to select them for this constraint</p>
+            <label>Clone zones</label>
+            <p class="param-help">Select the cells of a zone in order, then click "Validate zone". Repeat for each zone: at least two zones, all of the same size. The current selection counts as the last zone.</p>
+            <button type="button" id="validate-zone-btn" class="btn btn-secondary">Validate zone</button>
+            <ol id="clone-zone-list" class="clone-zone-list"></ol>
         </div>
     `;
+    document
+      .getElementById("validate-zone-btn")
+      .addEventListener("click", validateCloneZone);
+  } else if (GLOBAL_CONSTRAINTS.includes(constraint.id)) {
+    params.innerHTML = `
+        <div class="param-group">
+            <p class="param-help">This constraint applies to the whole grid: no cell selection needed.</p>
+        </div>
+    `;
+  } else {
+    params.innerHTML = `
+        <div class="param-group">
+            <label>Select cells on the grid</label>
+            <p class="param-help">Click cells to select them for this constraint</p>
+        </div>
+    `;
+  }
 
   document.getElementById("add-constraint-btn").disabled = false;
+}
+
+// Clear the cell selection of the setup grid
+function clearCellSelection() {
+  state.selectedCells = [];
+  document
+    .querySelectorAll("#sudoku-grid .cell.selected")
+    .forEach((cell) => cell.classList.remove("selected"));
+}
+
+// Validate the selected cells as one zone of a clone_zone constraint
+function validateCloneZone() {
+  if (state.selectedCells.length === 0) {
+    alert("Select the cells of the zone first.");
+    return;
+  }
+  const zoneSize = state.cloneZones.length ? state.cloneZones[0].length : null;
+  if (zoneSize !== null && state.selectedCells.length !== zoneSize) {
+    alert(`Each zone must have ${zoneSize} cells, like the first one.`);
+    return;
+  }
+  const usedCells = new Set(state.cloneZones.flat());
+  if (state.selectedCells.some((pos) => usedCells.has(pos))) {
+    alert("A cell can only belong to one zone.");
+    return;
+  }
+
+  state.cloneZones.push([...state.selectedCells]);
+  clearCellSelection();
+  renderCloneZones();
+}
+
+// Show the validated clone zones in the panel and on the grid
+function renderCloneZones() {
+  document
+    .querySelectorAll("#sudoku-grid .cell.in-clone-zone")
+    .forEach((cell) => {
+      cell.classList.remove("in-clone-zone");
+      delete cell.dataset.zone;
+    });
+
+  state.cloneZones.forEach((zone, index) => {
+    zone.forEach((pos) => {
+      const cell = document.querySelector(
+        `#sudoku-grid .cell[data-pos="${pos}"]`
+      );
+      if (cell) {
+        cell.classList.add("in-clone-zone");
+        cell.dataset.zone = index + 1;
+      }
+    });
+  });
+
+  const list = document.getElementById("clone-zone-list");
+  if (!list) return;
+  list.innerHTML = "";
+  state.cloneZones.forEach((zone) => {
+    const item = document.createElement("li");
+    item.textContent = zone.map((pos) => pos.toUpperCase()).join(", ");
+    list.appendChild(item);
+  });
 }
 
 // Initialize board
@@ -260,10 +347,10 @@ async function addConstraint() {
     return;
   }
 
-  // Global constraints don't require cell selection
-  const globalConstraints = ["knight", "king", "universal"];
+  // Global constraints don't require cell selection, clone zones are checked below
   if (
-    !globalConstraints.includes(state.selectedConstraint.id) &&
+    !GLOBAL_CONSTRAINTS.includes(state.selectedConstraint.id) &&
+    state.selectedConstraint.id !== "clone_zone" &&
     state.selectedCells.length === 0
   ) {
     alert("Please select at least one cell.");
@@ -358,6 +445,56 @@ async function addConstraint() {
     constraintData.lower_value_cell = state.selectedCells[1];
     delete constraintData.cells;
   } else if (
+    state.selectedConstraint.id === "axia" ||
+    state.selectedConstraint.id === "friendly_cell"
+  ) {
+    if (state.selectedCells.length !== 1) {
+      alert(`${state.selectedConstraint.name} requires exactly 1 cell.`);
+      return;
+    }
+    constraintData.cell = state.selectedCells[0];
+    delete constraintData.cells;
+  } else if (state.selectedConstraint.id === "couple") {
+    if (state.selectedCells.length !== 2) {
+      alert("Couple constraint requires exactly 2 adjacent cells.");
+      return;
+    }
+    params = await showConstraintParamModal("Couple Type: ", [
+      {
+        name: "same",
+        label: "Parity",
+        type: "select",
+        options: [
+          { value: "true", label: "Same parity" },
+          { value: "false", label: "Different parity" },
+        ],
+        required: true,
+      },
+    ]);
+    if (!params) return;
+    constraintData.cell1 = state.selectedCells[0];
+    constraintData.cell2 = state.selectedCells[1];
+    constraintData.same = params.same === "true";
+    delete constraintData.cells;
+  } else if (state.selectedConstraint.id === "clone_zone") {
+    // The current selection, if any, is the last zone
+    const zones = state.cloneZones.map((zone) => [...zone]);
+    if (state.selectedCells.length > 0) {
+      zones.push([...state.selectedCells]);
+    }
+    if (zones.length < 2) {
+      alert(
+        'CloneZone requires at least 2 zones: select a zone, click "Validate zone", then select the next one.'
+      );
+      return;
+    }
+    if (new Set(zones.map((zone) => zone.length)).size !== 1) {
+      alert("All clone zones must have the same number of cells.");
+      return;
+    }
+    constraintData.zones = zones;
+    delete constraintData.cells;
+  } else if (
     state.selectedConstraint.id === "knight" ||
     state.selectedConstraint.id === "king" ||
     state.selectedConstraint.id === "universal"
@@ -389,10 +526,9 @@ async function addConstraint() {
     updateActiveConstraints();
 
     // Clear selection
-    state.selectedCells = [];
-    document
-      .querySelectorAll(".cell.selected")
-      .forEach((cell) => cell.classList.remove("selected"));
+    clearCellSelection();
+    state.cloneZones = [];
+    renderCloneZones();
 
     console.log(
       `Constraint "${state.selectedConstraint.name}" added successfully`

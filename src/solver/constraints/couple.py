@@ -67,7 +67,13 @@ class CoupleConstraint(BaseConstraint):
         cell1 = board.get_cell(pos=data["cell1"])
         cell2 = board.get_cell(pos=data["cell2"])
 
-        return cls(cell1, cell2, data["same"])
+        same = data["same"]
+        if not isinstance(same, bool):
+            msg = "Couple constraint 'same' must be true or false"
+            # ValueError, like every invalid constraint payload (see BaseConstraint).
+            raise ValueError(msg)  # noqa: TRY004
+
+        return cls(cell1, cell2, same)
 
     @override
     def to_dict(self) -> dict[str, Any]:
