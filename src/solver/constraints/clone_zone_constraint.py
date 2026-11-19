@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Any, override
 
 from solver.constraints.base_constraint import BaseConstraint
 from solver.constraints.clone import CloneConstraint
+from solver.constraints.structs import ConstraintType
 
 if TYPE_CHECKING:
     from models import Board, Cell
@@ -20,7 +21,7 @@ class CloneZoneConstraint(BaseConstraint):
         Args:
             *clone_zones (list[Cell]): The lists of cells to apply constraints to.
         """
-        super().__init__()
+        super().__init__(ConstraintType.CLONE_ZONE)
         self.zones: list[list[Cell]] = []
         for zone in clone_zones:
             self.zones.append(zone)
