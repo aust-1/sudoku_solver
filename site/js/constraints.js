@@ -291,7 +291,7 @@ function renderConstraint(svg, constraint) {
 
     case "parity":
       const parityColor = [200, 200, 200, 156];
-      if (constraint.rest === 1) {
+      if (Number(constraint.rest) === 1) {
         // Odd - draw circle
         drawCircleInCell(svg, constraint.cell, parityColor);
       } else {
