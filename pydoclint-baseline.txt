@@ -1,4 +1,9 @@
+src/solver/constraints/axia.py
+    DOC101: Method `AxiaConstraint._get_axia_reachable_cells`: Docstring contains fewer arguments than in function signature.
+    DOC103: Method `AxiaConstraint._get_axia_reachable_cells`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [board: Board].
+--------------------
 src/solver/constraints/base_constraint.py
+    DOC503: Method `BaseConstraint.from_dict` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: ['NotImplementedError', 'ValueError']. Raised exceptions in the body: ['NotImplementedError'].
     DOC203: Method `BaseConstraint.get_regions` return type(s) in docstring not consistent with the return annotation. Return annotation types: ['dict[str, set[Cell]]']; docstring return section types: ['dict[str,set[Cell]]']
 --------------------
 src/solver/constraints/bishop.py
@@ -7,6 +12,19 @@ src/solver/constraints/bishop.py
 src/solver/constraints/killer.py
     DOC203: Method `KillerConstraint.get_regions` return type(s) in docstring not consistent with the return annotation. Return annotation types: ['dict[str, set[Cell]]']; docstring return section types: ['dict[str,set[Cell]]']
 --------------------
+src/solver/constraints/structs.py
+    DOC601: Class `ConstraintType`: Class docstring contains fewer class attributes than actual class attributes.  (Please read https://jsh9.github.io/pydoclint/checking_class_attributes.html on how to correctly document class attributes.)
+    DOC603: Class `ConstraintType`: Class docstring attributes are different from actual class attributes. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Attributes in the class definition but not in the docstring: [AXIA: , BISHOP: , CLONE: , COUPLE: , DUTCH: , FRIENDLY_CELL: , GERMAN: , GREATER_THAN: , KILLER: , KING: , KNIGHT: , KROPKI: , PALINDROME: , PARITY: , UNDEFINED: , UNIVERSAL: , X_V: ]. (Please read https://jsh9.github.io/pydoclint/checking_class_attributes.html on how to correctly document class attributes.)
+--------------------
 src/solver/constraints/universal.py
     DOC203: Method `UniversalConstraint.get_regions` return type(s) in docstring not consistent with the return annotation. Return annotation types: ['dict[str, set[Cell]]']; docstring return section types: ['dict[str,set[Cell]]']
+--------------------
+src/solver/constraints/whispers.py
+    DOC503: Method `_BaseDiffConstraint.from_dict` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: ['ValueError']. Raised exceptions in the body: ['NotImplementedError'].
+    DOC501: Method `_BaseDiffConstraint.deep_copy` has raise statements, but the docstring does not have a "Raises" section
+    DOC503: Method `_BaseDiffConstraint.deep_copy` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['NotImplementedError'].
+--------------------
+tests/test_board.py
+    DOC304: Class `DummyConstraint`: Class docstring has an argument/parameter section; please put it in the __init__() docstring
+    DOC203: Method `DummyConstraint.get_regions` return type(s) in docstring not consistent with the return annotation. Return annotation types: ['dict[str, set[Cell]]']; docstring return section types: ['dict[str,set[Cell]]']
 --------------------

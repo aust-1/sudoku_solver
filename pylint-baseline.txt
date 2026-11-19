@@ -1,13 +1,194 @@
-************* Module sudoku.utils.gui
-src\sudoku\utils\gui.py:12:0: R0902: Too many instance attributes (9/7) (too-many-instance-attributes)
-************* Module sudoku.utils.__init__
-src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
-==sudoku.solver.constraints.clone_zone_constraint:[43:88]
-==sudoku.solver.constraints.palindrome:[40:85]
-        return all(constraint.check(board) for constraint in self.clone_constraints)
+************* Module main
+13:8: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
+13:8: R1732: Consider using 'with' for resource-allocating operations (consider-using-with)
+************* Module api
+30:0: C0103: Constant name "current_board" doesn't conform to UPPER_CASE naming style (invalid-name)
+34:0: C0116: Missing function or method docstring (missing-function-docstring)
+35:4: W0603: Using the global statement (global-statement)
+214:0: C0116: Missing function or method docstring (missing-function-docstring)
+219:0: C0116: Missing function or method docstring (missing-function-docstring)
+226:0: C0116: Missing function or method docstring (missing-function-docstring)
+231:0: C0116: Missing function or method docstring (missing-function-docstring)
+243:4: W0603: Using the global statement (global-statement)
+254:0: C0116: Missing function or method docstring (missing-function-docstring)
+262:0: C0116: Missing function or method docstring (missing-function-docstring)
+289:0: C0116: Missing function or method docstring (missing-function-docstring)
+309:0: C0116: Missing function or method docstring (missing-function-docstring)
+309:37: W0621: Redefining name 'index' from outer scope (line 214) (redefined-outer-name)
+330:0: C0116: Missing function or method docstring (missing-function-docstring)
+364:0: C0116: Missing function or method docstring (missing-function-docstring)
+370:0: C0116: Missing function or method docstring (missing-function-docstring)
+377:0: C0116: Missing function or method docstring (missing-function-docstring)
+384:4: W0603: Using the global statement (global-statement)
+************* Module models.board
+137:0: C0325: Unnecessary parens after 'not' keyword (superfluous-parens)
+1:0: C0114: Missing module docstring (missing-module-docstring)
+69:4: R0912: Too many branches (14/12) (too-many-branches)
+212:4: C0116: Missing function or method docstring (missing-function-docstring)
+216:4: C0116: Missing function or method docstring (missing-function-docstring)
+220:4: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module models.cell
+1:0: C0114: Missing module docstring (missing-module-docstring)
+61:4: C0116: Missing function or method docstring (missing-function-docstring)
+65:4: C0116: Missing function or method docstring (missing-function-docstring)
+69:4: C0116: Missing function or method docstring (missing-function-docstring)
+73:4: C0116: Missing function or method docstring (missing-function-docstring)
+77:4: C0116: Missing function or method docstring (missing-function-docstring)
+97:4: C0116: Missing function or method docstring (missing-function-docstring)
+111:4: C0116: Missing function or method docstring (missing-function-docstring)
+115:4: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module utils.exceptions
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module utils.gui
+1:0: C0114: Missing module docstring (missing-module-docstring)
+25:8: E1101: Module 'pygame' has no 'init' member (no-member)
+56:59: E1101: Module 'pygame' has no 'SRCALPHA' member (no-member)
+81:59: E1101: Module 'pygame' has no 'SRCALPHA' member (no-member)
+111:54: E1101: Module 'pygame' has no 'SRCALPHA' member (no-member)
+134:54: E1101: Module 'pygame' has no 'SRCALPHA' member (no-member)
+156:54: E1101: Module 'pygame' has no 'SRCALPHA' member (no-member)
+210:54: E1101: Module 'pygame' has no 'SRCALPHA' member (no-member)
+264:54: E1101: Module 'pygame' has no 'SRCALPHA' member (no-member)
+337:25: C1805: "i % 3 == 0" can be simplified to "not i % 3", if it is strictly an int, as 0 is falsey (use-implicit-booleaness-not-comparison-to-zero)
+418:33: E1101: Module 'pygame' has no 'QUIT' member (no-member)
+420:35: E1101: Module 'pygame' has no 'MOUSEBUTTONDOWN' member (no-member)
+427:8: E1101: Module 'pygame' has no 'quit' member (no-member)
+450:33: E1101: Module 'pygame' has no 'QUIT' member (no-member)
+452:35: E1101: Module 'pygame' has no 'MOUSEBUTTONDOWN' member (no-member)
+457:34: E1101: Module 'pygame' has no 'MOUSEBUTTONDOWN' member (no-member)
+461:35: E1101: Module 'pygame' has no 'MOUSEBUTTONDOWN' member (no-member)
+472:8: E1101: Module 'pygame' has no 'quit' member (no-member)
+************* Module solver.composite
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.solver
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.backtracking
+1:0: C0114: Missing module docstring (missing-module-docstring)
+18:8: C0415: Import outside toplevel (solver.strategies.ConstraintStrategy, solver.strategies.EliminationStrategy, solver.strategies.HiddenPairStrategy, solver.strategies.HiddenQuadStrategy, solver.strategies.HiddenSingleStrategy, solver.strategies.HiddenTripleStrategy, solver.strategies.NakedPairStrategy, solver.strategies.NakedQuadStrategy, solver.strategies.NakedTripleStrategy, solver.strategies.XWingStrategy) (import-outside-toplevel)
+************* Module solver.strategies.chain_violation_guard
+1:0: C0114: Missing module docstring (missing-module-docstring)
+35:4: R0914: Too many local variables (17/15) (too-many-locals)
+46:8: C0415: Import outside toplevel (solver.composite.CompositeSolver) (import-outside-toplevel)
+47:8: C0415: Import outside toplevel (solver.strategies.ConstraintStrategy, solver.strategies.EliminationStrategy, solver.strategies.HiddenPairStrategy, solver.strategies.HiddenQuadStrategy, solver.strategies.HiddenSingleStrategy, solver.strategies.HiddenTripleStrategy, solver.strategies.NakedPairStrategy, solver.strategies.NakedQuadStrategy, solver.strategies.NakedTripleStrategy, solver.strategies.XWingStrategy) (import-outside-toplevel)
+************* Module solver.strategies.subset_hidden
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.strategies.x_wing
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.strategies.subset_naked
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.strategies.elimination
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.strategies.constraint
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.strategies.single_hidden
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.strategies.w_wing
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.constraints.clone_zone_constraint
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.constraints.universal
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.constraints.even_odd
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.constraints.killer
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.constraints.palindrome
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.constraints.bishop
+1:0: C0114: Missing module docstring (missing-module-docstring)
+10:4: W0404: Reimport 'Cell' (imported line 5) (reimported)
+************* Module solver.constraints.clone
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.constraints.knight
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.constraints.factory
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.constraints.king
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.constraints.kropki
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.constraints.whispers
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.constraints.frienly_cell
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.constraints.couple
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.constraints.axia
+1:0: C0301: Line too long (111/100) (line-too-long)
+12:4: W0404: Reimport 'Cell' (imported line 7) (reimported)
+************* Module solver.constraints.structs
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.constraints.greater_than
+131:0: C0301: Line too long (104/100) (line-too-long)
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module solver.constraints.xv
+185:0: C0301: Line too long (108/100) (line-too-long)
+1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module test_board_schema
+1:0: C0114: Missing module docstring (missing-module-docstring)
+13:0: C0116: Missing function or method docstring (missing-function-docstring)
+18:0: C0116: Missing function or method docstring (missing-function-docstring)
+24:0: C0116: Missing function or method docstring (missing-function-docstring)
+31:0: C0116: Missing function or method docstring (missing-function-docstring)
+38:0: C0116: Missing function or method docstring (missing-function-docstring)
+45:0: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module test_board
+1:0: C0114: Missing module docstring (missing-module-docstring)
+96:0: C0115: Missing class docstring (missing-class-docstring)
+98:4: C0116: Missing function or method docstring (missing-function-docstring)
+102:4: C0116: Missing function or method docstring (missing-function-docstring)
+116:4: C0116: Missing function or method docstring (missing-function-docstring)
+130:4: C0116: Missing function or method docstring (missing-function-docstring)
+136:4: C0116: Missing function or method docstring (missing-function-docstring)
+143:4: C0116: Missing function or method docstring (missing-function-docstring)
+147:4: C0116: Missing function or method docstring (missing-function-docstring)
+151:4: C0116: Missing function or method docstring (missing-function-docstring)
+152:21: E0110: Abstract class 'DummyConstraint' with abstract methods instantiated (abstract-class-instantiated)
+161:4: C0116: Missing function or method docstring (missing-function-docstring)
+167:4: C0116: Missing function or method docstring (missing-function-docstring)
+174:26: E0110: Abstract class 'DummyConstraint' with abstract methods instantiated (abstract-class-instantiated)
+179:4: C0116: Missing function or method docstring (missing-function-docstring)
+184:30: E0110: Abstract class 'DummyConstraint' with abstract methods instantiated (abstract-class-instantiated)
+187:4: C0116: Missing function or method docstring (missing-function-docstring)
+190:30: E0110: Abstract class 'DummyConstraint' with abstract methods instantiated (abstract-class-instantiated)
+************* Module test_import_export_api
+1:0: C0114: Missing module docstring (missing-module-docstring)
+12:0: C0116: Missing function or method docstring (missing-function-docstring)
+22:0: C0116: Missing function or method docstring (missing-function-docstring)
+35:0: C0116: Missing function or method docstring (missing-function-docstring)
+35:34: W0621: Redefining name 'client' from outer scope (line 12) (redefined-outer-name)
+************* Module test_cell
+1:0: C0114: Missing module docstring (missing-module-docstring)
+6:0: C0115: Missing class docstring (missing-class-docstring)
+22:4: C0116: Missing function or method docstring (missing-function-docstring)
+28:4: C0116: Missing function or method docstring (missing-function-docstring)
+36:4: C0116: Missing function or method docstring (missing-function-docstring)
+47:4: C0116: Missing function or method docstring (missing-function-docstring)
+57:4: C0116: Missing function or method docstring (missing-function-docstring)
+1:0: R0801: Similar lines in 2 files
+==solver.constraints.clone_zone_constraint:[66:127]
+==solver.constraints.palindrome:[65:126]
+        }
 
+    @override
+    def check(self, board: Board) -> set[Cell]:
+        """Check if the palindrome constraint is satisfied.
+
+        Args:
+            board (Board): The Sudoku board to check.
+
+        Returns:
+            set[Cell]: A set of cells that do not satisfy the palindrome constraint.
+        """
+        return {
+            cell
+            for constraint in self.clone_constraints
+            for cell in constraint.check(board)
+        }
+
+    @override
     def eliminate(self, board: Board) -> bool:
-        """Automatically complete the clones constraint on the given board.
+        """Automatically complete the palindrome constraint on the given board.
 
         Args:
             board (Board): The Sudoku board to auto-complete.
@@ -16,9 +197,8 @@ src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
             bool:
                 ``True`` if at least one candidate was eliminated,
                 ``False`` otherwise.
-
         """
-        self.logger.debug(
+        self._logger.debug(
             f"Eliminating candidates for {self.__class__.__name__} constraint",
         )
         eliminated = False
@@ -26,6 +206,7 @@ src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
             eliminated |= constraint.eliminate(board)
         return eliminated
 
+    @override
     def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:
         """Get the reachable cells based on the constraint.
 
@@ -35,23 +216,22 @@ src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
 
         Returns:
             set[Cell]: A set of reachable cells.
-
         """
         reachable_cells: set[Cell] = set()
         for constraint in self.clone_constraints:
-            reachable_cells.update(constraint.reachable_cells(board, cell))
+            reachable_cells |= constraint.reachable_cells(board, cell)
         return reachable_cells
 
-    def deep_copy(self) -> CloneZoneConstraint:
-        """Create a deep copy of the constraint.
+    @override
+    def draw(self, gui: SudokuGUI) -> None:
+        """Draw this palindrome constraint on ``gui``.
 
-        Returns:
-            CloneZoneConstraint: A deep copy of the constraint.
-
+        Args:
+            gui (SudokuGUI): The GUI to draw on.
         """ (duplicate-code)
-src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
-==sudoku.solver.strategies.w_wing:[24:37]
-==sudoku.solver.strategies.x_wing:[25:38]
+1:0: R0801: Similar lines in 2 files
+==solver.strategies.w_wing:[24:37]
+==solver.strategies.x_wing:[24:37]
         moved = False
 
         for digit in range(1, board.size + 1):
@@ -65,16 +245,90 @@ src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
                 if len(cells) == 2:  # noqa: PLR2004
                     strong_links.add((cells[0], cells[1]))
  (duplicate-code)
-src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
-==sudoku.solver.constraints.king:[32:64]
-==sudoku.solver.constraints.knight:[33:65]
+1:0: R0801: Similar lines in 2 files
+==solver.constraints.king:[31:53]
+==solver.constraints.universal:[31:51]
+        return cls()
+
+    @override
+    def check(self, board: Board) -> set[Cell]:
+        """Check if the king's movement is valid.
+
+        Args:
+            board (Board): The Sudoku board.
+
+        Returns:
+            set[Cell]:
+                A set of cells that do not satisfy the king's movement constraint.
+
+        """
+        invalid_cells: set[Cell] = set()
+        for i in range(board.size):
+            for j in range(board.size):
+                current_cell = board.get_cell(row=i, col=j)
+                value = current_cell.value
+                if value is not None:
+                    neighbor_cells = self.reachable_cells(board, current_cell)
+                    for cell in neighbor_cells: (duplicate-code)
+1:0: R0801: Similar lines in 2 files
+==solver.constraints.couple:[133:157]
+==solver.constraints.kropki:[153:177]
+        ):
+            return {self.cell1, self.cell2}
+        return set()
+
+    @override
+    def eliminate(self, board: Board) -> bool:
+        """Automatically complete the Kropki constraint on the given board.
+
+        Args:
+            board (Board): The Sudoku board to auto-complete.
+
+        Returns:
+            bool:
+                ``True`` if at least one candidate was eliminated,
+                ``False`` otherwise.
+        """
+        eliminated = False
+
+        cell1_candidates: set[int] = set(self.cell1.candidates)
+        cell2_candidates: set[int] = set(self.cell2.candidates)
+
+        for v1 in cell1_candidates:
+            possible = False
+            for v2 in cell2_candidates: (duplicate-code)
+1:0: R0801: Similar lines in 2 files
+==solver.constraints.knight:[31:51]
+==solver.constraints.universal:[31:49]
+        return cls()
+
+    @override
+    def check(self, board: Board) -> set[Cell]:
+        """Check if the universal constraint is satisfied.
+
+        Args:
+            board (Board): The Sudoku board to check.
+
+        Returns:
+            set[Cell]: A set of cells that do not satisfy the universal constraint.
+        """
+        invalid_cells: set[Cell] = set()
+        for i in range(board.size):
+            for j in range(board.size):
+                current_cell = board.get_cell(row=i, col=j)
+                value = current_cell.value
+                if value is not None: (duplicate-code)
+1:0: R0801: Similar lines in 2 files
+==solver.constraints.king:[56:88]
+==solver.constraints.knight:[57:89]
                                 f" and neighbor cell ({cell.row}, {cell.col})"
                                 f" with value {value}",
                             )
-                            return False
-        return True
+                            invalid_cells |= {current_cell, cell}
+        return invalid_cells
 
-    def eliminate(self, board: Board) -> bool:  # noqa: ARG002, PLR6301
+    @override
+    def eliminate(self, board: Board) -> bool:
         """Automatically complete the knight's movement constraint on the given board.
 
         Args:
@@ -84,11 +338,11 @@ src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
             bool:
                 ``True`` if at least one candidate was eliminated,
                 ``False`` otherwise.
-
         """
         return False
 
-    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:  # noqa: PLR6301
+    @override
+    def reachable_cells(self, board: Board, cell: Cell) -> set[Cell]:
         """Get the reachable cells based on the constraint.
 
         Args:
@@ -97,27 +351,48 @@ src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
 
         Returns:
             set[Cell]: A set of reachable cells.
-
         """
         reachable: set[Cell] = set() (duplicate-code)
-src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
-==sudoku.solver.__init__:[42:48]
-==sudoku.solver.strategies.__init__:[21:27]
-    "ConstraintStrategy",
-    "EliminationStrategy",
-    "HiddenPairStrategy",
-    "HiddenQuadStrategy",
-    "HiddenSingleStrategy",
-    "HiddenTripleStrategy", (duplicate-code)
-src\sudoku\utils\__init__.py:1:0: R0801: Similar lines in 2 files
-==sudoku.solver.backtracking:[35:40]
-==sudoku.solver.composite:[46:51]
+1:0: R0801: Similar lines in 2 files
+==solver.constraints.bishop:[43:59]
+==solver.constraints.palindrome:[48:64]
+            raise ValueError(msg)
+
+        positions: list[str] = list(data["cells"])
+        cells: list[Cell] = [board.get_cell(pos=pos) for pos in positions]
+
+        return cls(cells)
+
+    @override
+    def to_dict(self) -> dict[str, Any]:
+        """Convert constraint to dictionary representation.
+
+        Returns:
+            dict[str, Any]: Dictionary representation of the constraint.
+        """
+        return {
+            "type": self.type.value, (duplicate-code)
+1:0: R0801: Similar lines in 2 files
+==solver.backtracking:[35:40]
+==solver.composite:[45:50]
             NakedTripleStrategy(),
             HiddenTripleStrategy(),
             NakedQuadStrategy(),
             HiddenQuadStrategy(),
             XWingStrategy(), (duplicate-code)
+1:0: R0801: Similar lines in 2 files
+==solver.constraints.couple:[158:164]
+==solver.constraints.kropki:[178:184]
+            if not possible:
+                eliminated |= self.cell1.eliminate_candidate(v1)
+
+        for v2 in cell2_candidates:
+            possible = False
+            for v1 in cell1_candidates: (duplicate-code)
+1:0: R0401: Cyclic import (solver.strategies -> solver.strategies.chain_violation_guard) (cyclic-import)
+1:0: R0401: Cyclic import (solver.backtracking -> solver.strategies -> solver.strategies.chain_violation_guard -> solver.composite) (cyclic-import)
+1:0: R0401: Cyclic import (models -> models.board) (cyclic-import)
 
 ------------------------------------------------------------------
-Your code has been rated at 9.14/10 (previous run: 9.01/10, +0.13)
+Your code has been rated at 9.02/10 (previous run: 9.38/10, -0.36)
 
