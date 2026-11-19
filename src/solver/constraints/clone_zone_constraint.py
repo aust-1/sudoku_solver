@@ -119,13 +119,18 @@ class CloneZoneConstraint(BaseConstraint):
         return reachable_cells
 
     @override
-    def deep_copy(self) -> CloneZoneConstraint:
-        """Create a deep copy of the constraint.
+    def deep_copy(self, board: Board) -> CloneZoneConstraint:
+        """Create a copy of the constraint bound to the cells of ``board``.
+
+        Args:
+            board (Board): The board whose cells the copy uses.
 
         Returns:
             CloneZoneConstraint: A deep copy of the constraint.
         """
-        return CloneZoneConstraint(*[zone.copy() for zone in self.zones])
+        return CloneZoneConstraint(
+            *[[self._cell_on(board, cell) for cell in zone] for zone in self.zones],
+        )
 
     @override
     def __repr__(self) -> str:

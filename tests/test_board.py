@@ -83,8 +83,11 @@ class DummyConstraint(BaseConstraint):
         return {"dummy": {board.get_cell(row=0, col=0)}}
 
     @override
-    def deep_copy(self) -> DummyConstraint:
+    def deep_copy(self, board: Board) -> DummyConstraint:
         """Create a deep copy of the constraint.
+
+        Args:
+            board (Board): The board whose cells the copy uses.
 
         Returns:
             DummyConstraint: A deep copy of the constraint.

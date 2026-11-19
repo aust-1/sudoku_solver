@@ -99,8 +99,11 @@ class KnightConstraint(BaseConstraint):
         return reachable
 
     @override
-    def deep_copy(self) -> KnightConstraint:
-        """Create a deep copy of the constraint.
+    def deep_copy(self, board: Board) -> KnightConstraint:
+        """Create a copy of the constraint bound to the cells of ``board``.
+
+        Args:
+            board (Board): The board whose cells the copy uses.
 
         Returns:
             KnightConstraint: A deep copy of the constraint.

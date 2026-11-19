@@ -142,15 +142,18 @@ class GreaterThanConstraint(BaseConstraint):
         # TODO: implement
 
     @override
-    def deep_copy(self) -> GreaterThanConstraint:
-        """Create a deep copy of the constraint.
+    def deep_copy(self, board: Board) -> GreaterThanConstraint:
+        """Create a copy of the constraint bound to the cells of ``board``.
+
+        Args:
+            board (Board): The board whose cells the copy uses.
 
         Returns:
             GreaterThanConstraint: A deep copy of the constraint.
         """
         return GreaterThanConstraint(
-            self.higher_value_cell,
-            self.lower_value_cell,
+            self._cell_on(board, self.higher_value_cell),
+            self._cell_on(board, self.lower_value_cell),
         )
 
     @override

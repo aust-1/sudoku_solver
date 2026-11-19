@@ -115,13 +115,16 @@ class FriendlyCellConstraint(BaseConstraint):
         # TODO: implement drawing (hearth)
 
     @override
-    def deep_copy(self) -> FriendlyCellConstraint:
-        """Create a deep copy of the constraint.
+    def deep_copy(self, board: Board) -> FriendlyCellConstraint:
+        """Create a copy of the constraint bound to the cells of ``board``.
+
+        Args:
+            board (Board): The board whose cells the copy uses.
 
         Returns:
             FriendlyCellConstraint: A deep copy of the constraint.
         """
-        return FriendlyCellConstraint(self.friendly_cell)
+        return FriendlyCellConstraint(self._cell_on(board, self.friendly_cell))
 
     @override
     def __repr__(self) -> str:

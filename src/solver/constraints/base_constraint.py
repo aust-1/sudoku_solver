@@ -147,8 +147,14 @@ class BaseConstraint(ABC):
         return
 
     @abstractmethod
-    def deep_copy(self) -> BaseConstraint:
-        """Create a deep copy of the constraint.
+    def deep_copy(self, board: Board) -> BaseConstraint:
+        """Create a copy of the constraint bound to the cells of ``board``.
+
+        The copy must reference the cells of ``board`` (usually a copy of the
+        board the constraint was created for), never the original cells.
+
+        Args:
+            board (Board): The board whose cells the copy uses.
 
         Returns:
             BaseConstraint: A deep copy of the constraint.
@@ -157,6 +163,19 @@ class BaseConstraint(ABC):
             NotImplementedError: If the method is not implemented in a subclass.
         """
         raise NotImplementedError(self._msg)
+
+    @staticmethod
+    def _cell_on(board: Board, cell: Cell) -> Cell:
+        """Return the cell of ``board`` at the same position as ``cell``.
+
+        Args:
+            board (Board): The board to take the cell from.
+            cell (Cell): A cell, possibly from another board.
+
+        Returns:
+            Cell: The cell of ``board`` at the same row and column.
+        """
+        return board.get_cell(row=cell.row, col=cell.col)
 
     @override
     def __repr__(self) -> str:

@@ -420,7 +420,7 @@ class Board:
 
         board._constraints = set()
         for constraint in self._constraints:
-            board.add_constraints(constraint.deep_copy())
+            board.add_constraints(constraint.deep_copy(board))
         return board
 
     def copy_values_from(self, other: Board) -> None:
