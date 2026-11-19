@@ -156,20 +156,6 @@ def _diff_snapshots(
     return changes
 
 
-def _create_board(payload: dict[str, Any]) -> tuple[Board, list[dict[str, Any]]]:
-    raw_constraints = payload.get("constraints", payload.get("constraint", []))
-    constraints_list: list[dict[str, Any]] = []
-    if isinstance(raw_constraints, list):
-        for constraint in raw_constraints:
-            if isinstance(constraint, dict):
-                constraints_list.append(constraint)
-
-    normalized = _normalize_board_payload(payload)
-    board = Board.from_dict(normalized)
-    _place_givens(board, normalized.get("cells", {}))
-    return board, constraints_list
-
-
 def _place_givens(board: Board, cells: dict[str, list[int]]) -> None:
     """Fill the cells with a single candidate and mark them as given digits.
 
@@ -187,6 +173,20 @@ def _place_givens(board: Board, cells: dict[str, list[int]]) -> None:
         if not cell.is_filled():
             cell.value = candidates[0]
         cell.given = True
+
+
+def _create_board(payload: dict[str, Any]) -> tuple[Board, list[dict[str, Any]]]:
+    raw_constraints = payload.get("constraints", payload.get("constraint", []))
+    constraints_list: list[dict[str, Any]] = []
+    if isinstance(raw_constraints, list):
+        for constraint in raw_constraints:
+            if isinstance(constraint, dict):
+                constraints_list.append(constraint)
+
+    normalized = _normalize_board_payload(payload)
+    board = Board.from_dict(normalized)
+    _place_givens(board, normalized.get("cells", {}))
+    return board, constraints_list
 
 
 def _build_constraint_catalog() -> list[dict[str, str]]:
