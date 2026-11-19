@@ -7,8 +7,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from flask import Flask, abort, jsonify, request, send_from_directory
+from flask import Flask, Response, abort, jsonify, request, send_from_directory
 from flask_cors import CORS
+from werkzeug.exceptions import HTTPException
 
 from models import Board
 from solver import CompositeSolver
@@ -192,6 +193,49 @@ def _get_board_or_404(board_id: str) -> Board:
     return board
 
 
+@app.errorhandler(HTTPException)
+def handle_http_error(error: HTTPException) -> tuple[Response, int] | HTTPException:
+    """Return API errors as JSON instead of Flask's HTML pages.
+
+    Unhandled exceptions reach this handler as a 500 ``InternalServerError``.
+
+    Args:
+        error (HTTPException): The HTTP error raised while handling the request.
+
+    Returns:
+        tuple[Response, int] | HTTPException:
+            A JSON response for ``/api`` routes, the default page otherwise.
+    """
+    if not request.path.startswith("/api/"):
+        return error
+    return jsonify({"error": error.description}), error.code or 500
+
+
+def _parse_digit(raw: object, size: int, field: str) -> int:
+    """Convert ``raw`` to a digit between 1 and ``size``.
+
+    Args:
+        raw (object): The value read from the JSON payload.
+        size (int): The size of the board.
+        field (str): The name of the field, used in the error message.
+
+    Returns:
+        int: The digit.
+
+    Raises:
+        ValueError: If ``raw`` is not an integer between 1 and ``size``.
+    """
+    digit: int | None = None
+    if isinstance(raw, int) and not isinstance(raw, bool):
+        digit = raw
+    elif isinstance(raw, str) and raw.strip().isdigit():
+        digit = int(raw.strip())
+    if digit is None or not 1 <= digit <= size:
+        msg = f"{field} must be an integer between 1 and {size}, got {raw!r}."
+        raise ValueError(msg)
+    return digit
+
+
 def _apply_constraint(board: Board, constraint_data: dict[str, Any]) -> None:
     normalized = dict(constraint_data)
     constraint_type = normalized.get("type")
@@ -265,19 +309,37 @@ def update_cell(board_id: str) -> Any:
     if not isinstance(pos, str):
         return jsonify({"error": "Missing cell position."}), 400
 
-    cell = board.get_cell(pos=pos)
-    value = payload.get("value")
-    candidates = payload.get("candidates")
+    try:
+        cell = board.get_cell(pos=pos)
+    except ValueError:
+        return jsonify({"error": f"Invalid cell position: {pos}."}), 400
 
-    if candidates is not None:
-        if not isinstance(candidates, list):
-            return jsonify({"error": "Candidates must be a list."}), 400
-        cell.candidates = set(int(c) for c in candidates)
+    raw_value = payload.get("value")
+    raw_candidates = payload.get("candidates")
+    try:
+        value = (
+            None if raw_value is None else _parse_digit(raw_value, board.size, "value")
+        )
+        candidates: set[int] | None = None
+        if raw_candidates is not None:
+            if not isinstance(raw_candidates, list):
+                return jsonify({"error": "Candidates must be a list."}), 400
+            candidates = {
+                _parse_digit(c, board.size, "candidates") for c in raw_candidates
+            }
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
 
-    if value is None:
-        cell.value = None
-    else:
-        cell.value = int(value)
+    if cell.is_filled() and cell.value != value:
+        # The old value was removed from the reachable cells: give it back.
+        board.clear_cell(cell)
+        if value is None and candidates is not None:
+            cell.candidates &= candidates
+    elif value is None and candidates is not None:
+        cell.candidates = candidates
+
+    if value is not None:
+        cell.value = value
 
     return jsonify({
         "board": _serialize_board_ui(board, board_constraints.get(board_id, [])),

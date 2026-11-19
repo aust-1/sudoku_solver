@@ -275,8 +275,9 @@ class Board:
         """
         if pos is not None:
             if (
-                len(pos) != 2
+                len(pos) != 2  # noqa: PLR2004
                 or not ord("a") <= ord(pos[0]) < ord("a") + self._size
+                or not pos[1].isdigit()
                 or not 1 <= int(pos[1]) <= self._size
             ):
                 msg = f"Wrong position format: {pos}"
@@ -340,6 +341,38 @@ class Board:
         return (
             all(cell.is_filled() for cell in self.get_all_cells()) and self.is_valid()
         )
+
+    def clear_cell(self, cell: Cell) -> None:
+        """Empty ``cell`` and recompute the candidates of the whole board.
+
+        Setting a value removes it from the candidates of every reachable cell;
+        emptying the cell must give these candidates back, and the emptied cell
+        must not get back the digits placed in the cells it reaches.
+
+        Args:
+            cell (Cell): The cell to empty.
+        """
+        cell.value = None
+        self.recompute_candidates()
+
+    def recompute_candidates(self) -> None:
+        """Recompute every candidate from the placed values only.
+
+        Each filled cell keeps its value as only candidate, each empty cell gets
+        every digit back, then each placed value is removed from the cells it
+        reaches (rows, columns, boxes and constraints). Eliminations made by
+        solving strategies are discarded.
+        """
+        digits = set(range(1, self._size + 1))
+        filled = [cell for cell in self.get_all_cells() if cell.is_filled()]
+        for cell in self.get_all_cells():
+            cell.candidates = {cell.value} if cell.value is not None else set(digits)
+        for cell in filled:
+            if cell.value is None:
+                continue
+            for other in cell.reachable_cells:
+                if not other.is_filled():
+                    other.eliminate_candidate(cell.value)
 
     def load_from_string(self, input_str: str) -> None:
         """Load digits into the board from a string (0 for empty).
