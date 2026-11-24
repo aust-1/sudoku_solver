@@ -49,7 +49,7 @@ class UniversalConstraint(BaseConstraint):
                 if value is not None:
                     neighbor_cells = self.reachable_cells(board, current_cell)
                     for cell in neighbor_cells:
-                        if cell.value is not None and cell.value != value:
+                        if cell.value is not None and cell.value == value:
                             self._logger.debug(
                                 f"Universal constraint violated at cell ({i}, {j})"
                                 f" and cell ({cell.row}, {cell.col})"
