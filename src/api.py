@@ -14,6 +14,7 @@ from models import Board
 from solver import CompositeSolver
 from solver.backtracking import BacktrackingSolver
 from solver.constraints.factory import CONSTRAINT_REGISTRY, create_constraint_from_dict
+from solver.solver import Solver
 from solver.strategies import EliminationStrategy
 from utils.exceptions import InvalidSudokuError
 
@@ -201,7 +202,7 @@ def _apply_constraint(board: Board, constraint_data: dict[str, Any]) -> None:
     board.add_constraints(constraint)
 
 
-def _solver_for_type(solver_type: str):
+def _solver_for_type(solver_type: str) -> Solver:
     if solver_type == "simple":
         return EliminationStrategy()
     if solver_type == "backtracking":
