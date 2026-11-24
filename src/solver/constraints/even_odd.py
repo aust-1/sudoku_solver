@@ -73,8 +73,33 @@ class ParityConstraint(BaseConstraint):
             raise ValueError(msg)
 
         cell = board.get_cell(pos=data["cell"])
-        rest = data["rest"]
+        rest = cls._parse_rest(data["rest"])
         return cls(cell, rest)
+
+    @staticmethod
+    def _parse_rest(raw_rest: object) -> int:
+        """Convert a JSON ``rest`` value to the integer 0 or 1.
+
+        Args:
+            raw_rest (object): The value read from the JSON data, ``0``, ``1``,
+                ``"0"`` or ``"1"``.
+
+        Returns:
+            int: ``0`` for even, ``1`` for odd.
+
+        Raises:
+            ValueError: If the value is not 0 or 1.
+        """
+        if isinstance(raw_rest, int) and not isinstance(raw_rest, bool):
+            if raw_rest in {0, 1}:
+                return raw_rest
+        elif isinstance(raw_rest, str) and raw_rest.strip() in {"0", "1"}:
+            return int(raw_rest.strip())
+        msg = (
+            "Parity constraint 'rest' must be 0 (even) or 1 (odd), "
+            f"got {raw_rest!r}"
+        )
+        raise ValueError(msg)
 
     @override
     def to_dict(self) -> dict[str, Any]:
