@@ -308,7 +308,8 @@ class Board:
         Returns:
             bool:
                 ``True`` if all rows, columns and boxes contain no duplicates,
-                ``False`` otherwise.
+                every empty cell still has a candidate and every constraint is
+                satisfied, ``False`` otherwise.
         """
 
         def region_valid(cells: Iterable[Cell]) -> bool:
@@ -323,6 +324,13 @@ class Board:
             """
             values = [c.value for c in cells if c.is_filled()]
             return len(values) == len(set(values))
+
+        if any(
+            not cell.is_filled() and not cell.candidates
+            for cell in self.get_all_cells()
+        ):
+            self._logger.debug("A cell has no candidate left")
+            return False
 
         basic_valid = all(region_valid(r) for r in self._regions.values())
         if not basic_valid:
