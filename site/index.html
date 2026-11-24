@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,12 +13,33 @@
       <header>
         <h1>🧩 Sudoku CTC Solver Assistant</h1>
         <div class="mode-toggle">
-          <button id="setup-mode-btn" class="mode-btn active">
+          <button
+            id="setup-mode-btn"
+            class="mode-btn active"
+            type="button"
+            aria-pressed="true"
+          >
             Setup Mode
           </button>
-          <button id="solver-mode-btn" class="mode-btn">Solver Mode</button>
+          <button
+            id="solver-mode-btn"
+            class="mode-btn"
+            type="button"
+            aria-pressed="false"
+          >
+            Solver Mode
+          </button>
         </div>
       </header>
+
+      <!-- Messages (replace alert dialogs), announced by screen readers -->
+      <div
+        id="notification"
+        class="notification"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      ></div>
 
       <!-- Main Content -->
       <div id="content">
@@ -28,7 +49,12 @@
             <!-- Toolbar -->
             <div class="toolbar">
               <h2>Constraints</h2>
-              <div id="constraint-list" class="constraint-list">
+              <div
+                id="constraint-list"
+                class="constraint-list"
+                role="group"
+                aria-label="Constraint types"
+              >
                 <!-- Constraints will be loaded here -->
               </div>
 
@@ -102,8 +128,35 @@
 
               <div class="divider"></div>
 
+              <h3>Edit Cell</h3>
+              <p id="cell-editor-target" class="param-help">
+                Select a cell on the grid, then type a digit (1-9) or use the
+                buttons below. Delete or 0 clears the cell.
+              </p>
+              <div class="keypad" role="group" aria-label="Cell value">
+                <button type="button" class="keypad-btn" data-value="1" disabled>1</button>
+                <button type="button" class="keypad-btn" data-value="2" disabled>2</button>
+                <button type="button" class="keypad-btn" data-value="3" disabled>3</button>
+                <button type="button" class="keypad-btn" data-value="4" disabled>4</button>
+                <button type="button" class="keypad-btn" data-value="5" disabled>5</button>
+                <button type="button" class="keypad-btn" data-value="6" disabled>6</button>
+                <button type="button" class="keypad-btn" data-value="7" disabled>7</button>
+                <button type="button" class="keypad-btn" data-value="8" disabled>8</button>
+                <button type="button" class="keypad-btn" data-value="9" disabled>9</button>
+                <button type="button" class="keypad-btn keypad-clear" data-value="" disabled>
+                  Clear
+                </button>
+              </div>
+
+              <div class="divider"></div>
+
               <h3>Board Status</h3>
-              <div id="board-status" class="board-status">
+              <div
+                id="board-status"
+                class="board-status"
+                aria-live="polite"
+                aria-atomic="true"
+              >
                 <p><strong>Valid:</strong> <span id="status-valid">-</span></p>
                 <p>
                   <strong>Solved:</strong> <span id="status-solved">-</span>
@@ -120,7 +173,13 @@
 
               <div id="solver-logs" class="solver-logs">
                 <h3>Solver Logs</h3>
-                <div id="log-container" class="log-container">
+                <div
+                  id="log-container"
+                  class="log-container"
+                  role="log"
+                  aria-live="polite"
+                  aria-label="Solver logs"
+                >
                   <!-- Logs will appear here -->
                 </div>
               </div>
@@ -134,13 +193,20 @@
     <input type="file" id="file-input" accept=".json" style="display: none" />
 
     <!-- Modal for constraint parameters -->
-    <div id="constraint-param-modal" class="modal">
-      <div class="modal-content">
+    <div id="constraint-param-modal" class="modal" aria-hidden="true">
+      <div
+        class="modal-content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
         <h3 id="modal-title">Constraint Parameters</h3>
         <div id="modal-body"></div>
         <div class="modal-buttons">
-          <button id="modal-ok" class="btn btn-primary">OK</button>
-          <button id="modal-cancel" class="btn btn-secondary">Cancel</button>
+          <button id="modal-ok" class="btn btn-primary" type="button">OK</button>
+          <button id="modal-cancel" class="btn btn-secondary" type="button">
+            Cancel
+          </button>
         </div>
       </div>
     </div>

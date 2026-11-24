@@ -28,6 +28,8 @@ function initConstraintLayer(gridId) {
 
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.classList.add("constraint-overlay");
+  // Decorative: the constraints are listed in "Active Constraints"
+  svg.setAttribute("aria-hidden", "true");
   svg.setAttribute("width", 9 * cellSize);
   svg.setAttribute("height", 9 * cellSize);
   svg.setAttribute("viewBox", `0 0 ${9 * cellSize} ${9 * cellSize}`);
