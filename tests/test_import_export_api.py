@@ -35,7 +35,7 @@ def test_get_board_returns_boardfile(flask_client) -> None:
 def test_import_export_round_trip(client) -> None:
     payload = {
         "size": 9,
-        "cells": {"a1": [1], "a2": [1, 2], "b1": [3]},
+        "cells": {"a1": [1], "a2": [2, 3], "e5": [4]},
         "constraints": [
             {"type": "knight"},
             {"type": "palindrome", "cells": ["a1", "a2"]},
@@ -64,7 +64,7 @@ def test_import_export_round_trip(client) -> None:
     response = client.get("/api/board")
     assert response.status_code == 200
     exported = response.get_json()
-    assert exported["cells"]["a2"] == [1, 2]
+    assert exported["cells"]["a2"] == [2, 3]
     assert _sorted_constraints(exported["constraints"]) == _sorted_constraints(
         payload["constraints"],
     )

@@ -22,6 +22,7 @@ class Cell:
         self._row = row
         self._col = col
         self._value: int | None = None
+        self._given = False
         self._candidates: set[int] = set(range(1, size + 1))
         self._reachable_cells: set[Cell] = set()
         self._clone_cells: set[Cell] = {self}
@@ -92,6 +93,24 @@ class Cell:
         self._candidates.add(v)
         for cell in self._reachable_cells:
             cell.eliminate_candidate(v)
+
+    @property
+    def given(self) -> bool:
+        """Whether the value of the cell is a digit given by the puzzle.
+
+        Returns:
+            bool: ``True`` for a given digit, ``False`` otherwise.
+        """
+        return self._given
+
+    @given.setter
+    def given(self, is_given: bool) -> None:
+        """Mark the value of the cell as given by the puzzle, or not.
+
+        Args:
+            is_given (bool): ``True`` if the value is a given digit.
+        """
+        self._given = is_given
 
     @property
     def candidates(self) -> set[int]:
