@@ -21,7 +21,7 @@ class TestCell:
     @pytest.fixture
     def filled_cells(self, cell_pair: tuple[Cell, Cell]) -> tuple[Cell, Cell]:
         c1, c2 = cell_pair
-        c1.set_value(5)
+        c1.value = 5
         return c1, c2
 
     @pytest.mark.parametrize("row,col", [(0, 0), (2, 5)])
@@ -56,7 +56,7 @@ class TestCell:
 
     def test_final_value_after_eliminations(self, cell_pair: tuple[Cell, Cell]) -> None:
         c1, c2 = cell_pair
-        c1.set_value(5)
+        c1.value = 5
         for v in [1, 2, 3, 4, 6, 7, 8]:
             c2.eliminate_candidate(v)
         assert c2.value == 9
