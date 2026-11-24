@@ -168,15 +168,19 @@ Toutes les routes sont définies dans `src/api.py`. Les grilles sont identifiée
 | `GET` | `/api/constraints` | Liste des types de contraintes disponibles |
 | `POST` | `/api/board/new` | Crée une grille (corps JSON optionnel, grille vide 9×9 par défaut), renvoie `board_id` et l'état de la grille |
 | `GET` | `/api/board/<board_id>` | État d'une grille (cellules, candidats, contraintes, `is_valid`, `is_solved`) |
+| `DELETE` | `/api/board/<board_id>` | Supprime la grille et ses logs |
 | `PUT` | `/api/board/<board_id>/cell` | Modifie une cellule : `{"pos": "a1", "value": 5}` et/ou `{"candidates": [...]}` |
 | `POST` | `/api/board/<board_id>/constraint` | Ajoute une contrainte (objet JSON avec `type`) |
 | `DELETE` | `/api/board/<board_id>/constraint/<index>` | Supprime la contrainte à l'index donné |
 | `POST` | `/api/board/<board_id>/solve/step` | Exécute une étape : `{"solver_type": "simple" \| "composite" \| "backtracking"}` (`composite` par défaut) |
-| `GET` | `/api/board/<board_id>/logs` | Historique des steps de résolution |
-| `GET` | `/api/board` | Exporte la grille courante au format JSON des grilles |
-| `POST` | `/api/board/import` | Importe une grille au format JSON et en fait la grille courante |
+| `GET` | `/api/board/<board_id>/logs` | Historique des steps de résolution (les 200 derniers) |
+| `POST` | `/api/board/<board_id>/reset` | Remplace la grille par l'état envoyé (format JSON des grilles) et vide ses logs |
+| `GET` | `/api/board/<board_id>/export` | Exporte la grille au format JSON des grilles |
+| `POST` | `/api/board/import` | Importe une grille au format JSON, renvoie son `board_id`, la grille au format JSON et le `delta` reçu |
 
 Les routes `/` et `/<fichier>` servent l'interface web depuis `site/`.
+
+Les grilles sont gardées en mémoire : au plus 100 (`MAX_BOARDS`, la moins récemment utilisée est oubliée en premier), et une grille inutilisée pendant une heure (`BOARD_TTL_SECONDS`) est supprimée. Le site supprime l'ancienne grille quand il en crée une nouvelle (« Clear Board », import) et quand la page est fermée.
 
 ## 🎯 Contraintes supportées
 

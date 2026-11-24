@@ -4,8 +4,7 @@ import json
 
 import pytest
 
-from api import app, set_current_board_for_tests
-from models import Board
+from api import app
 
 
 @pytest.fixture
@@ -19,11 +18,10 @@ def _sorted_constraints(constraints: list[dict[str, object]]) -> list[str]:
     return sorted(json.dumps(c, sort_keys=True) for c in constraints)
 
 
-def test_get_board_returns_boardfile(flask_client) -> None:
-    board = Board(9)
-    set_current_board_for_tests(board)
+def test_export_returns_boardfile(client) -> None:
+    board_id = client.post("/api/board/new").get_json()["board_id"]
 
-    response = flask_client.get("/api/board")
+    response = client.get(f"/api/board/{board_id}/export")
     assert response.status_code == 200
     data = response.get_json()
 
@@ -46,6 +44,7 @@ def test_import_export_round_trip(client) -> None:
     assert response.status_code == 200
     body = response.get_json()
 
+    board_id = body["board_id"]
     board = body["board"]
     delta = body["delta"]
 
@@ -61,7 +60,7 @@ def test_import_export_round_trip(client) -> None:
         payload["constraints"],
     )
 
-    response = client.get("/api/board")
+    response = client.get(f"/api/board/{board_id}/export")
     assert response.status_code == 200
     exported = response.get_json()
     assert exported["cells"]["a2"] == [1, 2]
