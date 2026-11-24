@@ -11,7 +11,7 @@ from solver.constraints.clone import CloneConstraint
 from solver.constraints.clone_zone_constraint import CloneZoneConstraint
 from solver.constraints.couple import CoupleConstraint
 from solver.constraints.even_odd import ParityConstraint
-from solver.constraints.frienly_cell import FriendlyCellConstraint
+from solver.constraints.friendly_cell import FriendlyCellConstraint
 from solver.constraints.greater_than import GreaterThanConstraint
 from solver.constraints.killer import KillerConstraint
 from solver.constraints.king import KingConstraint
