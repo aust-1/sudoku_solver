@@ -47,8 +47,10 @@ class Board:
         """
         normalized = cls._normalize_board_dict(input_dict)
         board = cls(normalized["size"])
-        board._load_cells_from_dict(normalized["cells"])
+        # Constraints first, so that the given digits are propagated to the
+        # cells they reach through the constraints too.
         board._load_constraint_from_dict(constraint_dict=normalized["constraints"])
+        board._load_cells_from_dict(normalized["cells"])
         return board
 
     def to_dict(self) -> dict[str, Any]:
@@ -357,6 +359,9 @@ class Board:
     def _load_cells_from_dict(self, cells_dict: dict[str, list[int]]) -> None:
         """Load cell values from a dictionary representation.
 
+        A cell with a single candidate is a placed digit: it is filled and its
+        value is removed from the candidates of the cells it reaches.
+
         Args:
             cells_dict (dict[str, list[int]]):
                 The dictionary representation of the cells.
@@ -364,6 +369,11 @@ class Board:
         for c, values in cells_dict.items():
             cell = self.get_cell(pos=c)
             cell.candidates = set(values)
+        # Place the digits once every candidate list is loaded, otherwise a
+        # later candidate list would bring back an eliminated digit.
+        for c, values in cells_dict.items():
+            if len(values) == 1:
+                self.get_cell(pos=c).value = values[0]
 
     def _load_constraint_from_dict(
         self,

@@ -168,6 +168,32 @@ def _create_board(payload: dict[str, Any]) -> tuple[Board, list[dict[str, Any]]]
     return board, constraints_list
 
 
+def _rebuild_board(board: Board, constraints: list[dict[str, Any]]) -> Board:
+    """Rebuild ``board`` from its placed digits and ``constraints``.
+
+    Candidates are recomputed from scratch, so the eliminations made by a
+    constraint that is no longer in ``constraints`` are discarded.
+
+    Args:
+        board (Board): The board to rebuild.
+        constraints (list[dict[str, Any]]): The constraints of the new board.
+
+    Returns:
+        Board: A new board with the same placed digits.
+    """
+    cells = {
+        cell.pos: [cell.value]
+        for cell in board.get_all_cells()
+        if cell.value is not None
+    }
+    new_board, _ = _create_board({
+        "size": board.size,
+        "cells": cells,
+        "constraints": constraints,
+    })
+    return new_board
+
+
 def _build_constraint_catalog() -> list[dict[str, str]]:
     catalog: list[dict[str, str]] = []
     for constraint_type in sorted(CONSTRAINT_REGISTRY.keys()):
@@ -314,8 +340,10 @@ def delete_constraint(board_id: str, index: int) -> Any:
     new_constraints = [
         constraint for idx, constraint in enumerate(constraints_list) if idx != index
     ]
-    board_data = _serialize_board_export(board, new_constraints)
-    board, _ = _create_board(board_data)
+    try:
+        board = _rebuild_board(board, new_constraints)
+    except (InvalidSudokuError, ValueError) as exc:
+        return jsonify({"error": str(exc)}), 400
 
     boards[board_id] = board
     board_constraints[board_id] = new_constraints
