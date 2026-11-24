@@ -38,70 +38,77 @@ Le projet est composé de deux parties principales :
 
 ### Fichier : `src/api.py`
 
-Le backend expose une API REST qui permet de :
+Le backend expose une API REST de 10 routes.
 
-#### Endpoints principaux
+#### Endpoints
 
-1. **`POST /api/board/new`**
-   - Crée une nouvelle grille de Sudoku
-   - Corps de requête : configuration JSON de la grille
-   - Retourne : `board_id` et état initial de la grille
+Toutes les réponses sont en JSON, sauf les erreurs 404 levées par `abort` (grille inconnue) et les erreurs 500, que Flask renvoie en HTML. Les erreurs de validation renvoient `400` avec `{"error": "message"}`.
 
-2. **`GET /api/board/<board_id>`**
-   - Récupère l'état actuel d'une grille
-   - Retourne : état complet de la grille
+| # | Méthode et route | Corps de la requête | Réponse |
+| - | ---------------- | ------------------- | ------- |
+| 1 | `GET /api/constraints` | aucun | `{"constraints": [{"id", "name", "description"}]}`, un élément par type de `CONSTRAINT_REGISTRY` (`x_v` est exposé sous l'id `xv`) |
+| 2 | `POST /api/board/new` | grille au format JSON (optionnel) : `{"size", "cells", "constraints"}`. Sans corps, ou sans `cells`, la grille est vide (9×9 par défaut). L'ancienne clé `constraint` et l'alias `xv` sont acceptés | `{"board_id", "board"}` (état d'une grille, voir plus bas) |
+| 3 | `GET /api/board/<board_id>` | aucun | `{"board"}` |
+| 4 | `PUT /api/board/<board_id>/cell` | `{"pos": "a1", "value": 5 \| null, "candidates": [..]}` (`value` et `candidates` optionnels) | `{"board"}` ; `400` si `pos` manque ou si `candidates` n'est pas une liste |
+| 5 | `POST /api/board/<board_id>/constraint` | une contrainte : `{"type": "killer", "cells": [...], "sum": 15}` | `{"board"}`, avec la contrainte ajoutée à `board.constraints` ; `400` si le type ou les paramètres sont invalides |
+| 6 | `DELETE /api/board/<board_id>/constraint/<index>` | aucun | `{"board"}` ; la grille est reconstruite à partir de ses candidats actuels et des contraintes restantes ; `400` si l'index est hors limites |
+| 7 | `POST /api/board/<board_id>/solve/step` | `{"solver_type": "simple" \| "composite" \| "backtracking"}` (`composite` par défaut) | `{"changed", "solved", "board", "log"}` (voir « Système de logs ») |
+| 8 | `GET /api/board/<board_id>/logs` | aucun | `{"logs": [...]}`, toutes les entrées de log de la grille |
+| 9 | `GET /api/board` | aucun | grille « courante » au format JSON : `{"size", "cells", "constraints"}` ; grille vide 9×9 si aucune |
+| 10 | `POST /api/board/import` | grille au format JSON | `{"board": {"size", "cells", "constraints"}, "delta": {"cells", "constraints"}}` ; ne renvoie pas de `board_id` |
 
-3. **`PUT /api/board/<board_id>/cell`**
-   - Met à jour une cellule (valeur ou candidats)
-   - Corps : `{pos, value?, candidates?}`
-   - Utilisé pour l'édition manuelle en mode solver
+La grille « courante » des routes 9 et 10 est la dernière grille créée par `POST /api/board/new` ou importée par `POST /api/board/import`, tous clients confondus. Elle référence les mêmes objets que `boards[board_id]` et `board_constraints[board_id]`, donc elle suit les modifications de cellules, les steps et les ajouts de contraintes, mais pas une suppression de contrainte, qui remplace la grille.
 
-4. **`POST /api/board/<board_id>/solve/step`**
-   - Exécute une étape de résolution
-   - Corps : `{solver_type: "simple" | "composite" | "backtracking"}`
-   - Retourne : changements effectués, logs détaillés, état de résolution
-
-5. **`GET /api/board/<board_id>/logs`**
-   - Récupère l'historique complet des logs
-
-6. **`GET /api/constraints`**
-   - Liste toutes les contraintes disponibles
-   - Utilisé pour peupler l'interface de création
+Les routes `GET /` et `GET /<fichier>` servent le site depuis `site/`.
 
 ### Gestion d'état
 
+Tout l'état est gardé en mémoire dans des variables de module :
+
 ```python
-boards: dict[str, Board] = {}          # Stockage en mémoire des grilles actives
-board_logs: dict[str, list[dict]] = {} # Historique des actions
+boards: dict[str, Board] = {}                            # Grilles par board_id
+board_constraints: dict[str, list[dict[str, Any]]] = {}  # Contraintes telles qu'envoyées par le client
+board_logs: dict[str, list[dict[str, Any]]] = {}         # Entrées de log par board_id
+current_board: Board | None = None                       # Grille « courante » (GET /api/board)
+current_constraints: list[dict[str, Any]] = []           # Contraintes de la grille courante
 ```
+
+`board_constraints` garde les objets JSON reçus (et non `constraint.to_dict()`) : c'est ce que renvoie `board.constraints` et ce que le site dessine.
+
+Rien n'est purgé : les grilles et leurs logs restent en mémoire jusqu'au redémarrage du serveur.
 
 ⚠️ **Note** : En production, utiliser Redis ou une base de données pour la persistence.
 
 ### Système de logs
 
-Chaque action de résolution génère un log structuré :
+Chaque appel à `POST /api/board/<board_id>/solve/step` compare l'état des cellules avant et après `solver.apply(board)` et ajoute une entrée à `board_logs[board_id]` :
 
 ```python
 {
-    "solver": "NomDeLaStrategie",
-    "changed": True/False,
+    "action": "solve_step",
+    "timestamp": "2026-01-01T12:00:00+00:00",  # UTC, ISO 8601
+    "solver": "CompositeSolver",  # classe du solveur choisi
+    "changed": True,
     "changes": [
+        {"type": "value_set", "pos": "a1", "value": 5},
         {
-            "type": "value_set" | "candidates_eliminated",
-            "pos": "a1",
-            "value": 5,  # si value_set
-            "eliminated": [2, 3],  # si candidates_eliminated
-            "remaining": [1, 4, 5]
-        }
-    ]
+            "type": "candidates_eliminated",
+            "pos": "a2",
+            "eliminated": [2, 3],
+            "remaining": [1, 4, 5],
+        },
+    ],
 }
 ```
+
+- `solver` est le nom de la classe du solveur choisi (`EliminationStrategy`, `CompositeSolver` ou `BacktrackingSolver`), pas celui de la stratégie qui a fait le changement.
+- Une cellule dont la valeur a été placée donne une seule entrée `value_set` ; sinon, les candidats retirés donnent une entrée `candidates_eliminated`.
+- Il n'y a ni champ `reason` ni `old_candidates`.
 
 Ce système permet de :
 
 - Tracer exactement ce qui a changé à chaque étape
-- Afficher des explications visuelles dans le frontend
-- Débugger les stratégies de résolution
+- Afficher les changements dans le frontend
 
 ## Architecture Frontend
 
@@ -113,8 +120,11 @@ site/
 ├── css/
 │   └── style.css       # Styles complets avec animations
 └── js/
-    └── app.js          # Logique applicative complète
+    ├── app.js          # État, interactions et appels à l'API
+    └── constraints.js  # Dessin des contraintes (calque SVG sur la grille)
 ```
+
+`index.html` charge `constraints.js` comme script classique (fonctions globales `renderConstraints`…), puis `app.js` comme module.
 
 ### Modes d'utilisation
 
@@ -189,6 +199,7 @@ Toutes les communications utilisent `fetch()` avec JSON :
 
 ```javascript
 // Exemple : exécuter un step
+// API_BASE = `${window.location.origin}/api`
 const response = await fetch(`${API_BASE}/board/${boardId}/solve/step`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -256,13 +267,13 @@ Les logs sont affichés en ordre inverse chronologique (plus récent en haut).
 
 ### Format JSON des contraintes
 
-Les contraintes sont stockées dans le JSON de la grille :
+Les contraintes sont stockées dans le JSON de la grille, sous la clé `constraints` (l'ancienne clé `constraint` est encore acceptée à l'import) :
 
 ```json
 {
     "size": 9,
     "cells": {"a1": [1,2,3], "a2": [5], ...},
-    "constraint": [
+    "constraints": [
         {
             "type": "knight",
             "cells": []  // Global constraint
@@ -301,6 +312,8 @@ Voir `src/solver/constraints/factory.py` pour la liste complète :
 
 ## Solveurs disponibles
 
+Un step (`POST /api/board/<board_id>/solve/step`) appelle `solver.apply(board)` une seule fois.
+
 ### 1. Simple Solver
 
 - Exécute uniquement `EliminationStrategy`
@@ -316,8 +329,8 @@ Voir `src/solver/constraints/factory.py` pour la liste complète :
   4. Constraint-specific elimination
   5. X-Wing / W-Wing
   6. Chain Violation Guard
-- Boucle jusqu'à ce qu'aucune stratégie ne fasse plus de progrès
-- Puis bascule sur Backtracking si nécessaire
+- `apply` (un step) s'arrête à la première stratégie qui modifie la grille
+- `solve` (utilisé en Python, pas par l'API) boucle jusqu'à ce qu'aucune stratégie ne fasse plus de progrès, puis bascule sur Backtracking
 
 ### 3. Backtracking Solver
 
@@ -422,7 +435,7 @@ Format : `lettre minuscule + chiffre`
 
 ### Performance
 
-- Les grilles sont stockées en mémoire côté backend (limite : RAM)
+- Les grilles sont stockées en mémoire côté backend (limite : RAM) ; le site en crée une nouvelle à chaque chargement de page, « Clear Board » et import
 - Pas de nettoyage automatique des vieilles sessions
 - Le mode auto-solve est limité à 100 steps pour éviter les boucles infinies
 
@@ -443,8 +456,8 @@ Format : `lettre minuscule + chiffre`
 ### Backend
 
 ```
-flask>=3.0.0
-flask-cors>=4.0.0
+flask>=3.1.3
+flask-cors>=6.0.2
 loggerplusplus
 pygame  (pour GUI locale)
 ```
@@ -459,38 +472,16 @@ Les logs sont cruciaux pour comprendre le processus de résolution. Voici leur s
 
 ### Format d'un log complet
 
-```python
-{
-    "action": "solve_step",
-    "timestamp": "2024-01-01T12:00:00",
-    "solver": "HiddenSingleStrategy",
-    "changed": True,
-    "changes": [
-        {
-            "type": "value_set",
-            "pos": "a1",
-            "value": 5,
-            "old_candidates": [5, 7, 9],
-            "reason": "Hidden single in row0"
-        },
-        {
-            "type": "candidates_eliminated",
-            "pos": "a2",
-            "eliminated": [2, 3],
-            "remaining": [1, 4, 5, 6],
-            "reason": "Naked pair elimination"
-        }
-    ]
-}
-```
+Voir « Système de logs » plus haut : une entrée contient `action`, `timestamp`, `solver`, `changed` et `changes`.
 
 ### Interprétation des logs
 
-- **action** : Type d'action (solve_step, manual_set, etc.)
-- **solver** : Nom de la stratégie qui a été appliquée
+- **action** : Type d'action (toujours `solve_step` pour l'instant)
+- **timestamp** : Date et heure UTC du step
+- **solver** : Nom de la classe du solveur choisi
 - **changed** : Booléen indiquant si des modifications ont eu lieu
 - **changes** : Liste détaillée de tous les changements
   - **value_set** : Une valeur a été définitivement placée
   - **candidates_eliminated** : Des possibilités ont été éliminées
 
-Cette granularité permet de comprendre exactement pourquoi chaque déduction a été faite.
+Les logs indiquent ce qui a changé, pas encore la stratégie ni la raison de chaque déduction.
