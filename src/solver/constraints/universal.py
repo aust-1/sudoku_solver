@@ -123,8 +123,11 @@ class UniversalConstraint(BaseConstraint):
         return regions
 
     @override
-    def deep_copy(self) -> UniversalConstraint:
-        """Create a deep copy of the constraint.
+    def deep_copy(self, board: Board) -> UniversalConstraint:
+        """Create a copy of the constraint bound to the cells of ``board``.
+
+        Args:
+            board (Board): The board whose cells the copy uses.
 
         Returns:
             UniversalConstraint: A deep copy of the constraint.

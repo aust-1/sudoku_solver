@@ -150,13 +150,18 @@ class BishopConstraint(BaseConstraint):
         )
 
     @override
-    def deep_copy(self) -> BishopConstraint:
-        """Create a deep copy of the constraint.
+    def deep_copy(self, board: Board) -> BishopConstraint:
+        """Create a copy of the constraint bound to the cells of ``board``.
+
+        Args:
+            board (Board): The board whose cells the copy uses.
 
         Returns:
             BishopConstraint: A deep copy of the constraint.
         """
-        return BishopConstraint(self.bishop_cells.copy())
+        return BishopConstraint(
+            [self._cell_on(board, cell) for cell in self.bishop_cells],
+        )
 
     @override
     def __repr__(self) -> str:

@@ -164,16 +164,20 @@ class _BaseDiffConstraint(BaseConstraint):
         return eliminated
 
     @override
-    def deep_copy(self) -> _BaseDiffConstraint:
-        """Create a deep copy of the constraint.
+    def deep_copy(self, board: Board) -> _BaseDiffConstraint:
+        """Create a copy of the constraint bound to the cells of ``board``.
+
+        Args:
+            board (Board): The board whose cells the copy uses.
 
         Returns:
             _BaseDiffConstraint: A deep copy of the constraint.
         """
+        cells = [self._cell_on(board, cell) for cell in self.cells]
         if self.type == ConstraintType.GERMAN:
-            return GermanConstraint(self.cells.copy())
+            return GermanConstraint(cells)
         if self.type == ConstraintType.DUTCH:
-            return DutchConstraint(self.cells.copy())
+            return DutchConstraint(cells)
         msg = f"Deep copy not implemented for {self.type} constraint"
         raise NotImplementedError(msg)
 

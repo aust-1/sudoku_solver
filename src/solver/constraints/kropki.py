@@ -204,15 +204,18 @@ class KropkiConstraint(BaseConstraint):
         gui.draw_circle_between_cells(self.cell1, self.cell2, color)
 
     @override
-    def deep_copy(self) -> KropkiConstraint:
-        """Create a deep copy of the constraint.
+    def deep_copy(self, board: Board) -> KropkiConstraint:
+        """Create a copy of the constraint bound to the cells of ``board``.
+
+        Args:
+            board (Board): The board whose cells the copy uses.
 
         Returns:
             KropkiConstraint: A deep copy of the constraint.
         """
         return KropkiConstraint(
-            self.cell1,
-            self.cell2,
+            self._cell_on(board, self.cell1),
+            self._cell_on(board, self.cell2),
             "black" if self.is_black_dot else "white",
         )
 

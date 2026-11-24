@@ -162,15 +162,18 @@ class XVConstraint(BaseConstraint):
         # FIXME: c'est dégueulasse
 
     @override
-    def deep_copy(self) -> XVConstraint:
-        """Create a deep copy of the constraint.
+    def deep_copy(self, board: Board) -> XVConstraint:
+        """Create a copy of the constraint bound to the cells of ``board``.
+
+        Args:
+            board (Board): The board whose cells the copy uses.
 
         Returns:
             XVConstraint: A deep copy of the constraint.
         """
         return XVConstraint(
-            self.cell1,
-            self.cell2,
+            self._cell_on(board, self.cell1),
+            self._cell_on(board, self.cell2),
             total_sum=self.killer_constraint.sum,
         )
 

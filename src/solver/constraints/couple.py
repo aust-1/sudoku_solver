@@ -184,15 +184,18 @@ class CoupleConstraint(BaseConstraint):
         # TODO: to implement, tilde (barée)
 
     @override
-    def deep_copy(self) -> CoupleConstraint:
-        """Create a deep copy of the constraint.
+    def deep_copy(self, board: Board) -> CoupleConstraint:
+        """Create a copy of the constraint bound to the cells of ``board``.
+
+        Args:
+            board (Board): The board whose cells the copy uses.
 
         Returns:
             CoupleConstraint: A deep copy of the constraint.
         """
         return CoupleConstraint(
-            self.cell1,
-            self.cell2,
+            self._cell_on(board, self.cell1),
+            self._cell_on(board, self.cell2),
             self.same,
         )
 

@@ -127,13 +127,18 @@ class PalindromeConstraint(BaseConstraint):
         gui.draw_line(self.palindrome_cells, (0, 140, 255, 120), 5)
 
     @override
-    def deep_copy(self) -> PalindromeConstraint:
-        """Create a deep copy of the constraint.
+    def deep_copy(self, board: Board) -> PalindromeConstraint:
+        """Create a copy of the constraint bound to the cells of ``board``.
+
+        Args:
+            board (Board): The board whose cells the copy uses.
 
         Returns:
             PalindromeConstraint: A deep copy of the constraint.
         """
-        return PalindromeConstraint(self.palindrome_cells.copy())
+        return PalindromeConstraint(
+            [self._cell_on(board, cell) for cell in self.palindrome_cells],
+        )
 
     @override
     def __repr__(self) -> str:

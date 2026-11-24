@@ -97,8 +97,11 @@ class KingConstraint(BaseConstraint):
         return reachable
 
     @override
-    def deep_copy(self) -> KingConstraint:
-        """Create a deep copy of the constraint.
+    def deep_copy(self, board: Board) -> KingConstraint:
+        """Create a copy of the constraint bound to the cells of ``board``.
+
+        Args:
+            board (Board): The board whose cells the copy uses.
 
         Returns:
             KingConstraint: A deep copy of the constraint.
